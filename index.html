@@ -157,7 +157,10 @@
   .log-text{flex:1 1 12rem;font-size:.8rem;line-height:1.6}
   .log-meta{font-family:var(--mono);font-size:.7rem;color:var(--muted);flex:none}
   .log-tag{display:inline-block;margin-right:.4rem;padding:.05rem .35rem;border-radius:3px;
-    background:var(--accent-bg);color:var(--accent-ink);font-size:.66rem}
+    background:var(--accent-bg);color:var(--accent-ink);font-size:.66rem;flex:none}
+  /* 先生が自力で見つけたものは、控えめにして候補からのものを目立たせる */
+  .log-tag.own{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  .log-count{font-weight:400;color:var(--muted);font-size:.76rem}
 </style>
 </head><body>
 <div class="wrap"><div id="app"></div></div>
@@ -188,16 +191,22 @@
   function postedLog() {
     const rows = S.posted || [];
     if (!rows.length) return "";
+    const fromSys = rows.filter(r => r.fromSystem).length;
     return `
       <details class="log">
-        <summary>すでに投稿した引用リポスト ${rows.length}本</summary>
-        <p class="log-note">X本体から取得した実績です。同じ投稿を二度引用しないための控えです。</p>
+        <summary>すでに投稿した引用リポスト ${rows.length}本
+          <span class="log-count">（うち候補から ${fromSys}本）</span></summary>
+        <p class="log-note">X本体から取得した実績です。同じ投稿を二度引用しないための控えです。
+          「候補から」はこのページで出した候補、「ご自身」は先生が自力で見つけて投稿されたものです。</p>
         ${rows.map(r => `
           <a class="log-row" href="${esc(r.url)}" target="_blank" rel="noopener">
             <span class="log-date">${esc(r.date)}</span>
+            ${r.fromSystem
+              ? `<b class="log-tag">候補から</b>`
+              : `<b class="log-tag own">ご自身</b>`}
             <span class="log-text">${esc((r.text || "").slice(0, 60))}</span>
-            <span class="log-meta">${r.fromSystem
-              ? `<b class="log-tag">候補から</b>` : ""}表示 ${n(r.impressions)}</span>
+            <span class="log-meta">${r.fromSystem && r.tierName
+              ? esc(r.tierName) + " ・ " : ""}表示 ${n(r.impressions)}</span>
           </a>`).join("")}
       </details>`;
   }
