@@ -8,7 +8,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>:root{
+<style>/* ============================================================
+   診断レポート 共通スタイル（x / instagram）
+
+   各媒体の gen_report.py が、このファイル → 媒体の report.css の順に
+   読んで <style> に展開する。順番が意味を持つので入れ替えないこと。
+
+   ここに置いてよいのは「x と instagram で完全に同一」かつ
+   「媒体側のルールを上書きする必要がない」ものだけ。
+   媒体側が後から読まれるので、ここのルールは常に負ける側になる。
+
+   - 余白・フォントサイズ・角丸・box-shadow は媒体ごとに違う → 各 report.css
+   - --shadow は媒体ごとに違うので、ここでは定義しない（各 report.css で3箇所）
+   - @media (max-width:640px) は媒体側のルールを上書きするので各 report.css
+   - .summary 一式は x（.sum-cols/.sum-list）と instagram（.sum-table）で
+     マークアップ自体が別物なので共通化していない
+   - tiktok は配色・変数名・クラス名がまるごと別の設計なので参加していない
+     （詳細は sns/report_audit_2026-09-08.md）
+   ============================================================ */
+
+  :root{
     --ground:#EEF1F4;
     --surface:#FFFFFF;
     --surface-2:#F6F8FA;
@@ -22,7 +41,6 @@
     --warn:#A63A36;
     --warn-soft:#F3DEDD;
     --good:#2A6F52;
-    --shadow:0 1px 2px rgba(22,32,43,.06), 0 8px 24px rgba(22,32,43,.05);
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -39,7 +57,6 @@
       --warn:#D97B75;
       --warn-soft:#3A2422;
       --good:#5FB68C;
-      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
     }
   }
   :root[data-theme="dark"]{
@@ -56,18 +73,9 @@
     --warn:#D97B75;
     --warn-soft:#3A2422;
     --good:#5FB68C;
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
   }
 
   *{box-sizing:border-box}
-  body{
-    background:var(--ground);
-    color:var(--ink);
-    font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
-    font-size:15px; line-height:1.85;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:900px;margin:0 auto;padding:0 20px 80px}
   h1,h2,h3{font-family:"Shippori Mincho","Yu Mincho",serif;text-wrap:balance;letter-spacing:.01em}
   .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
 
@@ -86,6 +94,45 @@
   }
   .provenance span{white-space:nowrap}
 
+  /* ---- funnel ---- */
+  .funnel{display:flex;flex-direction:column;gap:2px;margin:26px 0}
+  .fstep{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--rule);padding:14px 18px;flex-wrap:wrap}
+  .fbar{height:26px;background:var(--accent);opacity:.85;flex:none;border-radius:2px;min-width:3px;max-width:100%}
+  .fmeta{flex:1;min-width:0}
+  .fname{font-size:14px;font-weight:500}
+  .fnote{font-size:12px;color:var(--ink-faint);line-height:1.6}
+  .fval{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;flex:none;font-variant-numeric:tabular-nums}
+  .fstep.est{border-style:dashed;opacity:.85}
+  .fstep.est .fbar{background:var(--ink-faint)}
+
+  /* ---- good-list ---- */
+  .good-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:26px 0}
+  .good-item{background:var(--surface);padding:20px}
+  .good-item h3{font-size:15px;margin:0 0 8px;font-weight:700;font-family:"Zen Kaku Gothic New",sans-serif}
+  .good-item p{font-size:13.5px;color:var(--ink-soft);margin:0}
+/* X診断レポート 固有スタイル
+
+   sns/report_base.css の "後" に読まれる。基本の配色（CSS変数）と
+   header / funnel / good-list は共通ファイル側にある。
+   ここには X だけの値・レイアウトを置く。
+   後から読まれるので、共通側のルールはここで上書きできる。 */
+
+  /* --shadow だけは媒体ごとに違うので、共通の配色とは別にここで定義する。
+     3つの順番（通常 → OS ダーク → 明示ダーク）は入れ替えないこと。 */
+  :root{ --shadow:0 1px 2px rgba(22,32,43,.06), 0 8px 24px rgba(22,32,43,.05); }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3); }
+  }
+  :root[data-theme="dark"]{ --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3); }
+
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
+    font-size:15px; line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px 80px}
   /* ---- verdict ---- */
   .verdict{
     margin:38px 0 0;padding:28px 30px;background:var(--surface);
@@ -190,17 +237,6 @@
   tr.hi td{background:var(--accent-soft)}
   tr.lo td{background:var(--warn-soft)}
 
-  /* ---- funnel ---- */
-  .funnel{display:flex;flex-direction:column;gap:2px;margin:26px 0}
-  .fstep{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--rule);padding:14px 18px;flex-wrap:wrap}
-  .fbar{height:26px;background:var(--accent);opacity:.85;flex:none;border-radius:2px;min-width:3px;max-width:100%}
-  .fmeta{flex:1;min-width:0}
-  .fname{font-size:14px;font-weight:500}
-  .fnote{font-size:12px;color:var(--ink-faint);line-height:1.6}
-  .fval{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;flex:none;font-variant-numeric:tabular-nums}
-  .fstep.est{border-style:dashed;opacity:.85}
-  .fstep.est .fbar{background:var(--ink-faint)}
-
   /* ---- action list ---- */
   .actions{display:flex;flex-direction:column;gap:16px;margin:26px 0}
   .act{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:22px 24px;box-shadow:var(--shadow)}
@@ -211,11 +247,6 @@
   .act ul{margin:10px 0 0;padding-left:1.15em}
   .act li{margin-bottom:7px;font-size:14.5px;max-width:64ch}
   .act li:last-child{margin-bottom:0}
-
-  .good-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:26px 0}
-  .good-item{background:var(--surface);padding:20px}
-  .good-item h3{font-size:15px;margin:0 0 8px;font-weight:700;font-family:"Zen Kaku Gothic New",sans-serif}
-  .good-item p{font-size:13.5px;color:var(--ink-soft);margin:0}
 
   .caveat{
     margin-top:56px;padding:24px 26px;background:var(--surface-2);
@@ -273,23 +304,23 @@
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">X（Twitter）診断レポート ／ 2026年9月7日 更新</div>
-  <h1>3,171,087インプレッション。<br>その半分は、1本のバズだった。</h1>
-  <p class="lede">@kumacli_mohri の投稿211本（2026-07-04〜2026-09-05／64日）を X API で取得し、インプレッション・反応・プロフィールクリックまで通して分析しています。数字はすべて実測で、推定は「推定」と明記しています。</p>
+  <div class="eyebrow">X（Twitter）診断レポート ／ 2026年9月8日 更新</div>
+  <h1>3,182,473インプレッション。<br>うち48%は、1本のバズだった。</h1>
+  <p class="lede">@kumacli_mohri の投稿213本（2026-07-04〜2026-09-07／66日）を X API で取得し、インプレッション・反応・プロフィールクリックまで通して分析しています。数字はすべて実測で、推定は「推定」と明記しています。</p>
   <div class="provenance">
-    <span>投稿 124本 ＋ 返信 87本</span>
-    <span>期間 64日</span>
-    <span>フォロワー 5,485人</span>
+    <span>投稿 126本 ＋ 返信 87本</span>
+    <span>期間 66日</span>
+    <span>フォロワー 5,479人</span>
     <span>出典: X API v2（本人認証）</span>
   </div>
 </header>
 
 <div class="verdict">
   <h2>結論</h2>
-  <p>64日で3,171,087インプレッション。数字は大きく見えますが、<b>そのうち48%は2026-08-27の1本</b>です。上位3本で59%、上位10本で72%。<b>アカウントの実力ではなく、単発の当たりが数字を作っています。</b></p>
-  <p>そして、その当たりは<b>クリニックに人を運んでいません</b>。この1本のプロフィールクリック率は<b>0.048%</b>。同じ期間の他43本は<b>0.78%</b>で、<b>16倍の差</b>があります。1,516,329人に届いて、プロフィールを見に来たのは731人でした。</p>
-  <p>逆に、効いている型ははっきりしています。<b>クマ・目元の治療について書いた投稿のプロフィールクリック率は0.56%</b>——その他の話題（0.19%）の<b>2.9倍</b>です。届く数ではなく、<b>誰に届くかで結果が決まっています。</b></p>
-  <p>いっぽう投稿211本のうち<b>87本（41%）が他人への返信</b>で、これがインプレッション全体に占める割合は<b>3.3%</b>。労力の4割が、リーチの3%にしかなっていません。</p>
+  <p>66日で3,182,473インプレッション。数字は大きく見えますが、<b>そのうち48%は2026-08-27の1本</b>です。上位3本で59%、上位10本で72%。<b>アカウントの実力ではなく、単発の当たりが数字を作っています。</b></p>
+  <p>そして、その当たりは<b>クリニックに人を運んでいません</b>。この1本のプロフィールクリック率は<b>0.048%</b>。同じ期間の他72本は<b>0.70%</b>で、<b>15倍の差</b>があります。1,517,465人に届いて、プロフィールを見に来たのは731人でした。</p>
+  <p>逆に、効いている型ははっきりしています。<b>クマ・目元の治療について書いた投稿のプロフィールクリック率は0.51%</b>——その他の話題（0.19%）の<b>2.6倍</b>です。届く数ではなく、<b>誰に届くかで結果が決まっています。</b></p>
+  <p>いっぽう投稿213本のうち<b>87本（41%）が他人への返信</b>で、これがインプレッション全体に占める割合は<b>3.3%</b>。本数の41%を投じて、リーチは3.3%です。</p>
 </div>
 
 <div class="summary">
@@ -300,17 +331,17 @@
       <h3>わかったこと</h3>
       <ul class="sum-list">
         <li><a href="#s02"><span class="t">バズは来たが、何も残らなかった</span></a>
-          <span class="d">1本で<span class="fig">48%</span>のインプレッション。ただしプロフィールクリック率は<span class="fig">0.048%</span>で、他の投稿の<span class="fig">16分の1</span>。</span></li>
+          <span class="d">1本で<span class="fig">48%</span>のインプレッション。ただしプロフィールクリック率は<span class="fig">0.048%</span>で、他の投稿の<span class="fig">15分の1</span>。</span></li>
         <li><a href="#s04"><span class="t">クマ・目元の投稿だけが人を連れてくる</span></a>
-          <span class="d">プロフィールクリック率 <span class="fig good">0.56%</span> 対 その他 <span class="fig">0.19%</span>。<span class="fig good">2.9倍</span>の差。</span></li>
-        <li><a href="#s03"><span class="t">返信に労力の4割が消えている</span></a>
-          <span class="d">全211本のうち返信が<span class="fig">41%</span>、リーチ寄与は<span class="fig">3.3%</span>。中央インプレッションは<span class="fig">341</span>。</span></li>
+          <span class="d">プロフィールクリック率 <span class="fig good">0.51%</span> 対 その他 <span class="fig">0.19%</span>。<span class="fig good">2.6倍</span>の差。</span></li>
+        <li><a href="#s03"><span class="t">返信に労力の41%が消えている</span></a>
+          <span class="d">全213本のうち返信が<span class="fig">41%</span>、リーチ寄与は<span class="fig">3.3%</span>。中央インプレッションは<span class="fig">341</span>。</span></li>
         <li><a href="#s05"><span class="t">プロフィールから先が測れていない</span></a>
-          <span class="d">17日で<span class="fig">5,474回</span>プロフィールが見られている。ただしリンククリックはAPIでほぼ取れず、予約までの導線が追えない。</span></li>
+          <span class="d">33日で<span class="fig">5,882回</span>プロフィールが見られている。ただしリンククリックはAPIでほぼ取れず、予約までの導線が追えない。</span></li>
         <li><a href="#s06"><span class="t">「時間帯」「文字数」「リンク」では説明できない</span></a>
           <span class="d">検証したが、中央インプレッションに決定的な差は出なかった。効くのは出し方ではなく<b>中身</b>。</span></li>
         <li><a href="#s01"><span class="t">投稿ペースが極端に振れている</span></a>
-          <span class="d">1日あたり中央<span class="fig">3本</span>、最大<span class="fig">33本</span>（2026-07-24）、投稿ゼロが<span class="fig">10日</span>。</span></li>
+          <span class="d">1日あたり中央<span class="fig">3本</span>、最大<span class="fig">33本</span>（2026-07-24）、投稿ゼロが<span class="fig">11日</span>。</span></li>
       </ul>
     </div>
 
@@ -331,13 +362,13 @@
 
 <section id="s01">
   <div class="sec-head"><div class="sec-num">01</div><h2>いま起きていること</h2></div>
-  <p class="sec-sub">2026-07-04から2026-09-05までの64日間、211本ぶんの実測です。</p>
+  <p class="sec-sub">2026-07-04から2026-09-07までの66日間、213本ぶんの実測です。</p>
 
   <div class="stats">
-    <div class="stat"><div class="k">総インプレッション</div><div class="v acc">3,171,087</div><div class="n">64日ぶん。1日あたり 49,548</div></div>
-    <div class="stat"><div class="k">投稿1本の中央インプレッション</div><div class="v ">5,344</div><div class="n">返信を除く124本の中央値</div></div>
+    <div class="stat"><div class="k">総インプレッション</div><div class="v acc">3,182,473</div><div class="n">66日ぶん。1日あたり 48,219</div></div>
+    <div class="stat"><div class="k">投稿1本の中央インプレッション</div><div class="v ">5,284</div><div class="n">返信を除く126本の中央値</div></div>
     <div class="stat"><div class="k">エンゲージメント率</div><div class="v warn">0.20%</div><div class="n">いいね・リポスト・返信・引用の合計÷インプレッション</div></div>
-    <div class="stat"><div class="k">1万インプレッション超え</div><div class="v ">29本</div><div class="n">返信を除く124本の23%</div></div>
+    <div class="stat"><div class="k">1万インプレッション超え</div><div class="v ">29本</div><div class="n">返信を除く126本の23%</div></div>
   </div>
 
   <figure>
@@ -345,81 +376,81 @@
       <span><i style="background:var(--accent)"></i>週ごとの総インプレッション</span>
       <span><i style="background:var(--warn)"></i>目盛りを振り切っている週（1本のバズ）</span>
     </div>
-    <div class="chart-scroll"><svg class="bars" viewBox="0 0 860 300" role="img" aria-label="週ごとの総インプレッション"><line class="grid" x1="62" y1="18.0" x2="844" y2="18.0"/><text class="val" x="54" y="22.0" text-anchor="end" style="font-size:10.5px;opacity:.7">48万</text><line class="grid" x1="62" y1="77.0" x2="844" y2="77.0"/><text class="val" x="54" y="81.0" text-anchor="end" style="font-size:10.5px;opacity:.7">36万</text><line class="grid" x1="62" y1="136.0" x2="844" y2="136.0"/><text class="val" x="54" y="140.0" text-anchor="end" style="font-size:10.5px;opacity:.7">24万</text><line class="grid" x1="62" y1="195.0" x2="844" y2="195.0"/><text class="val" x="54" y="199.0" text-anchor="end" style="font-size:10.5px;opacity:.7">12万</text><line class="grid" x1="62" y1="254.0" x2="844" y2="254.0"/><text class="val" x="54" y="258.0" text-anchor="end" style="font-size:10.5px;opacity:.7">0万</text><rect x="76.9" y="243.7" width="48.5" height="10.3" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="101.1" y="272" text-anchor="middle" style="font-size:10.5px">06/29週</text><text class="lbl" x="101.1" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">5本</text><rect x="155.1" y="176.2" width="48.5" height="77.8" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="179.3" y="272" text-anchor="middle" style="font-size:10.5px">07/06週</text><text class="lbl" x="179.3" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">22本</text><rect x="233.3" y="64.5" width="48.5" height="189.5" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="257.5" y="272" text-anchor="middle" style="font-size:10.5px">07/13週</text><text class="lbl" x="257.5" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">37本</text><rect x="311.5" y="136.8" width="48.5" height="117.2" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="335.7" y="272" text-anchor="middle" style="font-size:10.5px">07/20週</text><text class="lbl" x="335.7" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">55本</text><rect x="389.7" y="195.8" width="48.5" height="58.2" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="413.9" y="272" text-anchor="middle" style="font-size:10.5px">07/27週</text><text class="lbl" x="413.9" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">19本</text><rect x="467.9" y="233.2" width="48.5" height="20.8" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="492.1" y="272" text-anchor="middle" style="font-size:10.5px">08/03週</text><text class="lbl" x="492.1" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">11本</text><rect x="546.1" y="222.8" width="48.5" height="31.2" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="570.3" y="272" text-anchor="middle" style="font-size:10.5px">08/10週</text><text class="lbl" x="570.3" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">14本</text><rect x="624.3" y="48.8" width="48.5" height="205.2" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="648.5" y="272" text-anchor="middle" style="font-size:10.5px">08/17週</text><text class="lbl" x="648.5" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">18本</text><rect x="702.5" y="18.0" width="48.5" height="236.0" rx="2" fill="var(--warn)" opacity="0.95"/><text class="val" x="726.7" y="14" text-anchor="middle" style="fill:var(--warn)">↑169万</text><text class="lbl" x="726.7" y="272" text-anchor="middle" style="font-size:10.5px">08/24週</text><text class="lbl" x="726.7" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">20本</text><rect x="780.7" y="237.2" width="48.5" height="16.8" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="804.9" y="272" text-anchor="middle" style="font-size:10.5px">08/31週</text><text class="lbl" x="804.9" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">10本</text><line class="axis" x1="62" y1="254" x2="844" y2="254"/></svg></div>
+    <div class="chart-scroll"><svg class="bars" viewBox="0 0 860 300" role="img" aria-label="週ごとの総インプレッション"><line class="grid" x1="62" y1="18.0" x2="844" y2="18.0"/><text class="val" x="54" y="22.0" text-anchor="end" style="font-size:10.5px;opacity:.7">48万</text><line class="grid" x1="62" y1="77.0" x2="844" y2="77.0"/><text class="val" x="54" y="81.0" text-anchor="end" style="font-size:10.5px;opacity:.7">36万</text><line class="grid" x1="62" y1="136.0" x2="844" y2="136.0"/><text class="val" x="54" y="140.0" text-anchor="end" style="font-size:10.5px;opacity:.7">24万</text><line class="grid" x1="62" y1="195.0" x2="844" y2="195.0"/><text class="val" x="54" y="199.0" text-anchor="end" style="font-size:10.5px;opacity:.7">12万</text><line class="grid" x1="62" y1="254.0" x2="844" y2="254.0"/><text class="val" x="54" y="258.0" text-anchor="end" style="font-size:10.5px;opacity:.7">0万</text><rect x="75.5" y="243.8" width="44.1" height="10.2" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="97.5" y="272" text-anchor="middle" style="font-size:10.5px">06/29週</text><text class="lbl" x="97.5" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">5本</text><rect x="146.6" y="176.4" width="44.1" height="77.6" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="168.6" y="272" text-anchor="middle" style="font-size:10.5px">07/06週</text><text class="lbl" x="168.6" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">22本</text><rect x="217.7" y="64.9" width="44.1" height="189.1" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="239.7" y="272" text-anchor="middle" style="font-size:10.5px">07/13週</text><text class="lbl" x="239.7" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">37本</text><rect x="288.8" y="137.0" width="44.1" height="117.0" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="310.8" y="272" text-anchor="middle" style="font-size:10.5px">07/20週</text><text class="lbl" x="310.8" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">55本</text><rect x="359.9" y="195.9" width="44.1" height="58.1" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="381.9" y="272" text-anchor="middle" style="font-size:10.5px">07/27週</text><text class="lbl" x="381.9" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">19本</text><rect x="431.0" y="233.1" width="44.1" height="20.9" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="453.0" y="272" text-anchor="middle" style="font-size:10.5px">08/03週</text><text class="lbl" x="453.0" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">11本</text><rect x="502.1" y="222.5" width="44.1" height="31.5" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="524.1" y="272" text-anchor="middle" style="font-size:10.5px">08/10週</text><text class="lbl" x="524.1" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">14本</text><rect x="573.1" y="48.8" width="44.1" height="205.2" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="595.2" y="272" text-anchor="middle" style="font-size:10.5px">08/17週</text><text class="lbl" x="595.2" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">18本</text><rect x="644.2" y="18.0" width="44.1" height="236.0" rx="2" fill="var(--warn)" opacity="0.95"/><text class="val" x="666.3" y="14" text-anchor="middle" style="fill:var(--warn)">↑169万</text><text class="lbl" x="666.3" y="272" text-anchor="middle" style="font-size:10.5px">08/24週</text><text class="lbl" x="666.3" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">20本</text><rect x="715.3" y="234.5" width="44.1" height="19.5" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="737.4" y="272" text-anchor="middle" style="font-size:10.5px">08/31週</text><text class="lbl" x="737.4" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">10本</text><rect x="786.4" y="253.0" width="44.1" height="1.0" rx="2" fill="var(--accent)" opacity="0.75"/><text class="lbl" x="808.5" y="272" text-anchor="middle" style="font-size:10.5px">09/07週</text><text class="lbl" x="808.5" y="287" text-anchor="middle" style="font-size:10px;opacity:.65">2本</text><line class="axis" x1="62" y1="254" x2="844" y2="254"/></svg></div>
     <figcaption>縦軸は2番目に大きい週に合わせています。最大の週をそのまま描くと、他の週がすべて潰れて読めなくなるためです。振り切っている棒には実数を書いています。</figcaption>
   </figure>
 
-  <div class="tw"><table><thead><tr><th class="">週</th><th class="num">本数</th><th class="num">総インプレッション</th><th class="num">中央インプレッション</th><th class="num">いいね計</th><th class="num">クマ・目元率</th></tr></thead><tbody><tr class=""><td>06/29週</td><td class="num">5</td><td class="num">20,971</td><td class="num">3,645</td><td class="num">37</td><td class="num">60%</td></tr><tr class=""><td>07/06週</td><td class="num">22</td><td class="num">158,886</td><td class="num">4,261</td><td class="num">137</td><td class="num">36%</td></tr><tr class=""><td>07/13週</td><td class="num">37</td><td class="num">387,141</td><td class="num">3,534</td><td class="num">558</td><td class="num">11%</td></tr><tr class=""><td>07/20週</td><td class="num">55</td><td class="num">239,448</td><td class="num">398</td><td class="num">567</td><td class="num">18%</td></tr><tr class=""><td>07/27週</td><td class="num">19</td><td class="num">118,909</td><td class="num">3,021</td><td class="num">196</td><td class="num">26%</td></tr><tr class=""><td>08/03週</td><td class="num">11</td><td class="num">42,583</td><td class="num">4,147</td><td class="num">112</td><td class="num">27%</td></tr><tr class=""><td>08/10週</td><td class="num">14</td><td class="num">63,674</td><td class="num">3,314</td><td class="num">96</td><td class="num">43%</td></tr><tr class=""><td>08/17週</td><td class="num">18</td><td class="num">419,207</td><td class="num">7,219</td><td class="num">358</td><td class="num">33%</td></tr><tr class="lo"><td>08/24週</td><td class="num">20</td><td class="num">1,685,941</td><td class="num">3,226</td><td class="num">3,622</td><td class="num">35%</td></tr><tr class=""><td>08/31週</td><td class="num">10</td><td class="num">34,327</td><td class="num">1,896</td><td class="num">89</td><td class="num">60%</td></tr></tbody></table></div>
+  <div class="tw"><table><thead><tr><th class="">週</th><th class="num">本数</th><th class="num">総インプレッション</th><th class="num">中央インプレッション</th><th class="num">いいね計</th><th class="num">クマ・目元率</th></tr></thead><tbody><tr class=""><td>06/29週</td><td class="num">5</td><td class="num">20,971</td><td class="num">3,645</td><td class="num">37</td><td class="num">60%</td></tr><tr class=""><td>07/06週</td><td class="num">22</td><td class="num">158,886</td><td class="num">4,261</td><td class="num">137</td><td class="num">36%</td></tr><tr class=""><td>07/13週</td><td class="num">37</td><td class="num">387,141</td><td class="num">3,534</td><td class="num">558</td><td class="num">11%</td></tr><tr class=""><td>07/20週</td><td class="num">55</td><td class="num">239,448</td><td class="num">398</td><td class="num">567</td><td class="num">18%</td></tr><tr class=""><td>07/27週</td><td class="num">19</td><td class="num">118,909</td><td class="num">3,021</td><td class="num">196</td><td class="num">26%</td></tr><tr class=""><td>08/03週</td><td class="num">11</td><td class="num">42,780</td><td class="num">4,177</td><td class="num">112</td><td class="num">27%</td></tr><tr class=""><td>08/10週</td><td class="num">14</td><td class="num">64,557</td><td class="num">3,359</td><td class="num">96</td><td class="num">43%</td></tr><tr class=""><td>08/17週</td><td class="num">18</td><td class="num">420,117</td><td class="num">7,234</td><td class="num">361</td><td class="num">33%</td></tr><tr class="lo"><td>08/24週</td><td class="num">20</td><td class="num">1,687,611</td><td class="num">3,245</td><td class="num">3,622</td><td class="num">35%</td></tr><tr class=""><td>08/31週</td><td class="num">10</td><td class="num">40,000</td><td class="num">1,994</td><td class="num">91</td><td class="num">60%</td></tr><tr class=""><td>09/07週</td><td class="num">2</td><td class="num">2,053</td><td class="num">1,026</td><td class="num">7</td><td class="num">0%</td></tr></tbody></table></div>
 
-  <p>週ごとの本数は5本から55本まで振れています。1日あたりでは中央<b>3本</b>、最も多い日は<b>33本</b>（2026-07-24）で、いっぽう<b>10日は投稿がありません</b>。X は投稿の間隔が空くとタイムラインでの露出が落ちるため、まとめ出しと沈黙を繰り返す形は不利に働きます。</p>
+  <p>週ごとの本数は2本から55本まで振れています。1日あたりでは中央<b>3本</b>、最も多い日は<b>33本</b>（2026-07-24）で、いっぽう<b>11日は投稿がありません</b>。X は投稿の間隔が空くとタイムラインでの露出が落ちるため、まとめ出しと沈黙を繰り返す形は不利に働きます。</p>
 </section>
 
 <section id="s02">
   <div class="sec-head"><div class="sec-num">02</div><h2>バズは来た。そして、何も残らなかった。</h2></div>
-  <p class="sec-sub">2026-08-20〜2026-09-05（17日・44本）はプロフィールクリック数が取れています。この窓のなかに、期間最大のバズが入っています。</p>
+  <p class="sec-sub">2026-08-06〜2026-09-07（33日・73本）はプロフィールクリック数が取れています。この窓のなかに、期間最大のバズが入っています。</p>
 
   <div class="versus">
     <div class="vs bad">
       <div class="k">2026-08-27 のバズ1本</div>
       <div class="v">0.048%</div>
-      <div class="n">1,516,329インプレッションに対し、プロフィールクリックは<b>731回</b>だけ。</div>
+      <div class="n">1,517,465インプレッションに対し、プロフィールクリックは<b>731回</b>だけ。</div>
     </div>
     <div class="vs ok">
-      <div class="k">同じ期間の他 43本</div>
-      <div class="v">0.78%</div>
-      <div class="n">604,338インプレッションから<b>4,743回</b>。バズ1本の<b>16倍</b>の効率です。</div>
+      <div class="k">同じ期間の他 72本</div>
+      <div class="v">0.70%</div>
+      <div class="n">730,642インプレッションから<b>5,151回</b>。バズ1本の<b>15倍</b>の効率です。</div>
     </div>
   </div>
 
-  <p>バズった1本は「制汗剤で汗腺を塞いだ時、行き場を失った汗は別の汗腺から出るor一時的に皮下に貯留するのが基本です。 ただし多量に塞ぐと汗…」という内容で、<b>クマ治療とは関係のない話題</b>でした。1,516,329人に届き、いいねは3,243件ついています。数字としては成功です。</p>
+  <p>バズった1本は「制汗剤で汗腺を塞いだ時、行き場を失った汗は別の汗腺から出るor一時的に皮下に貯留するのが基本です。 ただし多量に塞ぐと汗…」という内容で、<b>クマ治療とは関係のない話題</b>でした。1,517,465人に届き、いいねは3,244件ついています。数字としては成功です。</p>
 
-  <p>しかし<b>プロフィールを見に来たのは731人</b>。1,516,329人のうち0.048%です。同じ17日間の他43本は、合計604,338インプレッション——バズの2.5分の1の露出で、<b>4,743回</b>のプロフィールクリックを生んでいます。</p>
+  <p>しかし<b>プロフィールを見に来たのは731人</b>。1,517,465人のうち0.048%です。同じ33日間の他72本は、合計730,642インプレッション——バズの2.1分の1の露出で、<b>5,151回</b>のプロフィールクリックを生んでいます。</p>
 
   <p><b>ここが、このアカウントで最も重要な数字です。</b>「バズを狙う」という方針は、この実測では成立していません。届く人数を増やしても、その人がクマを気にしていなければプロフィールには来ないからです。</p>
 </section>
 
 <section id="s03">
-  <div class="sec-head"><div class="sec-num">03</div><h2>返信に、労力の4割が消えている</h2></div>
+  <div class="sec-head"><div class="sec-num">03</div><h2>返信に、労力の41%が消えている</h2></div>
   <p class="sec-sub">投稿を「通常投稿」「引用」「他人への返信」に分けました。X では返信は会話の当事者中心にしか流れないため、リーチの性質がまったく違います。</p>
 
-  <div class="tw"><table><thead><tr><th class="">型</th><th class="num">本数</th><th class="num">本数比</th><th class="num">中央インプレッション</th><th class="num">総インプレッション</th><th class="num">総インプ比</th><th class="num">中央いいね</th></tr></thead><tbody><tr class=""><td>通常</td><td class="num">16</td><td class="num">8%</td><td class="num">5,896</td><td class="num">436,707</td><td class="num">13.8%</td><td class="num">14</td></tr><tr class="hi"><td>引用</td><td class="num">108</td><td class="num">51%</td><td class="num">5,265</td><td class="num">2,630,030</td><td class="num">82.9%</td><td class="num">8</td></tr><tr class="lo"><td>返信</td><td class="num">87</td><td class="num">41%</td><td class="num">341</td><td class="num">104,350</td><td class="num">3.3%</td><td class="num">1</td></tr></tbody></table></div>
+  <div class="tw"><table><thead><tr><th class="">型</th><th class="num">本数</th><th class="num">本数比</th><th class="num">中央インプレッション</th><th class="num">総インプレッション</th><th class="num">総インプ比</th><th class="num">中央いいね</th></tr></thead><tbody><tr class=""><td>通常</td><td class="num">16</td><td class="num">8%</td><td class="num">5,896</td><td class="num">441,292</td><td class="num">13.9%</td><td class="num">14</td></tr><tr class="hi"><td>引用</td><td class="num">110</td><td class="num">52%</td><td class="num">5,140</td><td class="num">2,636,690</td><td class="num">82.9%</td><td class="num">8</td></tr><tr class="lo"><td>返信</td><td class="num">87</td><td class="num">41%</td><td class="num">341</td><td class="num">104,491</td><td class="num">3.3%</td><td class="num">1</td></tr></tbody></table></div>
 
-  <p>返信は<b>87本（全体の41%）</b>投稿されていますが、インプレッション全体に占める割合は<b>3.3%</b>です。1本あたりの中央インプレッションは<b>341</b>——引用（5,265）の<b>15分の1</b>です。</p>
+  <p>返信は<b>87本（全体の41%）</b>投稿されていますが、インプレッション全体に占める割合は<b>3.3%</b>です。1本あたりの中央インプレッションは<b>341</b>——引用（5,140）の<b>15分の1</b>です。</p>
 
   <p><b>ただし返信を「無駄」と結論づけるのは早いです。</b>プロフィールクリック率で見ると、返信は下の表のとおり決して悪くありません。届く相手が少ないぶん、届いた相手は近い、ということです。</p>
 
-  <div class="tw"><table><thead><tr><th class="">型</th><th class="num">対象本数</th><th class="num">プロフィールクリック計</th><th class="num">1本あたり中央</th><th class="num">クリック率</th></tr></thead><tbody><tr class=""><td>通常</td><td class="num">5</td><td class="num">1,035</td><td class="num">13</td><td class="num">0.631%</td></tr><tr class="hi"><td>引用</td><td class="num">27</td><td class="num">4,291</td><td class="num">22</td><td class="num">0.222%</td></tr><tr class=""><td>返信</td><td class="num">12</td><td class="num">148</td><td class="num">4</td><td class="num">0.596%</td></tr></tbody></table></div>
+  <div class="tw"><table><thead><tr><th class="">型</th><th class="num">対象本数</th><th class="num">プロフィールクリック計</th><th class="num">1本あたり中央</th><th class="num">クリック率</th></tr></thead><tbody><tr class=""><td>通常</td><td class="num">7</td><td class="num">1,073</td><td class="num">13</td><td class="num">0.596%</td></tr><tr class="hi"><td>引用</td><td class="num">46</td><td class="num">4,652</td><td class="num">17</td><td class="num">0.228%</td></tr><tr class=""><td>返信</td><td class="num">20</td><td class="num">157</td><td class="num">2</td><td class="num">0.579%</td></tr></tbody></table></div>
 
-  <p>つまり返信は<b>「効率は良いが、量が出ない」</b>型です。1本あたりのプロフィールクリック中央値は返信4回に対し、引用は<b>22回</b>。同じ1本を書くなら、<b>引用のほうが5倍多くプロフィールに送っています。</b></p>
+  <p>つまり返信は<b>「効率は良いが、量が出ない」</b>型です。1本あたりのプロフィールクリック中央値は返信2回に対し、引用は<b>17回</b>。同じ1本を書くなら、<b>引用のほうが7倍多くプロフィールに送っています。</b></p>
 </section>
 
 <section id="s04">
   <div class="sec-head"><div class="sec-num">04</div><h2>クマ・目元の投稿だけが、人を連れてくる</h2></div>
-  <p class="sec-sub">本文のキーワードで、返信を除く124本を3つに機械分類しました。分類の基準は末尾の注記に書いています。</p>
+  <p class="sec-sub">本文のキーワードで、返信を除く126本を3つに機械分類しました。分類の基準は末尾の注記に書いています。</p>
 
-  <div class="tw"><table><thead><tr><th class="">テーマ</th><th class="num">本数</th><th class="num">本数比</th><th class="num">中央インプレッション</th><th class="num">中央いいね</th><th class="num">エンゲージ率</th></tr></thead><tbody><tr class=""><td>クマ・目元の治療</td><td class="num">51</td><td class="num">41%</td><td class="num">5,362</td><td class="num">8</td><td class="num">0.17%</td></tr><tr class=""><td>業界への注意喚起</td><td class="num">5</td><td class="num">4%</td><td class="num">7,888</td><td class="num">11</td><td class="num">0.25%</td></tr><tr class=""><td>その他の話題</td><td class="num">68</td><td class="num">55%</td><td class="num">5,131</td><td class="num">9</td><td class="num">0.21%</td></tr></tbody></table></div>
+  <div class="tw"><table><thead><tr><th class="">テーマ</th><th class="num">本数</th><th class="num">本数比</th><th class="num">中央インプレッション</th><th class="num">中央いいね</th><th class="num">エンゲージ率</th></tr></thead><tbody><tr class=""><td>クマ・目元の治療</td><td class="num">51</td><td class="num">40%</td><td class="num">5,362</td><td class="num">9</td><td class="num">0.17%</td></tr><tr class=""><td>業界への注意喚起</td><td class="num">5</td><td class="num">4%</td><td class="num">7,888</td><td class="num">11</td><td class="num">0.25%</td></tr><tr class=""><td>その他の話題</td><td class="num">70</td><td class="num">56%</td><td class="num">5,050</td><td class="num">9</td><td class="num">0.21%</td></tr></tbody></table></div>
 
   <p>インプレッションだけを見ると、テーマによる差はほとんどありません。差が出るのは<b>プロフィールクリック率</b>です。</p>
 
   <figure>
-    <svg class="bars" viewBox="0 0 860 128" role="img" aria-label="テーマ別プロフィールクリック率"><text class="lbl" x="198" y="24" text-anchor="end">クマ・目元の治療</text><rect x="210" y="12" width="350.4" height="17" rx="2" fill="var(--accent)" opacity="0.9"/><text class="val" x="569.4" y="25">0.556%</text><text class="lbl" x="198" y="58" text-anchor="end">業界への注意喚起（1本のみ）</text><rect x="210" y="46" width="554.0" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="773.0" y="59">0.879%</text><text class="lbl" x="198" y="92" text-anchor="end">その他の話題</text><rect x="210" y="80" width="121.0" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="340.0" y="93">0.192%</text><line class="axis" x1="210" y1="4" x2="210" y2="106"/></svg>
-    <figcaption>2026-08-20〜2026-09-05の44本。プロフィールクリック数÷インプレッション。</figcaption>
+    <svg class="bars" viewBox="0 0 860 128" role="img" aria-label="テーマ別プロフィールクリック率"><text class="lbl" x="198" y="24" text-anchor="end">クマ・目元の治療</text><rect x="210" y="12" width="329.3" height="17" rx="2" fill="var(--accent)" opacity="0.9"/><text class="val" x="548.3" y="25">0.506%</text><text class="lbl" x="198" y="58" text-anchor="end">業界への注意喚起（1本のみ）</text><rect x="210" y="46" width="554.0" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="773.0" y="59">0.851%</text><text class="lbl" x="198" y="92" text-anchor="end">その他の話題</text><rect x="210" y="80" width="126.2" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="345.2" y="93">0.194%</text><line class="axis" x1="210" y1="4" x2="210" y2="106"/></svg>
+    <figcaption>2026-08-06〜2026-09-07の73本。プロフィールクリック数÷インプレッション。</figcaption>
   </figure>
 
-  <div class="tw"><table><thead><tr><th class="">テーマ</th><th class="num">対象本数</th><th class="num">プロフィールクリック計</th><th class="num">クリック率</th></tr></thead><tbody><tr class="hi"><td>クマ・目元の治療</td><td class="num">17</td><td class="num">1,237</td><td class="num">0.556%</td></tr><tr class=""><td>業界への注意喚起（参考）</td><td class="num">1</td><td class="num">757</td><td class="num">0.879%</td></tr><tr class="lo"><td>その他の話題</td><td class="num">26</td><td class="num">3,480</td><td class="num">0.192%</td></tr></tbody></table></div>
+  <div class="tw"><table><thead><tr><th class="">テーマ</th><th class="num">対象本数</th><th class="num">プロフィールクリック計</th><th class="num">クリック率</th></tr></thead><tbody><tr class="hi"><td>クマ・目元の治療</td><td class="num">27</td><td class="num">1,511</td><td class="num">0.506%</td></tr><tr class=""><td>業界への注意喚起（参考）</td><td class="num">2</td><td class="num">768</td><td class="num">0.851%</td></tr><tr class="lo"><td>その他の話題</td><td class="num">44</td><td class="num">3,603</td><td class="num">0.194%</td></tr></tbody></table></div>
 
-  <p><b>クマ・目元の治療について書いた投稿は0.56%</b>（17本）、その他の話題は<b>0.19%</b>（26本）。<b>2.9倍</b>の差です。同じ1インプレッションでも、価値がまったく違います。</p>
+  <p><b>クマ・目元の治療について書いた投稿は0.51%</b>（27本）、その他の話題は<b>0.19%</b>（44本）。<b>2.6倍</b>の差です。同じ1インプレッションでも、価値がまったく違います。</p>
 
-  <p>表の「業界への注意喚起」は<b>1本しかありません</b>。率としては高く出ていますが、この本数では比較になりません。<b>参考値として扱ってください。</b></p>
+  <p>表の「業界への注意喚起」は<b>2本しかありません</b>。率としては高く出ていますが、この本数では比較になりません。<b>参考値として扱ってください。</b></p>
 
-  <p>ところが現状、返信を除く124本のうちクマ・目元を扱っているのは<b>41%</b>にとどまります。<b>最も効く型が、投稿の半分以下しか使われていません。</b></p>
+  <p>ところが現状、返信を除く126本のうちクマ・目元を扱っているのは<b>40%</b>にとどまります。<b>最も効く型が、投稿の半分以下（40%）しか使われていません。</b></p>
 
   <figure>
-    <svg class="bars" viewBox="0 0 860 162" role="img" aria-label="型別プロフィールクリック率"><text class="lbl" x="198" y="24" text-anchor="end">通常</text><rect x="210" y="12" width="407.9" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="626.9" y="25">0.631%</text><text class="lbl" x="198" y="58" text-anchor="end">引用</text><rect x="210" y="46" width="143.6" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="362.6" y="59">0.222%</text><text class="lbl" x="198" y="92" text-anchor="end">返信</text><rect x="210" y="80" width="385.2" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="604.2" y="93">0.596%</text><text class="lbl" x="198" y="126" text-anchor="end">引用（バズ1本を除く）</text><rect x="210" y="114" width="554.0" height="17" rx="2" fill="var(--accent)" opacity="0.9"/><text class="val" x="773.0" y="127">0.857%</text><line class="axis" x1="210" y1="4" x2="210" y2="140"/></svg>
+    <svg class="bars" viewBox="0 0 860 162" role="img" aria-label="型別プロフィールクリック率"><text class="lbl" x="198" y="24" text-anchor="end">通常</text><rect x="210" y="12" width="440.8" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="659.8" y="25">0.596%</text><text class="lbl" x="198" y="58" text-anchor="end">引用</text><rect x="210" y="46" width="168.6" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="387.6" y="59">0.228%</text><text class="lbl" x="198" y="92" text-anchor="end">返信</text><rect x="210" y="80" width="428.6" height="17" rx="2" fill="var(--ink-faint)" opacity="0.42"/><text class="val" x="647.6" y="93">0.579%</text><text class="lbl" x="198" y="126" text-anchor="end">引用（バズ1本を除く）</text><rect x="210" y="114" width="554.0" height="17" rx="2" fill="var(--accent)" opacity="0.9"/><text class="val" x="773.0" y="127">0.749%</text><line class="axis" x1="210" y1="4" x2="210" y2="140"/></svg>
     <figcaption>型ごとのプロフィールクリック率。最下段は、引用から2026-08-27のバズ1本だけを除いたものです。</figcaption>
   </figure>
 
-  <p>グラフの見方に一つ注意があります。<b>引用の0.222%という低さは、型が悪いからではありません。</b>2026-08-27のバズ1本が引用に含まれ、1,516,329インプレッションで率を押し下げているためです。その1本を除いた残り26本で計算すると<b>0.86%</b>——3つの型のなかで最も高くなります。</p>
+  <p>グラフの見方に一つ注意があります。<b>引用の0.228%という低さは、型が悪いからではありません。</b>2026-08-27のバズ1本が引用に含まれ、1,517,465インプレッションで率を押し下げているためです。その1本を除いた残り45本で計算すると<b>0.75%</b>——3つの型のなかで最も高くなります。</p>
 
   <p>つまり<b>引用は最も強い型</b>であり、同時に<b>関係のない話題でバズると台無しになる型</b>でもあります。何を引用するかが、そのまま結果になります。</p>
 </section>
@@ -431,15 +462,15 @@
   <div class="funnel">
     <div class="fstep"><div class="fbar" style="width:100%"></div>
       <div class="fmeta"><div class="fname">インプレッション</div>
-      <div class="fnote">2026-08-20〜2026-09-05の44本</div></div>
-      <div class="fval">2,120,667</div></div>
+      <div class="fnote">2026-08-06〜2026-09-07の73本</div></div>
+      <div class="fval">2,248,107</div></div>
     <div class="fstep"><div class="fbar" style="width:0.60%"></div>
       <div class="fmeta"><div class="fname">プロフィールを見に来た</div>
       <div class="fnote">インプレッションの0.26%</div></div>
-      <div class="fval">5,474</div></div>
+      <div class="fval">5,882</div></div>
     <div class="fstep est"><div class="fbar" style="width:2px"></div>
       <div class="fmeta"><div class="fname">プロフィールのリンクを踏んだ</div>
-      <div class="fnote">X API では取得できていません（該当データがあったのは全期間で3本のみ）</div></div>
+      <div class="fnote">X API からほとんど返ってきません（全期間213本のうち数字が返ってきたのは4本だけ、うち1回以上あったのは1本）</div></div>
       <div class="fval">—</div></div>
     <div class="fstep est"><div class="fbar" style="width:2px"></div>
       <div class="fmeta"><div class="fname">予約・問い合わせ</div>
@@ -447,16 +478,16 @@
       <div class="fval">—</div></div>
   </div>
 
-  <p>17日で<b>5,474回</b>プロフィールが見られています。フォロワー5,485人に対して十分な量ですが、<b>その人たちがどこへ行ったのかが分かりません</b>。プロフィールのリンクにパラメータを付けるだけで、ここは今日から測れるようになります。</p>
+  <p>33日で<b>5,882回</b>プロフィールが見られています。フォロワー5,479人に対して十分な量ですが、<b>その人たちがどこへ行ったのかが分かりません</b>。プロフィールのリンクにパラメータを付けるだけで、ここは今日から測れるようになります。</p>
 
   <p class="sec-sub" style="margin-top:22px">プロフィールクリックが多かった投稿は次の5本です。</p>
   <div class="posts"><div class="post">
   <div class="meta">
     <span class="tag">引用</span>
     <span>2026-08-22</span>
-    <span>101,139 インプレッション</span>
+    <span>101,174 インプレッション</span>
     <span>いいね 53</span>
-    <span>プロフィールクリック <b class="big">1,203</b></span>
+    <span>プロフィールクリック <b class="big">1,204</b></span>
     <span><a href="https://x.com/kumacli_mohri/status/2091149560408343036" target="_blank" rel="noopener">投稿を開く</a></span>
   </div>
   <p class="body">え、だれこの人？ X開けたら祭りになってるんだけど。 なんか心当たりでもあったんですか？ https://t.co/2ZBOqOEjG7</p>
@@ -464,7 +495,7 @@
   <div class="meta">
     <span class="tag">通常</span>
     <span>2026-08-20</span>
-    <span>142,298 インプレッション</span>
+    <span>142,413 インプレッション</span>
     <span>いいね 101</span>
     <span>プロフィールクリック <b class="big">887</b></span>
     <span><a href="https://x.com/kumacli_mohri/status/2090417162284319034" target="_blank" rel="noopener">投稿を開く</a></span>
@@ -474,9 +505,9 @@
   <div class="meta">
     <span class="tag">引用</span>
     <span>2026-08-25</span>
-    <span>86,090 インプレッション</span>
-    <span>いいね 196</span>
-    <span>プロフィールクリック <b class="big">757</b></span>
+    <span>86,166 インプレッション</span>
+    <span>いいね 195</span>
+    <span>プロフィールクリック <b class="big">758</b></span>
     <span><a href="https://x.com/kumacli_mohri/status/2092268162935132319" target="_blank" rel="noopener">投稿を開く</a></span>
   </div>
   <p class="body">実は亡くなられた翌日に訃報について伺っておりました。 私も前職で少しではありますがお世話になった事があり大変残念に思います。 近年では直美が〜なんて言われておりますが、大変熱心に技術研磨をしており、多くの同業を指導していた優れた技術を持ってる1人でした。 https://t.co/ava6IAEZd…</p>
@@ -484,8 +515,8 @@
   <div class="meta">
     <span class="tag">引用</span>
     <span>2026-08-27</span>
-    <span>1,516,329 インプレッション</span>
-    <span>いいね 3,243</span>
+    <span>1,517,465 インプレッション</span>
+    <span>いいね 3,244</span>
     <span>プロフィールクリック <b class="big">731</b></span>
     <span><a href="https://x.com/kumacli_mohri/status/2092864019728404481" target="_blank" rel="noopener">投稿を開く</a></span>
   </div>
@@ -494,7 +525,7 @@
   <div class="meta">
     <span class="tag">引用</span>
     <span>2026-08-22</span>
-    <span>61,222 インプレッション</span>
+    <span>61,308 インプレッション</span>
     <span>いいね 57</span>
     <span>プロフィールクリック <b class="big">630</b></span>
     <span><a href="https://x.com/kumacli_mohri/status/2091193642497229161" target="_blank" rel="noopener">投稿を開く</a></span>
@@ -508,18 +539,18 @@
   <p class="sec-sub">よく言われる改善策を、実データで検証しました。<b>効かなかったものも、そのまま載せています。</b></p>
 
   <h3 style="font-size:16px;margin:26px 0 0">投稿する時間帯（日本時間）</h3>
-  <div class="tw"><table><thead><tr><th class="">時間帯</th><th class="num">本数</th><th class="num">中央インプレッション</th><th class="num">中央いいね</th></tr></thead><tbody><tr class=""><td>午前 9-12時</td><td class="num">6</td><td class="num">6,594</td><td class="num">6</td></tr><tr class=""><td>昼 12-15時</td><td class="num">30</td><td class="num">4,618</td><td class="num">8</td></tr><tr class=""><td>夕 15-19時</td><td class="num">34</td><td class="num">4,358</td><td class="num">8</td></tr><tr class=""><td>夜 19-23時</td><td class="num">34</td><td class="num">7,136</td><td class="num">11</td></tr><tr class="hi"><td>深夜 23-5時</td><td class="num">18</td><td class="num">9,328</td><td class="num">12</td></tr></tbody></table></div>
+  <div class="tw"><table><thead><tr><th class="">時間帯</th><th class="num">本数</th><th class="num">中央インプレッション</th><th class="num">中央いいね</th></tr></thead><tbody><tr class=""><td>午前 9-12時</td><td class="num">6</td><td class="num">6,609</td><td class="num">6</td></tr><tr class=""><td>昼 12-15時</td><td class="num">32</td><td class="num">4,118</td><td class="num">8</td></tr><tr class=""><td>夕 15-19時</td><td class="num">34</td><td class="num">4,646</td><td class="num">8</td></tr><tr class=""><td>夜 19-23時</td><td class="num">34</td><td class="num">7,334</td><td class="num">11</td></tr><tr class="hi"><td>深夜 23-5時</td><td class="num">18</td><td class="num">9,361</td><td class="num">12</td></tr></tbody></table></div>
   <p>夜から深夜にかけてがやや高く出ていますが、本数の少ない帯を含むため決定的とは言えません。<b>時間帯を変えるだけで結果が変わる、という根拠はこのデータにはありません。</b></p>
 
   <h3 style="font-size:16px;margin:26px 0 0">本文の長さ</h3>
-  <div class="tw"><table><thead><tr><th class="">文字数</th><th class="num">本数</th><th class="num">中央インプレッション</th><th class="num">中央いいね</th></tr></thead><tbody><tr class=""><td>〜60字</td><td class="num">9</td><td class="num">3,326</td><td class="num">8</td></tr><tr class=""><td>60〜120字</td><td class="num">35</td><td class="num">6,642</td><td class="num">9</td></tr><tr class=""><td>120〜180字</td><td class="num">72</td><td class="num">5,034</td><td class="num">9</td></tr><tr class="hi"><td>180字〜</td><td class="num">8</td><td class="num">7,136</td><td class="num">8</td></tr></tbody></table></div>
+  <div class="tw"><table><thead><tr><th class="">文字数</th><th class="num">本数</th><th class="num">中央インプレッション</th><th class="num">中央いいね</th></tr></thead><tbody><tr class=""><td>〜60字</td><td class="num">9</td><td class="num">3,350</td><td class="num">8</td></tr><tr class=""><td>60〜120字</td><td class="num">35</td><td class="num">6,642</td><td class="num">9</td></tr><tr class=""><td>120〜180字</td><td class="num">73</td><td class="num">5,026</td><td class="num">9</td></tr><tr class="hi"><td>180字〜</td><td class="num">9</td><td class="num">7,191</td><td class="num">8</td></tr></tbody></table></div>
   <p>長さによる差もはっきりしません。短くすれば伸びる、長く書けば伝わる、のどちらも支持されませんでした。</p>
 
   <h3 style="font-size:16px;margin:26px 0 0">リンク・引用元の有無</h3>
-  <div class="tw"><table><thead><tr><th class="">形</th><th class="num">本数</th><th class="num">中央インプレッション</th><th class="num">中央いいね</th></tr></thead><tbody><tr class=""><td>リンク・引用元あり</td><td class="num">29</td><td class="num">5,325</td><td class="num">9</td></tr><tr class=""><td>本文だけ</td><td class="num">95</td><td class="num">5,362</td><td class="num">9</td></tr></tbody></table></div>
+  <div class="tw"><table><thead><tr><th class="">形</th><th class="num">本数</th><th class="num">中央インプレッション</th><th class="num">中央いいね</th></tr></thead><tbody><tr class=""><td>リンク・引用元あり</td><td class="num">49</td><td class="num">4,902</td><td class="num">9</td></tr><tr class=""><td>本文だけ</td><td class="num">77</td><td class="num">5,577</td><td class="num">9</td></tr></tbody></table></div>
   <p>「リンクを貼ると伸びない」という通説も、このアカウントでは<b>成立していません</b>。中央インプレッションはほぼ同じです。</p>
 
-  <h3 style="font-size:16px;margin:26px 0 0">画像・動画の有無</h3><div class="tw"><table><thead><tr><th class="">形</th><th class="num">本数</th><th class="num">中央インプレッション</th><th class="num">中央プロフィールクリック</th></tr></thead><tbody><tr class=""><td>画像・動画あり</td><td class="num">9</td><td class="num">4,477</td><td class="num">22</td></tr><tr class=""><td>文字だけ</td><td class="num">35</td><td class="num">3,248</td><td class="num">14</td></tr></tbody></table></div><p>画像・動画を付けた投稿は、プロフィールクリックの中央値が高く出ています。ただし画像・動画ありが9本と少なく、これは<b>仮説どまり</b>です。次の期間で確かめる価値があります。</p>
+  <h3 style="font-size:16px;margin:26px 0 0">画像・動画の有無</h3><div class="tw"><table><thead><tr><th class="">形</th><th class="num">本数</th><th class="num">中央インプレッション</th><th class="num">中央プロフィールクリック</th></tr></thead><tbody><tr class=""><td>画像・動画あり</td><td class="num">16</td><td class="num">6,005</td><td class="num">20</td></tr><tr class=""><td>文字だけ</td><td class="num">57</td><td class="num">3,140</td><td class="num">10</td></tr></tbody></table></div><p>画像・動画を付けた投稿は、プロフィールクリックの中央値が高く出ています。ただし画像・動画ありが16本と少なく、これは<b>仮説どまり</b>です。次の期間で確かめる価値があります。</p>
 
   <p><b>この節の結論は「出し方をいじっても変わらない」です。</b>変わるのは中身——誰に向けて、何について書いたかでした（04節）。</p>
 </section>
@@ -531,8 +562,8 @@
   <div class="meta">
     <span class="tag">引用</span>
     <span>2026-08-27</span>
-    <span>1,516,329 インプレッション</span>
-    <span>いいね 3,243</span>
+    <span>1,517,465 インプレッション</span>
+    <span>いいね 3,244</span>
     <span>プロフィールクリック <b class="big">731</b></span>
     <span><a href="https://x.com/kumacli_mohri/status/2092864019728404481" target="_blank" rel="noopener">投稿を開く</a></span>
   </div>
@@ -551,7 +582,7 @@
   <div class="meta">
     <span class="tag">通常</span>
     <span>2026-08-20</span>
-    <span>142,298 インプレッション</span>
+    <span>142,413 インプレッション</span>
     <span>いいね 101</span>
     <span>プロフィールクリック <b class="big">887</b></span>
     <span><a href="https://x.com/kumacli_mohri/status/2090417162284319034" target="_blank" rel="noopener">投稿を開く</a></span>
@@ -561,9 +592,9 @@
   <div class="meta">
     <span class="tag">引用</span>
     <span>2026-08-22</span>
-    <span>101,139 インプレッション</span>
+    <span>101,174 インプレッション</span>
     <span>いいね 53</span>
-    <span>プロフィールクリック <b class="big">1,203</b></span>
+    <span>プロフィールクリック <b class="big">1,204</b></span>
     <span><a href="https://x.com/kumacli_mohri/status/2091149560408343036" target="_blank" rel="noopener">投稿を開く</a></span>
   </div>
   <p class="body">え、だれこの人？ X開けたら祭りになってるんだけど。 なんか心当たりでもあったんですか？ https://t.co/2ZBOqOEjG7</p>
@@ -571,14 +602,14 @@
   <div class="meta">
     <span class="tag">引用</span>
     <span>2026-08-25</span>
-    <span>86,090 インプレッション</span>
-    <span>いいね 196</span>
-    <span>プロフィールクリック <b class="big">757</b></span>
+    <span>86,166 インプレッション</span>
+    <span>いいね 195</span>
+    <span>プロフィールクリック <b class="big">758</b></span>
     <span><a href="https://x.com/kumacli_mohri/status/2092268162935132319" target="_blank" rel="noopener">投稿を開く</a></span>
   </div>
   <p class="body">実は亡くなられた翌日に訃報について伺っておりました。 私も前職で少しではありますがお世話になった事があり大変残念に思います。 近年では直美が〜なんて言われておりますが、大変熱心に技術研磨をしており、多くの同業を指導していた優れた技術を持ってる1人でした。 https://t.co/ava6IAEZd…</p>
 </div></div>
-  <p>上位に並んでいるのは<b>①業界への注意喚起 ②時事・話題への反応 ③クマ治療の症例</b>の3種です。①と②は伸びますが、02節のとおり<b>プロフィールには来ません</b>。③はインプレッションこそ控えめでも、来る人が違います。</p>
+  <p>上位5本の内訳は「その他の話題」が2本、「クマ・目元の治療」が2本、「業界への注意喚起」が1本です。インプレッションで上位に来る話題と、プロフィールクリック率が高い話題（04節：クマ・目元 0.51% 対 その他 0.19%）は一致していません。<b>伸びた本数と、連れてきた人数は別の指標です。</b></p>
 </section>
 
 <section id="s08">
@@ -588,8 +619,8 @@
   <div class="actions">
     <div class="act">
       <h3>1. クマ・目元を投稿の8割に戻す</h3>
-      <p class="why">根拠：プロフィールクリック率 0.56% 対 0.19%（2.9倍）／ 現状は41%</p>
-      <p>いま最も効く型が、投稿の半分以下しか使われていません。時事や業界批判を全部やめる必要はありませんが、<b>比率を逆にする</b>だけで、同じ本数から来る人の数が変わります。</p>
+      <p class="why">根拠：プロフィールクリック率 0.51% 対 0.19%（2.6倍）／ 現状は40%</p>
+      <p><b>最も効く型が、投稿の半分以下（40%）しか使われていません。</b>時事や業界批判を全部やめる必要はありませんが、<b>比率を逆にする</b>だけで、同じ本数から来る人の数が変わります。</p>
       <ul>
         <li>クマの原因別（茶・青・黒）の違いを、1本1テーマで書く</li>
         <li>症例の前後と、その人がどう見えるようになったかを1本ずつ</li>
@@ -609,7 +640,7 @@
 
     <div class="act">
       <h3>3. バズが来た日に、受け皿を出す</h3>
-      <p class="why">根拠：2026-08-27のバズは1,516,329インプレッションでプロフィールクリック731回（0.048%）</p>
+      <p class="why">根拠：2026-08-27のバズは1,517,465インプレッションでプロフィールクリック731回（0.048%）</p>
       <p>バズそのものは止められませんし、止める必要もありません。問題は<b>そこに来た人を受け止める投稿がなかった</b>ことです。伸びている投稿にぶら下げる形で、クマ治療の投稿を続けて出せば、通りすがりの一部は残ります。</p>
       <ul>
         <li>数字が伸び始めたら、その日のうちに自分のスレッドへクマの投稿をつなぐ</li>
@@ -619,8 +650,8 @@
 
     <div class="act">
       <h3>4. プロフィールと固定投稿を作り直す</h3>
-      <p class="why">根拠：17日で5,474回プロフィールが見られている＝ここが最大の接点</p>
-      <p>5,474回も見られている場所です。ここで「何ができる人か」「どこに行けばいいか」が3秒で分かるかどうかで、その先が変わります。</p>
+      <p class="why">根拠：33日で5,882回プロフィールが見られている＝ここが最大の接点</p>
+      <p>5,882回も見られている場所です。ここで「何ができる人か」「どこに行けばいいか」が3秒で分かるかどうかで、その先が変わります。</p>
     </div>
 
     <div class="act">
@@ -631,7 +662,7 @@
 
     <div class="act">
       <h3>6. 1日3本を、毎日に均す</h3>
-      <p class="why">根拠：1日中央3本／最大33本／投稿ゼロが10日</p>
+      <p class="why">根拠：1日中央3本／最大33本／投稿ゼロが11日</p>
       <p>まとめ出しと沈黙を繰り返すより、同じ本数を毎日に散らすほうがタイムラインでの露出は安定します。本数を増やす必要はありません。</p>
     </div>
   </div>
@@ -640,11 +671,11 @@
 <section id="s09">
   <div class="sec-head"><div class="sec-num">09</div><h2>良い点</h2></div>
   <div class="good-list">
-    <div class="good-item"><h3>バズを起こせる力がある</h3><p>64日で1,516,329インプレッションの投稿が出ています。届かせる力そのものは十分にあります。</p></div>
-    <div class="good-item"><h3>効く型が数字で特定できた</h3><p>クマ・目元の投稿は0.56%。感覚ではなく実測で、伸ばすべき方向が決まりました。</p></div>
+    <div class="good-item"><h3>バズを起こせる力がある</h3><p>66日で1,517,465インプレッションの投稿が出ています。届かせる力そのものは十分にあります。</p></div>
+    <div class="good-item"><h3>効く型が数字で特定できた</h3><p>クマ・目元の投稿は0.51%。感覚ではなく実測で、伸ばすべき方向が決まりました。</p></div>
     <div class="good-item"><h3>専門性で語れる領域が広い</h3><p>治療の判断が分かれる論点に、根拠を添えて答えられています。これは他院が真似しにくい部分です。</p></div>
-    <div class="good-item"><h3>プロフィールまでは来ている</h3><p>17日で5,474回。入口の手前までは成立しており、詰まっているのはその先です。</p></div>
-    <div class="good-item"><h3>投稿量は十分にある</h3><p>64日で211本。足りないのは量ではなく、配分です。</p></div>
+    <div class="good-item"><h3>プロフィールまでは来ている</h3><p>33日で5,882回。入口の手前までは成立しており、詰まっているのはその先です。</p></div>
+    <div class="good-item"><h3>投稿量は十分にある</h3><p>66日で213本。足りないのは量ではなく、配分です。</p></div>
     <div class="good-item"><h3>非公開指標が取れる状態にある</h3><p>本人認証でプロフィールクリックまで取得できています。他院には見えない数字で判断できます。</p></div>
   </div>
 </section>
@@ -652,9 +683,9 @@
 <div class="caveat">
   <h3>この数字について</h3>
   <ul>
-    <li>出典は X API v2（本人認証）。対象は @kumacli_mohri の2026-07-04〜2026-09-05の投稿211本です。リポストは除いています。</li>
-    <li><b>プロフィールクリックは全期間では取れません。</b>X の仕様で非公開指標はおおむね直近30日ぶんに限られ、このレポートでは2026-08-20〜2026-09-05の44本が対象です。この窓に期間最大のバズが含まれている点も、読むときに考慮してください。</li>
-    <li><b>プロフィールのリンククリック数は取得できていません</b>（全期間で3本のみ）。ファネルの下2段が「—」なのはこのためです。</li>
+    <li>出典は X API v2（本人認証）。対象は @kumacli_mohri の2026-07-04〜2026-09-07の投稿213本です。リポストは除いています。</li>
+    <li><b>プロフィールクリックは全期間ぶんはありません。</b>対象は2026-08-06〜2026-09-07の73本で、それ以前の140本は空のままです。理由は X の仕様ではなく、こちらの取得スクリプトがこの指標を保存していなかったことです。2026年9月8日に修正して取り直せるぶんは回収しましたが、それより古い投稿は X 側から取り直せず、埋められません。以降は取得のたびに記録されます。この窓に期間最大のバズが含まれている点も、読むときに考慮してください。</li>
+    <li><b>プロフィールのリンククリック数はほとんど取得できていません</b>（全期間213本のうち数字が返ってきたのは4本だけ、うち1回以上あったのは1本）。ファネルの下2段が「—」なのはこのためです。</li>
     <li>テーマ分類は本文のキーワード一致による機械分類です。「クマ・目元の治療」はクマ／目の下／下眼瞼／脱脂／ハムラなど、「業界への注意喚起」は過剰脱脂／直美／被害／拡散希望などで判定しています。取りこぼしはあります。</li>
     <li>インプレッションは投稿後も伸び続けます。直近の投稿は数字が確定していません。</li>
     <li>フォロワー数の推移は今回から記録を開始しました。次回以降のレポートで増減を出せます。</li>
