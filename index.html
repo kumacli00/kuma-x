@@ -43,16 +43,25 @@
   .wrap{max-width:40rem;margin:0 auto;padding:2rem 1rem 5rem}
 
   header{margin-bottom:1.75rem}
-  .eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;
+  .eyebrow{font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;
     text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+
+  /* 自動更新が止まった朝に気づけるように。古い候補を今日のものと思わせない */
+  .alert{margin:0 0 1.25rem;padding:.9rem 1rem;border-radius:6px;
+    background:var(--gold-bg);color:var(--gold);border:1px solid currentColor;
+    font-size:.92rem;font-weight:700;line-height:1.7}
+  .alert b{font-family:var(--mono)}
   h1{font-family:var(--display);font-weight:600;font-size:1.75rem;
     line-height:1.4;margin:0 0 .6rem}
   .sub{font-size:.88rem;color:var(--muted);margin:0}
   .tally{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;
     padding-top:1rem;border-top:1px solid var(--line)}
-  .chip{font-family:var(--mono);font-size:.74rem;padding:.25rem .6rem;
+  .chip{font-family:var(--mono);font-size:.82rem;padding:.25rem .6rem;
     border-radius:999px;background:var(--sunken);color:var(--muted);
     font-variant-numeric:tabular-nums}
+  /* 数字の読み方は、数字を見る場所の手前に置く（以前はページ最下部だった） */
+  .legend{margin:.9rem 0 0;font-size:.84rem;line-height:1.7;color:var(--muted)}
+  .legend b{color:var(--ink)}
   .chip.on{background:var(--accent);color:#fff}
   :root[data-theme="dark"] .chip.on{color:#0F131A}
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip.on{color:#0F131A}}
@@ -78,22 +87,25 @@
   .src-who b{color:var(--ink);font-weight:700;font-size:.86rem}
   .src-text{font-size:.92rem;line-height:1.75;margin:0 0 .6rem;
     color:var(--ink);white-space:pre-wrap;word-break:break-word}
-  .stats{display:flex;flex-wrap:wrap;gap:.15rem .9rem;
-    font-family:var(--mono);font-size:.75rem;color:var(--muted);
+  .stats{display:flex;flex-wrap:wrap;gap:.2rem .8rem;
+    font-family:var(--body);font-size:.82rem;color:var(--muted);
     font-variant-numeric:tabular-nums}
   .stats .rate{color:var(--accent-ink);font-weight:600}
-  .src-link{display:inline-block;margin-top:.5rem;font-size:.78rem;
+  .src-link{display:inline-block;margin-top:.5rem;font-size:.84rem;
     color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor}
   .src-link:hover,.src-link:focus-visible{opacity:.75}
 
   .draft{padding:.9rem 1rem 1rem}
-  .draft-label{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;
-    color:var(--faint);margin-bottom:.4rem;display:flex;align-items:center}
-  .count{margin-left:auto;font-variant-numeric:tabular-nums}
+  .draft-label{font-family:var(--body);font-size:.84rem;font-weight:700;
+    color:var(--muted);margin-bottom:.4rem;display:flex;align-items:center}
+  .count{margin-left:auto;font-family:var(--mono);font-weight:400;
+    font-size:.8rem;font-variant-numeric:tabular-nums}
   .count.over{color:#B4471F;font-weight:600}
-  textarea{width:100%;min-height:6.5rem;padding:.75rem;border:1px solid var(--line);
-    border-radius:4px;background:var(--paper);color:var(--ink);
-    font-family:var(--body);font-size:.95rem;line-height:1.8;resize:vertical}
+  /* 高さは page.js が中身に合わせて伸ばす。固定すると下書きが途中で切れる */
+  textarea{width:100%;min-height:3rem;padding:.75rem;border:1px solid var(--line);
+    border-radius:4px;background:var(--paper);color:var(--ink);display:block;
+    font-family:var(--body);font-size:.95rem;line-height:1.8;
+    resize:none;overflow:hidden}
   textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
 
   .actions{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap}
@@ -113,28 +125,53 @@
     justify-content:center;font-family:var(--body);font-size:.88rem;font-weight:700;
     padding:.7rem 1rem;border-radius:4px;min-height:2.9rem;
     text-decoration:none;cursor:pointer}
-  .btn-skip{background:transparent;color:var(--faint);border-color:var(--line)}
+  .btn-skip{background:transparent;color:var(--muted);border-color:var(--line)}
   button:hover{opacity:.88}
   button[disabled]{opacity:.4;cursor:not-allowed}
 
+  /* Xから戻ってきた時の確認。押しただけで投稿に数えないため */
+  .card.asking{border-color:var(--gold)}
+  .confirm{margin-top:.75rem;padding:.75rem .85rem;border-radius:4px;
+    background:var(--gold-bg);border:1px solid var(--gold)}
+  .confirm-q{margin:0 0 .5rem;font-size:.9rem;font-weight:700;color:var(--gold)}
+  .confirm .actions{margin-top:0}
+  /* min-width は 375px で2つ並ばない幅。並ぶと文字が折り返して読みにくかった */
+  .btn-yes{background:var(--accent);color:#fff;flex:1;min-width:10rem}
+  :root[data-theme="dark"] .btn-yes{color:#0F131A}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-yes{color:#0F131A}}
+  .btn-no{background:var(--surface);color:var(--muted);border-color:var(--line);
+    flex:1;min-width:10rem}
+
+  /* 見送りの取り消し。誤タップ1回で候補が消えたままにならないように */
+  .card.undone{background:var(--sunken);box-shadow:none;border-style:dashed}
+  .undo-bar{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.7rem 1rem}
+  .undo-msg{font-size:.92rem;font-weight:700;color:var(--muted)}
+  .undo-who{font-family:var(--mono);font-size:.8rem;font-weight:400;
+    color:var(--faint);margin-left:.5rem}
+  .btn-undo{margin-left:auto;background:var(--surface);color:var(--accent-ink);
+    border:1px solid var(--accent);padding:.5rem 1.1rem;min-height:2.6rem}
+
   .note{margin-top:1.5rem;padding:1rem 1.15rem;background:var(--surface);
-    border:1px solid var(--line);border-radius:6px;font-size:.83rem;
+    border:1px solid var(--line);border-radius:6px;font-size:.88rem;
     line-height:1.75;color:var(--muted)}
   .note b{color:var(--ink)}
-  .status{font-family:var(--mono);font-size:.74rem;color:var(--faint);
-    margin-top:1rem;min-height:1.2rem}
+  .status{font-size:.84rem;color:var(--muted);margin-top:.5rem;min-height:1.2rem}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
   .more{display:block;width:100%;margin:.5rem 0 1.5rem;padding:.9rem;
     background:var(--surface);border:1px dashed var(--line);border-radius:6px;
     color:var(--accent);font-weight:700;font-size:.9rem;cursor:pointer}
   .more:hover{background:var(--accent-bg)}
-  .tier{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;
-    padding:.12rem .45rem;border-radius:3px;background:var(--accent-bg);
+  .tier{font-family:var(--body);font-size:.78rem;font-weight:500;letter-spacing:.02em;
+    padding:.14rem .5rem;border-radius:3px;background:var(--accent-bg);
     color:var(--accent-ink);white-space:nowrap}
   .tier.stale{background:transparent;color:var(--muted);
     box-shadow:inset 0 0 0 1px currentColor;opacity:.75;margin-left:.35rem}
-  .why{font-size:.82rem;color:var(--muted);line-height:1.7;margin:.35rem 0 0}
+  /* 今朝入った候補と、昨日も出ていた候補を見分ける印 */
+  .tier.fresh{background:var(--gold-bg);color:var(--gold);font-weight:700;margin-left:.35rem}
+  .tier.seen{background:transparent;color:var(--faint);
+    box-shadow:inset 0 0 0 1px var(--line);margin-left:.35rem}
+  .why{font-size:.88rem;color:var(--muted);line-height:1.7;margin:.35rem 0 0}
   .card-h{flex-wrap:wrap}
 
   .done-note{padding:1rem 1.15rem;background:var(--accent-bg);border-radius:6px;
@@ -148,7 +185,7 @@
   .log>summary::-webkit-details-marker{display:none}
   .log>summary::before{content:"▸ ";color:var(--accent-ink)}
   .log[open]>summary::before{content:"▾ "}
-  .log-note{margin:0 .9rem .5rem;font-size:.74rem;color:var(--muted);line-height:1.6}
+  .log-note{margin:0 .9rem .5rem;font-size:.8rem;color:var(--muted);line-height:1.6}
   .log-row{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;
     padding:.55rem .9rem;border-top:1px solid var(--line);
     text-decoration:none;color:inherit}
@@ -164,10 +201,11 @@
 </style>
 </head><body>
 <div class="wrap"><div id="app"></div></div>
-<script id="state" type="application/json">{"updated": "2026-09-11", "show": 5, "target": 2, "items": [{"id": "2097147947653935611", "url": "https://x.com/__20aoo/status/2097147947653935611", "text": "額挙上気になりすぎて昨日からずっと調べている、目を綺麗に開かせるなら眼瞼下垂か眉下切開でもいい気がするけどおでこ丸くしたい、、、🥲", "date": "2026-09-08", "author": "__20aoo", "authorName": "aya", "followers": 20368, "impressions": 8531, "likes": 12, "reposts": 0, "replies": 1, "quotes": 0, "bookmarks": 1, "rate": 0.19, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "額を丸くしたい気持ちと、目を開けたい気持ちは分けて考えると整理できます。眼瞼下垂手術は挙筋を直す手術、眉下切開は上まぶたの皮膚を減らす手術で、どちらも額の形は変えません。開きを先に整えると必要な範囲が見えてきます。", "why": "三つの術式を混同した悩み。整理するだけで信頼につながる", "compose": "https://x.com/compose/post?text=%E9%A1%8D%E3%82%92%E4%B8%B8%E3%81%8F%E3%81%97%E3%81%9F%E3%81%84%E6%B0%97%E6%8C%81%E3%81%A1%E3%81%A8%E3%80%81%E7%9B%AE%E3%82%92%E9%96%8B%E3%81%91%E3%81%9F%E3%81%84%E6%B0%97%E6%8C%81%E3%81%A1%E3%81%AF%E5%88%86%E3%81%91%E3%81%A6%E8%80%83%E3%81%88%E3%82%8B%E3%81%A8%E6%95%B4%E7%90%86%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E6%89%8B%E8%A1%93%E3%81%AF%E6%8C%99%E7%AD%8B%E3%82%92%E7%9B%B4%E3%81%99%E6%89%8B%E8%A1%93%E3%80%81%E7%9C%89%E4%B8%8B%E5%88%87%E9%96%8B%E3%81%AF%E4%B8%8A%E3%81%BE%E3%81%B6%E3%81%9F%E3%81%AE%E7%9A%AE%E8%86%9A%E3%82%92%E6%B8%9B%E3%82%89%E3%81%99%E6%89%8B%E8%A1%93%E3%81%A7%E3%80%81%E3%81%A9%E3%81%A1%E3%82%89%E3%82%82%E9%A1%8D%E3%81%AE%E5%BD%A2%E3%81%AF%E5%A4%89%E3%81%88%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82%E9%96%8B%E3%81%8D%E3%82%92%E5%85%88%E3%81%AB%E6%95%B4%E3%81%88%E3%82%8B%E3%81%A8%E5%BF%85%E8%A6%81%E3%81%AA%E7%AF%84%E5%9B%B2%E3%81%8C%E8%A6%8B%E3%81%88%E3%81%A6%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/__20aoo/status/2097147947653935611"}, {"id": "2096133226792124854", "url": "https://x.com/reika60075829/status/2096133226792124854", "text": "目の下のくぼみ消したい民必見‼️ 今日から全員このマッサージして‼️‼️‼️ 目周りをほぐして血行の流れを良くすると、シワとかたるみも一緒に改善していくよ‼️ 目元のケアは若い内から始めるの本当に大事‼️‼️ https://t.co/xGQLU9iD7J https://t.co/QpOQbgA84u", "date": "2026-09-05", "author": "reika60075829", "authorName": "ティアラ", "followers": 1112, "impressions": 2307, "likes": 7, "reposts": 1, "replies": 0, "quotes": 0, "bookmarks": 20, "rate": 2.12, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "血行が良くなること自体は悪くありません。ただ目の下のくぼみは、眼窩脂肪の突出とその下の窪みという構造の差でできています。強く擦ると色素沈着や皮膚のたるみを招くこともあるので、優しく行うのが安全です。", "why": "マッサージで消える誤解を、構造の話で穏やかに訂正できる伸びやすい型", "compose": "https://x.com/compose/post?text=%E8%A1%80%E8%A1%8C%E3%81%8C%E8%89%AF%E3%81%8F%E3%81%AA%E3%82%8B%E3%81%93%E3%81%A8%E8%87%AA%E4%BD%93%E3%81%AF%E6%82%AA%E3%81%8F%E3%81%82%E3%82%8A%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82%E3%81%9F%E3%81%A0%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%AE%E3%81%8F%E3%81%BC%E3%81%BF%E3%81%AF%E3%80%81%E7%9C%BC%E7%AA%A9%E8%84%82%E8%82%AA%E3%81%AE%E7%AA%81%E5%87%BA%E3%81%A8%E3%81%9D%E3%81%AE%E4%B8%8B%E3%81%AE%E7%AA%AA%E3%81%BF%E3%81%A8%E3%81%84%E3%81%86%E6%A7%8B%E9%80%A0%E3%81%AE%E5%B7%AE%E3%81%A7%E3%81%A7%E3%81%8D%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E5%BC%B7%E3%81%8F%E6%93%A6%E3%82%8B%E3%81%A8%E8%89%B2%E7%B4%A0%E6%B2%88%E7%9D%80%E3%82%84%E7%9A%AE%E8%86%9A%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%82%92%E6%8B%9B%E3%81%8F%E3%81%93%E3%81%A8%E3%82%82%E3%81%82%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E5%84%AA%E3%81%97%E3%81%8F%E8%A1%8C%E3%81%86%E3%81%AE%E3%81%8C%E5%AE%89%E5%85%A8%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/reika60075829/status/2096133226792124854"}, {"id": "2097431531857805313", "url": "https://x.com/pr_ad_bokumetsu/status/2097431531857805313", "text": "美容看護師として5年目だけど、チキンスキンはスキンケアだけでは無理だよ...肌管理とインナーケアに命かけるのが最短。美容医療は、月1ピーリング＆ハイドラフェイシャルと3~4回ポテンツァ。インナーケアは、ビタミンCD＆亜鉛サプリ。 https://t.co/pkbZQaDuJh", "date": "2026-09-08", "author": "pr_ad_bokumetsu", "authorName": "きぃ🎀", "followers": 11091, "impressions": 33346, "likes": 94, "reposts": 40, "replies": 32, "quotes": 0, "bookmarks": 65, "rate": 1.1, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "draft": "チキンスキンは毛孔性苔癬で、毛穴に角質が詰まって固まった状態です。保湿だけでは芯が残るので、角質の入れ替わりを促す施術を重ねる考え方に賛成です。ただ体質の要素が大きく、消すというより薄く保つ治療になります。", "why": "賛同から入りつつ、消える前提の期待だけ静かに補正できる", "compose": "https://x.com/compose/post?text=%E3%83%81%E3%82%AD%E3%83%B3%E3%82%B9%E3%82%AD%E3%83%B3%E3%81%AF%E6%AF%9B%E5%AD%94%E6%80%A7%E8%8B%94%E7%99%AC%E3%81%A7%E3%80%81%E6%AF%9B%E7%A9%B4%E3%81%AB%E8%A7%92%E8%B3%AA%E3%81%8C%E8%A9%B0%E3%81%BE%E3%81%A3%E3%81%A6%E5%9B%BA%E3%81%BE%E3%81%A3%E3%81%9F%E7%8A%B6%E6%85%8B%E3%81%A7%E3%81%99%E3%80%82%E4%BF%9D%E6%B9%BF%E3%81%A0%E3%81%91%E3%81%A7%E3%81%AF%E8%8A%AF%E3%81%8C%E6%AE%8B%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E8%A7%92%E8%B3%AA%E3%81%AE%E5%85%A5%E3%82%8C%E6%9B%BF%E3%82%8F%E3%82%8A%E3%82%92%E4%BF%83%E3%81%99%E6%96%BD%E8%A1%93%E3%82%92%E9%87%8D%E3%81%AD%E3%82%8B%E8%80%83%E3%81%88%E6%96%B9%E3%81%AB%E8%B3%9B%E6%88%90%E3%81%A7%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E4%BD%93%E8%B3%AA%E3%81%AE%E8%A6%81%E7%B4%A0%E3%81%8C%E5%A4%A7%E3%81%8D%E3%81%8F%E3%80%81%E6%B6%88%E3%81%99%E3%81%A8%E3%81%84%E3%81%86%E3%82%88%E3%82%8A%E8%96%84%E3%81%8F%E4%BF%9D%E3%81%A4%E6%B2%BB%E7%99%82%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/pr_ad_bokumetsu/status/2097431531857805313"}, {"id": "2097147825088000397", "url": "https://x.com/biyou_keinsym/status/2097147825088000397", "text": "あと美容医療の今後の展望において、 他院ドクターからオペ見学の申し込みが殺到している 毎日のように申し込みがくる 東南アジア、韓国の先生からも見学申し込みが沢山くるくらいだ SNSの規制で各方面が塞がれてきて、 技術を上げて生き抜く方向に業界がシフトしてきたように思う", "date": "2026-09-08", "author": "biyou_keinsym", "authorName": "西山慶(美容外科専門医)/たれ目形成", "followers": 9815, "impressions": 4237, "likes": 21, "reposts": 0, "replies": 3, "quotes": 0, "bookmarks": 6, "rate": 0.92, "tier": "industry", "tierName": "業界・警鐘", "draft": "同感です。広告や見せ方で伸びる時代が締まってくると、最後に残るのは手術の質そのものです。目元は数ミリの脂肪量や靭帯の扱いで仕上がりが変わりますから、見学し合って技術を磨く流れは患者さんにとっても良いことだと思います。", "why": "業界の健全化に賛同から入れる話題で、先生の警鐘の文脈と噛み合う", "compose": "https://x.com/compose/post?text=%E5%90%8C%E6%84%9F%E3%81%A7%E3%81%99%E3%80%82%E5%BA%83%E5%91%8A%E3%82%84%E8%A6%8B%E3%81%9B%E6%96%B9%E3%81%A7%E4%BC%B8%E3%81%B3%E3%82%8B%E6%99%82%E4%BB%A3%E3%81%8C%E7%B7%A0%E3%81%BE%E3%81%A3%E3%81%A6%E3%81%8F%E3%82%8B%E3%81%A8%E3%80%81%E6%9C%80%E5%BE%8C%E3%81%AB%E6%AE%8B%E3%82%8B%E3%81%AE%E3%81%AF%E6%89%8B%E8%A1%93%E3%81%AE%E8%B3%AA%E3%81%9D%E3%81%AE%E3%82%82%E3%81%AE%E3%81%A7%E3%81%99%E3%80%82%E7%9B%AE%E5%85%83%E3%81%AF%E6%95%B0%E3%83%9F%E3%83%AA%E3%81%AE%E8%84%82%E8%82%AA%E9%87%8F%E3%82%84%E9%9D%AD%E5%B8%AF%E3%81%AE%E6%89%B1%E3%81%84%E3%81%A7%E4%BB%95%E4%B8%8A%E3%81%8C%E3%82%8A%E3%81%8C%E5%A4%89%E3%82%8F%E3%82%8A%E3%81%BE%E3%81%99%E3%81%8B%E3%82%89%E3%80%81%E8%A6%8B%E5%AD%A6%E3%81%97%E5%90%88%E3%81%A3%E3%81%A6%E6%8A%80%E8%A1%93%E3%82%92%E7%A3%A8%E3%81%8F%E6%B5%81%E3%82%8C%E3%81%AF%E6%82%A3%E8%80%85%E3%81%95%E3%82%93%E3%81%AB%E3%81%A8%E3%81%A3%E3%81%A6%E3%82%82%E8%89%AF%E3%81%84%E3%81%93%E3%81%A8%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/biyou_keinsym/status/2097147825088000397"}, {"id": "2095852393955283348", "url": "https://x.com/wwd_jp/status/2095852393955283348", "text": "【ニュース】「エスティ ローダー」が美容医療で活用されるエクソソームに着目 40年超の夜間修復研究を“アドバンス ナイト リペア”ブースター化粧水へ https://t.co/CV4IEHbBEY", "date": "2026-09-04", "author": "wwd_jp", "authorName": "WWDJAPAN", "followers": 397930, "impressions": 12866, "likes": 4, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 3, "rate": 0.08, "tier": "news", "tierName": "時事・トレンド", "draft": "エクソソームは細胞間の情報伝達を担う小胞で、注目されるのは当然だと思います。ただ化粧品として塗る場合、分子量の大きさから角層を越えて真皮に届く量はごくわずかです。医療で使う注入と同じ効果を期待しすぎないことが大切ですね。", "why": "エクソソームは診察でも質問が多く、塗ると入れるの違いを整理できる", "compose": "https://x.com/compose/post?text=%E3%82%A8%E3%82%AF%E3%82%BD%E3%82%BD%E3%83%BC%E3%83%A0%E3%81%AF%E7%B4%B0%E8%83%9E%E9%96%93%E3%81%AE%E6%83%85%E5%A0%B1%E4%BC%9D%E9%81%94%E3%82%92%E6%8B%85%E3%81%86%E5%B0%8F%E8%83%9E%E3%81%A7%E3%80%81%E6%B3%A8%E7%9B%AE%E3%81%95%E3%82%8C%E3%82%8B%E3%81%AE%E3%81%AF%E5%BD%93%E7%84%B6%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E5%8C%96%E7%B2%A7%E5%93%81%E3%81%A8%E3%81%97%E3%81%A6%E5%A1%97%E3%82%8B%E5%A0%B4%E5%90%88%E3%80%81%E5%88%86%E5%AD%90%E9%87%8F%E3%81%AE%E5%A4%A7%E3%81%8D%E3%81%95%E3%81%8B%E3%82%89%E8%A7%92%E5%B1%A4%E3%82%92%E8%B6%8A%E3%81%88%E3%81%A6%E7%9C%9F%E7%9A%AE%E3%81%AB%E5%B1%8A%E3%81%8F%E9%87%8F%E3%81%AF%E3%81%94%E3%81%8F%E3%82%8F%E3%81%9A%E3%81%8B%E3%81%A7%E3%81%99%E3%80%82%E5%8C%BB%E7%99%82%E3%81%A7%E4%BD%BF%E3%81%86%E6%B3%A8%E5%85%A5%E3%81%A8%E5%90%8C%E3%81%98%E5%8A%B9%E6%9E%9C%E3%82%92%E6%9C%9F%E5%BE%85%E3%81%97%E3%81%99%E3%81%8E%E3%81%AA%E3%81%84%E3%81%93%E3%81%A8%E3%81%8C%E5%A4%A7%E5%88%87%E3%81%A7%E3%81%99%E3%81%AD%E3%80%82%0Ahttps%3A//x.com/wwd_jp/status/2095852393955283348"}, {"id": "2095798772995629357", "url": "https://x.com/po_tama_dayo/status/2095798772995629357", "text": "美容サプリって結局どれも同じやろって思うけど、久々にコレ飲むと毎回びっくりする。 朝のスッキリ感もそうやし、肌のごわつきとか毛穴、くすみが気になる時にリポスエイドに頼りまくってる🥹 個人的にいちばん信頼してる美容サプリ💊 https://t.co/xlDCxMHLR9", "date": "2026-09-04", "author": "po_tama_dayo", "authorName": "ぽーくたまごおにぎり🥚", "followers": 11381, "impressions": 6671, "likes": 33, "reposts": 23, "replies": 27, "quotes": 0, "bookmarks": 21, "rate": 2.62, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "draft": "サプリメントによる変化を感じられるのは素晴らしいですね。経口摂取した栄養素は全身に運ばれるため、皮膚へ直接届く量は限られますが、抗酸化作用により代謝を補う一助にはなります。ただ肌のごわつきやくすみは角質の蓄積も関係するため、外側からのケアも大切ですよね。", "why": "商品には触れず、内服成分の皮膚伝達とごわつきの医学的機序に絞って補足解説しました。", "compose": "https://x.com/compose/post?text=%E3%82%B5%E3%83%97%E3%83%AA%E3%83%A1%E3%83%B3%E3%83%88%E3%81%AB%E3%82%88%E3%82%8B%E5%A4%89%E5%8C%96%E3%82%92%E6%84%9F%E3%81%98%E3%82%89%E3%82%8C%E3%82%8B%E3%81%AE%E3%81%AF%E7%B4%A0%E6%99%B4%E3%82%89%E3%81%97%E3%81%84%E3%81%A7%E3%81%99%E3%81%AD%E3%80%82%E7%B5%8C%E5%8F%A3%E6%91%82%E5%8F%96%E3%81%97%E3%81%9F%E6%A0%84%E9%A4%8A%E7%B4%A0%E3%81%AF%E5%85%A8%E8%BA%AB%E3%81%AB%E9%81%8B%E3%81%B0%E3%82%8C%E3%82%8B%E3%81%9F%E3%82%81%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%B8%E7%9B%B4%E6%8E%A5%E5%B1%8A%E3%81%8F%E9%87%8F%E3%81%AF%E9%99%90%E3%82%89%E3%82%8C%E3%81%BE%E3%81%99%E3%81%8C%E3%80%81%E6%8A%97%E9%85%B8%E5%8C%96%E4%BD%9C%E7%94%A8%E3%81%AB%E3%82%88%E3%82%8A%E4%BB%A3%E8%AC%9D%E3%82%92%E8%A3%9C%E3%81%86%E4%B8%80%E5%8A%A9%E3%81%AB%E3%81%AF%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E8%82%8C%E3%81%AE%E3%81%94%E3%82%8F%E3%81%A4%E3%81%8D%E3%82%84%E3%81%8F%E3%81%99%E3%81%BF%E3%81%AF%E8%A7%92%E8%B3%AA%E3%81%AE%E8%93%84%E7%A9%8D%E3%82%82%E9%96%A2%E4%BF%82%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%80%81%E5%A4%96%E5%81%B4%E3%81%8B%E3%82%89%E3%81%AE%E3%82%B1%E3%82%A2%E3%82%82%E5%A4%A7%E5%88%87%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%0Ahttps%3A//x.com/po_tama_dayo/status/2095798772995629357"}, {"id": "2096580890554208744", "url": "https://x.com/NECYukkoYoshino/status/2096580890554208744", "text": "準決勝の敗戦後は選手の笑顔がほぼなくなりましたね！ よっぽど悔しかったんだな💦 この悔しさを力に変えてワールドカップに挑戦しましょう💪 まだまだこれから‼️ #バレーボール女子日本代表 #バレーボール #アジア選手権 https://t.co/Jq1YIMbJDh", "date": "2026-09-06", "author": "NECYukkoYoshino", "authorName": "NEC_YUKKO_YOSHINO", "followers": 639, "impressions": 5560, "likes": 104, "reposts": 3, "replies": 2, "quotes": 0, "bookmarks": 8, "rate": 2.34, "tier": "news", "tierName": "時事・トレンド", "draft": "準決勝のあと笑顔が消えたのは、それだけ本気で臨んだ証だと思います。切り替えの早さより、悔しさを覚えていられることのほうが強さになる気がします。ワールドカップ、楽しみに応援しています。", "why": "時事。美容への橋は無理なので素直に。人柄が出る一本", "compose": "https://x.com/compose/post?text=%E6%BA%96%E6%B1%BA%E5%8B%9D%E3%81%AE%E3%81%82%E3%81%A8%E7%AC%91%E9%A1%94%E3%81%8C%E6%B6%88%E3%81%88%E3%81%9F%E3%81%AE%E3%81%AF%E3%80%81%E3%81%9D%E3%82%8C%E3%81%A0%E3%81%91%E6%9C%AC%E6%B0%97%E3%81%A7%E8%87%A8%E3%82%93%E3%81%A0%E8%A8%BC%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E5%88%87%E3%82%8A%E6%9B%BF%E3%81%88%E3%81%AE%E6%97%A9%E3%81%95%E3%82%88%E3%82%8A%E3%80%81%E6%82%94%E3%81%97%E3%81%95%E3%82%92%E8%A6%9A%E3%81%88%E3%81%A6%E3%81%84%E3%82%89%E3%82%8C%E3%82%8B%E3%81%93%E3%81%A8%E3%81%AE%E3%81%BB%E3%81%86%E3%81%8C%E5%BC%B7%E3%81%95%E3%81%AB%E3%81%AA%E3%82%8B%E6%B0%97%E3%81%8C%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89%E3%82%AB%E3%83%83%E3%83%97%E3%80%81%E6%A5%BD%E3%81%97%E3%81%BF%E3%81%AB%E5%BF%9C%E6%8F%B4%E3%81%97%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/NECYukkoYoshino/status/2096580890554208744"}, {"id": "2096860184094343618", "url": "https://x.com/roppongi_sakai/status/2096860184094343618", "text": "保険で手術して眼瞼下垂や眉下切開を集めてる形成外科や眼形成のクリニックが悪いとは思わない そこに技術で勝てない美容外科医はそもそも自費で手術をやる資格すらないし でも、他科の医師から見たら現在保険適用で行われている眼瞼下垂手術の９割がオーバーインディケーションなんだろうと思う https://t.co/SKMCFYDXgh", "date": "2026-09-07", "author": "roppongi_sakai", "authorName": "六本木境クリニック", "followers": 52832, "impressions": 2105, "likes": 5, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 0.24, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "線引きの難しい領域だと思います。眼瞼下垂手術は本来、挙筋の働きが落ちて視野が狭くなった方の機能回復の手術です。見た目を整えることが主な目的なら自費で行うのが筋で、その区別は術前の検査で丁寧に説明されるべきです。", "why": "保険と自費の線引き。院長として立場を示せる数少ない話題", "compose": "https://x.com/compose/post?text=%E7%B7%9A%E5%BC%95%E3%81%8D%E3%81%AE%E9%9B%A3%E3%81%97%E3%81%84%E9%A0%98%E5%9F%9F%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E6%89%8B%E8%A1%93%E3%81%AF%E6%9C%AC%E6%9D%A5%E3%80%81%E6%8C%99%E7%AD%8B%E3%81%AE%E5%83%8D%E3%81%8D%E3%81%8C%E8%90%BD%E3%81%A1%E3%81%A6%E8%A6%96%E9%87%8E%E3%81%8C%E7%8B%AD%E3%81%8F%E3%81%AA%E3%81%A3%E3%81%9F%E6%96%B9%E3%81%AE%E6%A9%9F%E8%83%BD%E5%9B%9E%E5%BE%A9%E3%81%AE%E6%89%8B%E8%A1%93%E3%81%A7%E3%81%99%E3%80%82%E8%A6%8B%E3%81%9F%E7%9B%AE%E3%82%92%E6%95%B4%E3%81%88%E3%82%8B%E3%81%93%E3%81%A8%E3%81%8C%E4%B8%BB%E3%81%AA%E7%9B%AE%E7%9A%84%E3%81%AA%E3%82%89%E8%87%AA%E8%B2%BB%E3%81%A7%E8%A1%8C%E3%81%86%E3%81%AE%E3%81%8C%E7%AD%8B%E3%81%A7%E3%80%81%E3%81%9D%E3%81%AE%E5%8C%BA%E5%88%A5%E3%81%AF%E8%A1%93%E5%89%8D%E3%81%AE%E6%A4%9C%E6%9F%BB%E3%81%A7%E4%B8%81%E5%AF%A7%E3%81%AB%E8%AA%AC%E6%98%8E%E3%81%95%E3%82%8C%E3%82%8B%E3%81%B9%E3%81%8D%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/roppongi_sakai/status/2096860184094343618"}, {"id": "2098088156176523439", "url": "https://x.com/shiratama_cha_/status/2098088156176523439", "text": "眼瞼下垂じゃなくて眉下切開じゃなくて額券上の方がいいのかな？？調べれば調べるほど分からなくなる😇❓調べ尽くさないと❗️ https://t.co/tRvEptEnAK", "date": "2026-09-10", "author": "shiratama_cha_", "authorName": "しらたまちゃ", "followers": 2227, "impressions": 1788, "likes": 16, "reposts": 1, "replies": 0, "quotes": 1, "bookmarks": 2, "rate": 1.4, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "迷われるのは自然だと思います。上まぶたのたるみが主なら眉下切開、黒目にかかる開きにくさがあれば眼瞼下垂の手術、眉ごと下がっている場合は額側の処置が向きます。原因がどこにあるかで答えが変わるので、診察で見極めるのが近道です。", "why": "本人が施術選びで迷っている生の声で、当院の得意領域にそのまま答えられる", "compose": "https://x.com/compose/post?text=%E8%BF%B7%E3%82%8F%E3%82%8C%E3%82%8B%E3%81%AE%E3%81%AF%E8%87%AA%E7%84%B6%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E4%B8%8A%E3%81%BE%E3%81%B6%E3%81%9F%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%81%8C%E4%B8%BB%E3%81%AA%E3%82%89%E7%9C%89%E4%B8%8B%E5%88%87%E9%96%8B%E3%80%81%E9%BB%92%E7%9B%AE%E3%81%AB%E3%81%8B%E3%81%8B%E3%82%8B%E9%96%8B%E3%81%8D%E3%81%AB%E3%81%8F%E3%81%95%E3%81%8C%E3%81%82%E3%82%8C%E3%81%B0%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E3%81%AE%E6%89%8B%E8%A1%93%E3%80%81%E7%9C%89%E3%81%94%E3%81%A8%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E5%A0%B4%E5%90%88%E3%81%AF%E9%A1%8D%E5%81%B4%E3%81%AE%E5%87%A6%E7%BD%AE%E3%81%8C%E5%90%91%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E5%8E%9F%E5%9B%A0%E3%81%8C%E3%81%A9%E3%81%93%E3%81%AB%E3%81%82%E3%82%8B%E3%81%8B%E3%81%A7%E7%AD%94%E3%81%88%E3%81%8C%E5%A4%89%E3%82%8F%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E8%A8%BA%E5%AF%9F%E3%81%A7%E8%A6%8B%E6%A5%B5%E3%82%81%E3%82%8B%E3%81%AE%E3%81%8C%E8%BF%91%E9%81%93%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/shiratama_cha_/status/2098088156176523439"}, {"id": "2097302173227102438", "url": "https://x.com/roadtonewclinic/status/2097302173227102438", "text": "裏ハムラのオプション ①ミッドフェイスリフト(DNLFリフト) ⇨あり。まるッとします ②涙袋形成 ⇨あり。最初から涙袋ない人は出ない ③脂肪注入 ⇨なし。ミッドフェイスリフト出来ない、自信がない、効果がない ④fPRP ⇨なし。ゴルゴのこれは最悪 ⑤糸リフト ⇨論外 ⑥ヒアルロン酸注入 ⇨さらに論外", "date": "2026-09-08", "author": "roadtonewclinic", "authorName": "ワイルド美容外科医", "followers": 424, "impressions": 1282, "likes": 9, "reposts": 2, "replies": 1, "quotes": 0, "bookmarks": 1, "rate": 1.33, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "考え方に賛同します。裏ハムラ法で眼窩脂肪を移動させても、頬側の下垂が残ればゴルゴの溝は残ります。だからevoリフト法のように中顔面ごと引き上げる工程が要ります。足して埋めるのではなく、戻すという順番が大事です。", "why": "同業の断定に賛同しつつ機序で補強。専門性が最も伝わる一本", "compose": "https://x.com/compose/post?text=%E8%80%83%E3%81%88%E6%96%B9%E3%81%AB%E8%B3%9B%E5%90%8C%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E8%A3%8F%E3%83%8F%E3%83%A0%E3%83%A9%E6%B3%95%E3%81%A7%E7%9C%BC%E7%AA%A9%E8%84%82%E8%82%AA%E3%82%92%E7%A7%BB%E5%8B%95%E3%81%95%E3%81%9B%E3%81%A6%E3%82%82%E3%80%81%E9%A0%AC%E5%81%B4%E3%81%AE%E4%B8%8B%E5%9E%82%E3%81%8C%E6%AE%8B%E3%82%8C%E3%81%B0%E3%82%B4%E3%83%AB%E3%82%B4%E3%81%AE%E6%BA%9D%E3%81%AF%E6%AE%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E3%81%A0%E3%81%8B%E3%82%89evo%E3%83%AA%E3%83%95%E3%83%88%E6%B3%95%E3%81%AE%E3%82%88%E3%81%86%E3%81%AB%E4%B8%AD%E9%A1%94%E9%9D%A2%E3%81%94%E3%81%A8%E5%BC%95%E3%81%8D%E4%B8%8A%E3%81%92%E3%82%8B%E5%B7%A5%E7%A8%8B%E3%81%8C%E8%A6%81%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E8%B6%B3%E3%81%97%E3%81%A6%E5%9F%8B%E3%82%81%E3%82%8B%E3%81%AE%E3%81%A7%E3%81%AF%E3%81%AA%E3%81%8F%E3%80%81%E6%88%BB%E3%81%99%E3%81%A8%E3%81%84%E3%81%86%E9%A0%86%E7%95%AA%E3%81%8C%E5%A4%A7%E4%BA%8B%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/roadtonewclinic/status/2097302173227102438"}, {"id": "2096562017155027104", "url": "https://x.com/summerforest351/status/2096562017155027104", "text": "最近行った ハムラ+中顔面挙上ケースの モニターケース 1枚目 表ハムラ+中顔面挙上1カ月目 2枚目 表ハムラ+中顔面挙上1カ月目 3枚目 表ハムラ+中顔面挙上3カ月目 4枚目 裏ハムラ+中顔面挙上1カ月目 ゴルデーンウィーク前のケースがそろそろ戻ってきています。 https://t.co/bCsv7tCCrj", "date": "2026-09-06", "author": "summerforest351", "authorName": "ベク(白)先生", "followers": 9322, "impressions": 1170, "likes": 8, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 2, "rate": 1.03, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "ハムラと中顔面の引き上げを同時に行う考え方に賛成です。目の下の段差は下まぶただけでなく、頬が下がって境目が深くなることでも生まれます。当院でも表ミッドフェイスリフト法として同じ選択をしています。", "why": "中顔面まで含めて考える症例。当院の術式思想と重なる", "compose": "https://x.com/compose/post?text=%E3%83%8F%E3%83%A0%E3%83%A9%E3%81%A8%E4%B8%AD%E9%A1%94%E9%9D%A2%E3%81%AE%E5%BC%95%E3%81%8D%E4%B8%8A%E3%81%92%E3%82%92%E5%90%8C%E6%99%82%E3%81%AB%E8%A1%8C%E3%81%86%E8%80%83%E3%81%88%E6%96%B9%E3%81%AB%E8%B3%9B%E6%88%90%E3%81%A7%E3%81%99%E3%80%82%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%AE%E6%AE%B5%E5%B7%AE%E3%81%AF%E4%B8%8B%E3%81%BE%E3%81%B6%E3%81%9F%E3%81%A0%E3%81%91%E3%81%A7%E3%81%AA%E3%81%8F%E3%80%81%E9%A0%AC%E3%81%8C%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E5%A2%83%E7%9B%AE%E3%81%8C%E6%B7%B1%E3%81%8F%E3%81%AA%E3%82%8B%E3%81%93%E3%81%A8%E3%81%A7%E3%82%82%E7%94%9F%E3%81%BE%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82%E5%BD%93%E9%99%A2%E3%81%A7%E3%82%82%E8%A1%A8%E3%83%9F%E3%83%83%E3%83%89%E3%83%95%E3%82%A7%E3%82%A4%E3%82%B9%E3%83%AA%E3%83%95%E3%83%88%E6%B3%95%E3%81%A8%E3%81%97%E3%81%A6%E5%90%8C%E3%81%98%E9%81%B8%E6%8A%9E%E3%82%92%E3%81%97%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/summerforest351/status/2096562017155027104"}, {"id": "2096766568286085407", "url": "https://x.com/excellent_ps/status/2096766568286085407", "text": "【キム・ドヨン副院長のフィラーシリーズ #03｜涙袋ヒアルロン酸】👀✨ 「笑った時にもう少し涙袋がほしい」 「ぷっくりさせたいけど、不自然にはしたくない」 そんな方に人気なのが涙袋ヒアルロン酸🤍 目の形や左右差を見ながら、 必要な部分に少量ずつ注入し、自然な立体感を目指します。 Before https://t.co/T75OK07CeP", "date": "2026-09-07", "author": "excellent_ps", "authorName": "💗フルリュン美容外科💗韓国整形【二重・目元整形・ヒアルロン酸】", "followers": 4160, "impressions": 841, "likes": 2, "reposts": 1, "replies": 0, "quotes": 0, "bookmarks": 1, "rate": 0.71, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "少量ずつ、という原則には賛同します。涙袋のヒアルロン酸は年単位で残ることがあり、足すほどに笑った時のふくらみが不自然になっていきます。追加する前に前回分がどれだけ残っているか確認しておくと、失敗が減ります。", "why": "過剰注入への警鐘。批判でなく原則への賛同から入れる", "compose": "https://x.com/compose/post?text=%E5%B0%91%E9%87%8F%E3%81%9A%E3%81%A4%E3%80%81%E3%81%A8%E3%81%84%E3%81%86%E5%8E%9F%E5%89%87%E3%81%AB%E3%81%AF%E8%B3%9B%E5%90%8C%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E6%B6%99%E8%A2%8B%E3%81%AE%E3%83%92%E3%82%A2%E3%83%AB%E3%83%AD%E3%83%B3%E9%85%B8%E3%81%AF%E5%B9%B4%E5%8D%98%E4%BD%8D%E3%81%A7%E6%AE%8B%E3%82%8B%E3%81%93%E3%81%A8%E3%81%8C%E3%81%82%E3%82%8A%E3%80%81%E8%B6%B3%E3%81%99%E3%81%BB%E3%81%A9%E3%81%AB%E7%AC%91%E3%81%A3%E3%81%9F%E6%99%82%E3%81%AE%E3%81%B5%E3%81%8F%E3%82%89%E3%81%BF%E3%81%8C%E4%B8%8D%E8%87%AA%E7%84%B6%E3%81%AB%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%84%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B%E5%89%8D%E3%81%AB%E5%89%8D%E5%9B%9E%E5%88%86%E3%81%8C%E3%81%A9%E3%82%8C%E3%81%A0%E3%81%91%E6%AE%8B%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E3%81%8B%E7%A2%BA%E8%AA%8D%E3%81%97%E3%81%A6%E3%81%8A%E3%81%8F%E3%81%A8%E3%80%81%E5%A4%B1%E6%95%97%E3%81%8C%E6%B8%9B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/excellent_ps/status/2096766568286085407"}], "posted": [{"date": "2026-09-09", "url": "https://x.com/kumacli_mohri/status/2097583751513715142", "text": "補足しますと、医療広告ガイドラインで加工が禁じられているぶん、撮影条件をそろえることが症例写真の生命線になります。照明も角度も距離も固定して初めて、変化が変化として伝わります。撮る側の責任は大きいと思います。 https://t.co/o89MjCKFsv", "impressions": 836, "likes": 1, "quotedUrl": "https://x.com/mizu_notwater/status/2096218964833829191", "quotedAuthor": "mizu_notwater", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-09", "url": "https://x.com/kumacli_mohri/status/2097578858803495201", "text": "テレビで取り上げられたとおり、クマは青・茶・黒なんて呼び方は患者さんに分かりやすいための一つの概念として表現する事はあります。 ただし治療を受ける前までには色分けで判断せず、本質的な理由まで深ぼって理解してほしいです。 https://t.co/1E03eTHONx", "impressions": 1587, "likes": 5, "quotedUrl": "https://x.com/kattunonly0322/status/2095457150470688853", "quotedAuthor": "kattunonly0322", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-08", "url": "https://x.com/kumacli_mohri/status/2097218686738436175", "text": "たるみ治療が盛り上がるのは良いことだと思います。ただ、たるみの原因は皮膚や脂肪だけではありません。 むしろ適度な脂肪はたるみを予防する上で不可欠な要素です。 ⚠️新しい美容皮膚科の機械・注入剤は1年様子見が鉄則です https://t.co/6HXqgGBieD", "impressions": 1202, "likes": 4, "quotedUrl": "https://x.com/takepon5895/status/2096411728821240286", "quotedAuthor": "takepon5895", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-07", "url": "https://x.com/kumacli_mohri/status/2096824429091094937", "text": "挙げられている項目、どれも的確だと思います。特に症例写真は、照明と角度と表情がそろっていない比較では情報として成立しません。当院でも同一条件での撮影を徹底しています。 あと1点大事な事があります。 直後、1週間後の症例をさも完成かのように上げてるケースに注意してほしいです。 https://t.co/TbcWc3DejB https://t.co/o2r1gLTrnW", "impressions": 1879, "likes": 5, "quotedUrl": "https://x.com/17dsy_/status/2095451039269028204", "quotedAuthor": "17dsy_", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-07", "url": "https://x.com/kumacli_mohri/status/2096818523473617101", "text": "カウンセリングは本来、受けない選択も含めて一緒に決める場だと思っています。引き止めが強い、その日のうちに決めさせようとする。そういう場面に出会ったら、いったん持ち帰って構いません。急ぐ理由はありません。 https://t.co/UuyU0NmKsN", "impressions": 964, "likes": 2, "quotedUrl": "https://x.com/sekkai/status/2095507406092632452", "quotedAuthor": "sekkai", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-05", "url": "https://x.com/kumacli_mohri/status/2096384100898947529", "text": "脱脂だけであれば5日という感覚は妥当です。内出血や目立った腫れは1週間前後で落ち着きます。 ただダウンタイムが少ないから全てのクマ治療を脱脂でしよう！と考えてしまう方が一定数いらっしゃいますのでこれは気をつけてほしいです。 https://t.co/qmY5fEvcC4", "impressions": 1858, "likes": 4, "quotedUrl": "https://x.com/17dsy_/status/2094360220629971150", "quotedAuthor": "17dsy_", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-04", "url": "https://x.com/kumacli_mohri/status/2095754144976081329", "text": "同意です。脱脂単独で仕上がる方は、私の実感でも1割に届きません。 20代で2-3割。 膨らみだけを取ると凹みと影クマは悪くなります。 年齢が上がるにつれて眼窩脂肪を減らす事によるネガティブなパラメータが大きくなりますので 若年、少量の脱脂で良くなるというのがまず適応として前提です。 https://t.co/K4UqpLMgg3", "impressions": 3935, "likes": 9, "quotedUrl": "https://x.com/roppongi_sakai/status/2094928056062451839", "quotedAuthor": "roppongi_sakai", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-03", "url": "https://x.com/kumacli_mohri/status/2095390357907509559", "text": "こめかみ周辺にできるものの多くは脂漏性角化症で、化粧品で消えることは基本的にありません。保湿で見え方が変わることはありますが、構造そのものは残ります。気になる場合は焼灼で短時間で取れますので、その前にご相談ください。 https://t.co/mQ7ff2WuGe", "impressions": 1743, "likes": 4, "quotedUrl": "https://x.com/kc_ringo_929/status/2094744721239499203", "quotedAuthor": "kc_ringo_929", "tierName": "皮膚科『これ何？』系", "fromSystem": true}, {"date": "2026-09-03", "url": "https://x.com/kumacli_mohri/status/2095382574206210073", "text": "どっちを選ぶかは本人の自由、自分らしく楽しく生きられるならそれが一番ですよね。 ただし、どちらをモデルにしても 40代を過ぎると目周りだけは、ケアしてる人としてない人で本当に差が出る。 https://t.co/PhBewAcdt1 https://t.co/hiCXQXYKUU", "impressions": 2571, "likes": 7, "quotedUrl": "https://x.com/i/status/2094634147700789740", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-09-03", "url": "https://x.com/kumacli_mohri/status/2095376516230299713", "text": "カモにされるかどうかは、術式ではなく適応の見極めで決まります。脱脂も裏ハムラも、合う方に行えば十分に良い治療です。問題は、診断せずに術式ありきで勧める側にあります。何を受けるかより、誰に診てもらうかを見てください。 https://t.co/mzSxZuiELa", "impressions": 3341, "likes": 13, "quotedUrl": "https://x.com/roppongi_sakai/status/2094712035850543262", "quotedAuthor": "roppongi_sakai", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-01", "url": "https://x.com/kumacli_mohri/status/2094685334781219272", "text": "クマ治療もぜひここに入れてほしい。 30〜40代の「疲れて見える」の正体は、目の下のクマであることが本当に多いです。放置するほど印象は定着し、選択肢も狭まる。 クマは原因別に対応が違って、 ・茶クマ→レーザーや内服薬 ・青クマ→ナノリッチ脂肪注入 ・黒クマ→脱脂・裏ハムラなど根本治療 https://t.co/1l7R3OZHlv https://t.co/3xCZIzjay4", "impressions": 5233, "likes": 12, "quotedUrl": "https://x.com/i/status/2094282592422166741", "quotedAuthor": null, "tierName": null, "fromSystem": false}]}</script>
+<script id="state" type="application/json">{"updated": "2026-09-11", "updatedAt": "15:07", "show": 5, "target": 2, "items": [{"id": "2097147947653935611", "url": "https://x.com/__20aoo/status/2097147947653935611", "text": "額挙上気になりすぎて昨日からずっと調べている、目を綺麗に開かせるなら眼瞼下垂か眉下切開でもいい気がするけどおでこ丸くしたい、、、🥲", "date": "2026-09-08", "author": "__20aoo", "authorName": "aya", "followers": 20368, "impressions": 8531, "likes": 12, "reposts": 0, "replies": 1, "quotes": 0, "bookmarks": 1, "rate": 0.19, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "額を丸くしたい気持ちと、目を開けたい気持ちは分けて考えると整理できます。眼瞼下垂手術は挙筋を直す手術、眉下切開は上まぶたの皮膚を減らす手術で、どちらも額の形は変えません。開きを先に整えると必要な範囲が見えてきます。", "why": "三つの術式を混同した悩み。整理するだけで信頼につながる", "compose": "https://x.com/compose/post?text=%E9%A1%8D%E3%82%92%E4%B8%B8%E3%81%8F%E3%81%97%E3%81%9F%E3%81%84%E6%B0%97%E6%8C%81%E3%81%A1%E3%81%A8%E3%80%81%E7%9B%AE%E3%82%92%E9%96%8B%E3%81%91%E3%81%9F%E3%81%84%E6%B0%97%E6%8C%81%E3%81%A1%E3%81%AF%E5%88%86%E3%81%91%E3%81%A6%E8%80%83%E3%81%88%E3%82%8B%E3%81%A8%E6%95%B4%E7%90%86%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E6%89%8B%E8%A1%93%E3%81%AF%E6%8C%99%E7%AD%8B%E3%82%92%E7%9B%B4%E3%81%99%E6%89%8B%E8%A1%93%E3%80%81%E7%9C%89%E4%B8%8B%E5%88%87%E9%96%8B%E3%81%AF%E4%B8%8A%E3%81%BE%E3%81%B6%E3%81%9F%E3%81%AE%E7%9A%AE%E8%86%9A%E3%82%92%E6%B8%9B%E3%82%89%E3%81%99%E6%89%8B%E8%A1%93%E3%81%A7%E3%80%81%E3%81%A9%E3%81%A1%E3%82%89%E3%82%82%E9%A1%8D%E3%81%AE%E5%BD%A2%E3%81%AF%E5%A4%89%E3%81%88%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82%E9%96%8B%E3%81%8D%E3%82%92%E5%85%88%E3%81%AB%E6%95%B4%E3%81%88%E3%82%8B%E3%81%A8%E5%BF%85%E8%A6%81%E3%81%AA%E7%AF%84%E5%9B%B2%E3%81%8C%E8%A6%8B%E3%81%88%E3%81%A6%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/__20aoo/status/2097147947653935611", "isNew": false, "firstSeen": "2026-09-10"}, {"id": "2096133226792124854", "url": "https://x.com/reika60075829/status/2096133226792124854", "text": "目の下のくぼみ消したい民必見‼️ 今日から全員このマッサージして‼️‼️‼️ 目周りをほぐして血行の流れを良くすると、シワとかたるみも一緒に改善していくよ‼️ 目元のケアは若い内から始めるの本当に大事‼️‼️ https://t.co/xGQLU9iD7J https://t.co/QpOQbgA84u", "date": "2026-09-05", "author": "reika60075829", "authorName": "ティアラ", "followers": 1112, "impressions": 2307, "likes": 7, "reposts": 1, "replies": 0, "quotes": 0, "bookmarks": 20, "rate": 2.12, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "血行が良くなること自体は悪くありません。ただ目の下のくぼみは、眼窩脂肪の突出とその下の窪みという構造の差でできています。強く擦ると色素沈着や皮膚のたるみを招くこともあるので、優しく行うのが安全です。", "why": "マッサージで消える誤解を、構造の話で穏やかに訂正できる伸びやすい型", "compose": "https://x.com/compose/post?text=%E8%A1%80%E8%A1%8C%E3%81%8C%E8%89%AF%E3%81%8F%E3%81%AA%E3%82%8B%E3%81%93%E3%81%A8%E8%87%AA%E4%BD%93%E3%81%AF%E6%82%AA%E3%81%8F%E3%81%82%E3%82%8A%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82%E3%81%9F%E3%81%A0%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%AE%E3%81%8F%E3%81%BC%E3%81%BF%E3%81%AF%E3%80%81%E7%9C%BC%E7%AA%A9%E8%84%82%E8%82%AA%E3%81%AE%E7%AA%81%E5%87%BA%E3%81%A8%E3%81%9D%E3%81%AE%E4%B8%8B%E3%81%AE%E7%AA%AA%E3%81%BF%E3%81%A8%E3%81%84%E3%81%86%E6%A7%8B%E9%80%A0%E3%81%AE%E5%B7%AE%E3%81%A7%E3%81%A7%E3%81%8D%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E5%BC%B7%E3%81%8F%E6%93%A6%E3%82%8B%E3%81%A8%E8%89%B2%E7%B4%A0%E6%B2%88%E7%9D%80%E3%82%84%E7%9A%AE%E8%86%9A%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%82%92%E6%8B%9B%E3%81%8F%E3%81%93%E3%81%A8%E3%82%82%E3%81%82%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E5%84%AA%E3%81%97%E3%81%8F%E8%A1%8C%E3%81%86%E3%81%AE%E3%81%8C%E5%AE%89%E5%85%A8%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/reika60075829/status/2096133226792124854", "isNew": true, "firstSeen": "2026-09-11"}, {"id": "2097431531857805313", "url": "https://x.com/pr_ad_bokumetsu/status/2097431531857805313", "text": "美容看護師として5年目だけど、チキンスキンはスキンケアだけでは無理だよ...肌管理とインナーケアに命かけるのが最短。美容医療は、月1ピーリング＆ハイドラフェイシャルと3~4回ポテンツァ。インナーケアは、ビタミンCD＆亜鉛サプリ。 https://t.co/pkbZQaDuJh", "date": "2026-09-08", "author": "pr_ad_bokumetsu", "authorName": "きぃ🎀", "followers": 11091, "impressions": 33346, "likes": 94, "reposts": 40, "replies": 32, "quotes": 0, "bookmarks": 65, "rate": 1.1, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "draft": "チキンスキンは毛孔性苔癬で、毛穴に角質が詰まって固まった状態です。保湿だけでは芯が残るので、角質の入れ替わりを促す施術を重ねる考え方に賛成です。ただ体質の要素が大きく、消すというより薄く保つ治療になります。", "why": "賛同から入りつつ、消える前提の期待だけ静かに補正できる", "compose": "https://x.com/compose/post?text=%E3%83%81%E3%82%AD%E3%83%B3%E3%82%B9%E3%82%AD%E3%83%B3%E3%81%AF%E6%AF%9B%E5%AD%94%E6%80%A7%E8%8B%94%E7%99%AC%E3%81%A7%E3%80%81%E6%AF%9B%E7%A9%B4%E3%81%AB%E8%A7%92%E8%B3%AA%E3%81%8C%E8%A9%B0%E3%81%BE%E3%81%A3%E3%81%A6%E5%9B%BA%E3%81%BE%E3%81%A3%E3%81%9F%E7%8A%B6%E6%85%8B%E3%81%A7%E3%81%99%E3%80%82%E4%BF%9D%E6%B9%BF%E3%81%A0%E3%81%91%E3%81%A7%E3%81%AF%E8%8A%AF%E3%81%8C%E6%AE%8B%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E8%A7%92%E8%B3%AA%E3%81%AE%E5%85%A5%E3%82%8C%E6%9B%BF%E3%82%8F%E3%82%8A%E3%82%92%E4%BF%83%E3%81%99%E6%96%BD%E8%A1%93%E3%82%92%E9%87%8D%E3%81%AD%E3%82%8B%E8%80%83%E3%81%88%E6%96%B9%E3%81%AB%E8%B3%9B%E6%88%90%E3%81%A7%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E4%BD%93%E8%B3%AA%E3%81%AE%E8%A6%81%E7%B4%A0%E3%81%8C%E5%A4%A7%E3%81%8D%E3%81%8F%E3%80%81%E6%B6%88%E3%81%99%E3%81%A8%E3%81%84%E3%81%86%E3%82%88%E3%82%8A%E8%96%84%E3%81%8F%E4%BF%9D%E3%81%A4%E6%B2%BB%E7%99%82%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/pr_ad_bokumetsu/status/2097431531857805313", "isNew": false, "firstSeen": "2026-09-10"}, {"id": "2097147825088000397", "url": "https://x.com/biyou_keinsym/status/2097147825088000397", "text": "あと美容医療の今後の展望において、 他院ドクターからオペ見学の申し込みが殺到している 毎日のように申し込みがくる 東南アジア、韓国の先生からも見学申し込みが沢山くるくらいだ SNSの規制で各方面が塞がれてきて、 技術を上げて生き抜く方向に業界がシフトしてきたように思う", "date": "2026-09-08", "author": "biyou_keinsym", "authorName": "西山慶(美容外科専門医)/たれ目形成", "followers": 9815, "impressions": 4237, "likes": 21, "reposts": 0, "replies": 3, "quotes": 0, "bookmarks": 6, "rate": 0.92, "tier": "industry", "tierName": "業界・警鐘", "draft": "同感です。広告や見せ方で伸びる時代が締まってくると、最後に残るのは手術の質そのものです。目元は数ミリの脂肪量や靭帯の扱いで仕上がりが変わりますから、見学し合って技術を磨く流れは患者さんにとっても良いことだと思います。", "why": "業界の健全化に賛同から入れる話題で、先生の警鐘の文脈と噛み合う", "compose": "https://x.com/compose/post?text=%E5%90%8C%E6%84%9F%E3%81%A7%E3%81%99%E3%80%82%E5%BA%83%E5%91%8A%E3%82%84%E8%A6%8B%E3%81%9B%E6%96%B9%E3%81%A7%E4%BC%B8%E3%81%B3%E3%82%8B%E6%99%82%E4%BB%A3%E3%81%8C%E7%B7%A0%E3%81%BE%E3%81%A3%E3%81%A6%E3%81%8F%E3%82%8B%E3%81%A8%E3%80%81%E6%9C%80%E5%BE%8C%E3%81%AB%E6%AE%8B%E3%82%8B%E3%81%AE%E3%81%AF%E6%89%8B%E8%A1%93%E3%81%AE%E8%B3%AA%E3%81%9D%E3%81%AE%E3%82%82%E3%81%AE%E3%81%A7%E3%81%99%E3%80%82%E7%9B%AE%E5%85%83%E3%81%AF%E6%95%B0%E3%83%9F%E3%83%AA%E3%81%AE%E8%84%82%E8%82%AA%E9%87%8F%E3%82%84%E9%9D%AD%E5%B8%AF%E3%81%AE%E6%89%B1%E3%81%84%E3%81%A7%E4%BB%95%E4%B8%8A%E3%81%8C%E3%82%8A%E3%81%8C%E5%A4%89%E3%82%8F%E3%82%8A%E3%81%BE%E3%81%99%E3%81%8B%E3%82%89%E3%80%81%E8%A6%8B%E5%AD%A6%E3%81%97%E5%90%88%E3%81%A3%E3%81%A6%E6%8A%80%E8%A1%93%E3%82%92%E7%A3%A8%E3%81%8F%E6%B5%81%E3%82%8C%E3%81%AF%E6%82%A3%E8%80%85%E3%81%95%E3%82%93%E3%81%AB%E3%81%A8%E3%81%A3%E3%81%A6%E3%82%82%E8%89%AF%E3%81%84%E3%81%93%E3%81%A8%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/biyou_keinsym/status/2097147825088000397", "isNew": true, "firstSeen": "2026-09-11"}, {"id": "2095852393955283348", "url": "https://x.com/wwd_jp/status/2095852393955283348", "text": "【ニュース】「エスティ ローダー」が美容医療で活用されるエクソソームに着目 40年超の夜間修復研究を“アドバンス ナイト リペア”ブースター化粧水へ https://t.co/CV4IEHbBEY", "date": "2026-09-04", "author": "wwd_jp", "authorName": "WWDJAPAN", "followers": 397930, "impressions": 12866, "likes": 4, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 3, "rate": 0.08, "tier": "news", "tierName": "時事・トレンド", "draft": "エクソソームは細胞間の情報伝達を担う小胞で、注目されるのは当然だと思います。ただ化粧品として塗る場合、分子量の大きさから角層を越えて真皮に届く量はごくわずかです。医療で使う注入と同じ効果を期待しすぎないことが大切ですね。", "why": "エクソソームは診察でも質問が多く、塗ると入れるの違いを整理できる", "compose": "https://x.com/compose/post?text=%E3%82%A8%E3%82%AF%E3%82%BD%E3%82%BD%E3%83%BC%E3%83%A0%E3%81%AF%E7%B4%B0%E8%83%9E%E9%96%93%E3%81%AE%E6%83%85%E5%A0%B1%E4%BC%9D%E9%81%94%E3%82%92%E6%8B%85%E3%81%86%E5%B0%8F%E8%83%9E%E3%81%A7%E3%80%81%E6%B3%A8%E7%9B%AE%E3%81%95%E3%82%8C%E3%82%8B%E3%81%AE%E3%81%AF%E5%BD%93%E7%84%B6%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E5%8C%96%E7%B2%A7%E5%93%81%E3%81%A8%E3%81%97%E3%81%A6%E5%A1%97%E3%82%8B%E5%A0%B4%E5%90%88%E3%80%81%E5%88%86%E5%AD%90%E9%87%8F%E3%81%AE%E5%A4%A7%E3%81%8D%E3%81%95%E3%81%8B%E3%82%89%E8%A7%92%E5%B1%A4%E3%82%92%E8%B6%8A%E3%81%88%E3%81%A6%E7%9C%9F%E7%9A%AE%E3%81%AB%E5%B1%8A%E3%81%8F%E9%87%8F%E3%81%AF%E3%81%94%E3%81%8F%E3%82%8F%E3%81%9A%E3%81%8B%E3%81%A7%E3%81%99%E3%80%82%E5%8C%BB%E7%99%82%E3%81%A7%E4%BD%BF%E3%81%86%E6%B3%A8%E5%85%A5%E3%81%A8%E5%90%8C%E3%81%98%E5%8A%B9%E6%9E%9C%E3%82%92%E6%9C%9F%E5%BE%85%E3%81%97%E3%81%99%E3%81%8E%E3%81%AA%E3%81%84%E3%81%93%E3%81%A8%E3%81%8C%E5%A4%A7%E5%88%87%E3%81%A7%E3%81%99%E3%81%AD%E3%80%82%0Ahttps%3A//x.com/wwd_jp/status/2095852393955283348", "isNew": false, "firstSeen": "2026-09-10"}, {"id": "2095798772995629357", "url": "https://x.com/po_tama_dayo/status/2095798772995629357", "text": "美容サプリって結局どれも同じやろって思うけど、久々にコレ飲むと毎回びっくりする。 朝のスッキリ感もそうやし、肌のごわつきとか毛穴、くすみが気になる時にリポスエイドに頼りまくってる🥹 個人的にいちばん信頼してる美容サプリ💊 https://t.co/xlDCxMHLR9", "date": "2026-09-04", "author": "po_tama_dayo", "authorName": "ぽーくたまごおにぎり🥚", "followers": 11381, "impressions": 6671, "likes": 33, "reposts": 23, "replies": 27, "quotes": 0, "bookmarks": 21, "rate": 2.62, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "draft": "サプリメントによる変化を感じられるのは素晴らしいですね。経口摂取した栄養素は全身に運ばれるため、皮膚へ直接届く量は限られますが、抗酸化作用により代謝を補う一助にはなります。ただ肌のごわつきやくすみは角質の蓄積も関係するため、外側からのケアも大切ですよね。", "why": "商品には触れず、内服成分の皮膚伝達とごわつきの医学的機序に絞って補足解説しました。", "compose": "https://x.com/compose/post?text=%E3%82%B5%E3%83%97%E3%83%AA%E3%83%A1%E3%83%B3%E3%83%88%E3%81%AB%E3%82%88%E3%82%8B%E5%A4%89%E5%8C%96%E3%82%92%E6%84%9F%E3%81%98%E3%82%89%E3%82%8C%E3%82%8B%E3%81%AE%E3%81%AF%E7%B4%A0%E6%99%B4%E3%82%89%E3%81%97%E3%81%84%E3%81%A7%E3%81%99%E3%81%AD%E3%80%82%E7%B5%8C%E5%8F%A3%E6%91%82%E5%8F%96%E3%81%97%E3%81%9F%E6%A0%84%E9%A4%8A%E7%B4%A0%E3%81%AF%E5%85%A8%E8%BA%AB%E3%81%AB%E9%81%8B%E3%81%B0%E3%82%8C%E3%82%8B%E3%81%9F%E3%82%81%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%B8%E7%9B%B4%E6%8E%A5%E5%B1%8A%E3%81%8F%E9%87%8F%E3%81%AF%E9%99%90%E3%82%89%E3%82%8C%E3%81%BE%E3%81%99%E3%81%8C%E3%80%81%E6%8A%97%E9%85%B8%E5%8C%96%E4%BD%9C%E7%94%A8%E3%81%AB%E3%82%88%E3%82%8A%E4%BB%A3%E8%AC%9D%E3%82%92%E8%A3%9C%E3%81%86%E4%B8%80%E5%8A%A9%E3%81%AB%E3%81%AF%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E8%82%8C%E3%81%AE%E3%81%94%E3%82%8F%E3%81%A4%E3%81%8D%E3%82%84%E3%81%8F%E3%81%99%E3%81%BF%E3%81%AF%E8%A7%92%E8%B3%AA%E3%81%AE%E8%93%84%E7%A9%8D%E3%82%82%E9%96%A2%E4%BF%82%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%80%81%E5%A4%96%E5%81%B4%E3%81%8B%E3%82%89%E3%81%AE%E3%82%B1%E3%82%A2%E3%82%82%E5%A4%A7%E5%88%87%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%0Ahttps%3A//x.com/po_tama_dayo/status/2095798772995629357", "isNew": false, "firstSeen": "2026-09-10"}, {"id": "2096580890554208744", "url": "https://x.com/NECYukkoYoshino/status/2096580890554208744", "text": "準決勝の敗戦後は選手の笑顔がほぼなくなりましたね！ よっぽど悔しかったんだな💦 この悔しさを力に変えてワールドカップに挑戦しましょう💪 まだまだこれから‼️ #バレーボール女子日本代表 #バレーボール #アジア選手権 https://t.co/Jq1YIMbJDh", "date": "2026-09-06", "author": "NECYukkoYoshino", "authorName": "NEC_YUKKO_YOSHINO", "followers": 639, "impressions": 5560, "likes": 104, "reposts": 3, "replies": 2, "quotes": 0, "bookmarks": 8, "rate": 2.34, "tier": "news", "tierName": "時事・トレンド", "draft": "準決勝のあと笑顔が消えたのは、それだけ本気で臨んだ証だと思います。切り替えの早さより、悔しさを覚えていられることのほうが強さになる気がします。ワールドカップ、楽しみに応援しています。", "why": "時事。美容への橋は無理なので素直に。人柄が出る一本", "compose": "https://x.com/compose/post?text=%E6%BA%96%E6%B1%BA%E5%8B%9D%E3%81%AE%E3%81%82%E3%81%A8%E7%AC%91%E9%A1%94%E3%81%8C%E6%B6%88%E3%81%88%E3%81%9F%E3%81%AE%E3%81%AF%E3%80%81%E3%81%9D%E3%82%8C%E3%81%A0%E3%81%91%E6%9C%AC%E6%B0%97%E3%81%A7%E8%87%A8%E3%82%93%E3%81%A0%E8%A8%BC%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E5%88%87%E3%82%8A%E6%9B%BF%E3%81%88%E3%81%AE%E6%97%A9%E3%81%95%E3%82%88%E3%82%8A%E3%80%81%E6%82%94%E3%81%97%E3%81%95%E3%82%92%E8%A6%9A%E3%81%88%E3%81%A6%E3%81%84%E3%82%89%E3%82%8C%E3%82%8B%E3%81%93%E3%81%A8%E3%81%AE%E3%81%BB%E3%81%86%E3%81%8C%E5%BC%B7%E3%81%95%E3%81%AB%E3%81%AA%E3%82%8B%E6%B0%97%E3%81%8C%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89%E3%82%AB%E3%83%83%E3%83%97%E3%80%81%E6%A5%BD%E3%81%97%E3%81%BF%E3%81%AB%E5%BF%9C%E6%8F%B4%E3%81%97%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/NECYukkoYoshino/status/2096580890554208744", "isNew": false, "firstSeen": "2026-09-10"}, {"id": "2096860184094343618", "url": "https://x.com/roppongi_sakai/status/2096860184094343618", "text": "保険で手術して眼瞼下垂や眉下切開を集めてる形成外科や眼形成のクリニックが悪いとは思わない そこに技術で勝てない美容外科医はそもそも自費で手術をやる資格すらないし でも、他科の医師から見たら現在保険適用で行われている眼瞼下垂手術の９割がオーバーインディケーションなんだろうと思う https://t.co/SKMCFYDXgh", "date": "2026-09-07", "author": "roppongi_sakai", "authorName": "六本木境クリニック", "followers": 52832, "impressions": 2105, "likes": 5, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 0.24, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "線引きの難しい領域だと思います。眼瞼下垂手術は本来、挙筋の働きが落ちて視野が狭くなった方の機能回復の手術です。見た目を整えることが主な目的なら自費で行うのが筋で、その区別は術前の検査で丁寧に説明されるべきです。", "why": "保険と自費の線引き。院長として立場を示せる数少ない話題", "compose": "https://x.com/compose/post?text=%E7%B7%9A%E5%BC%95%E3%81%8D%E3%81%AE%E9%9B%A3%E3%81%97%E3%81%84%E9%A0%98%E5%9F%9F%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E6%89%8B%E8%A1%93%E3%81%AF%E6%9C%AC%E6%9D%A5%E3%80%81%E6%8C%99%E7%AD%8B%E3%81%AE%E5%83%8D%E3%81%8D%E3%81%8C%E8%90%BD%E3%81%A1%E3%81%A6%E8%A6%96%E9%87%8E%E3%81%8C%E7%8B%AD%E3%81%8F%E3%81%AA%E3%81%A3%E3%81%9F%E6%96%B9%E3%81%AE%E6%A9%9F%E8%83%BD%E5%9B%9E%E5%BE%A9%E3%81%AE%E6%89%8B%E8%A1%93%E3%81%A7%E3%81%99%E3%80%82%E8%A6%8B%E3%81%9F%E7%9B%AE%E3%82%92%E6%95%B4%E3%81%88%E3%82%8B%E3%81%93%E3%81%A8%E3%81%8C%E4%B8%BB%E3%81%AA%E7%9B%AE%E7%9A%84%E3%81%AA%E3%82%89%E8%87%AA%E8%B2%BB%E3%81%A7%E8%A1%8C%E3%81%86%E3%81%AE%E3%81%8C%E7%AD%8B%E3%81%A7%E3%80%81%E3%81%9D%E3%81%AE%E5%8C%BA%E5%88%A5%E3%81%AF%E8%A1%93%E5%89%8D%E3%81%AE%E6%A4%9C%E6%9F%BB%E3%81%A7%E4%B8%81%E5%AF%A7%E3%81%AB%E8%AA%AC%E6%98%8E%E3%81%95%E3%82%8C%E3%82%8B%E3%81%B9%E3%81%8D%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/roppongi_sakai/status/2096860184094343618", "isNew": false, "firstSeen": "2026-09-10"}, {"id": "2098088156176523439", "url": "https://x.com/shiratama_cha_/status/2098088156176523439", "text": "眼瞼下垂じゃなくて眉下切開じゃなくて額券上の方がいいのかな？？調べれば調べるほど分からなくなる😇❓調べ尽くさないと❗️ https://t.co/tRvEptEnAK", "date": "2026-09-10", "author": "shiratama_cha_", "authorName": "しらたまちゃ", "followers": 2227, "impressions": 1788, "likes": 16, "reposts": 1, "replies": 0, "quotes": 1, "bookmarks": 2, "rate": 1.4, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "迷われるのは自然だと思います。上まぶたのたるみが主なら眉下切開、黒目にかかる開きにくさがあれば眼瞼下垂の手術、眉ごと下がっている場合は額側の処置が向きます。原因がどこにあるかで答えが変わるので、診察で見極めるのが近道です。", "why": "本人が施術選びで迷っている生の声で、当院の得意領域にそのまま答えられる", "compose": "https://x.com/compose/post?text=%E8%BF%B7%E3%82%8F%E3%82%8C%E3%82%8B%E3%81%AE%E3%81%AF%E8%87%AA%E7%84%B6%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E4%B8%8A%E3%81%BE%E3%81%B6%E3%81%9F%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%81%8C%E4%B8%BB%E3%81%AA%E3%82%89%E7%9C%89%E4%B8%8B%E5%88%87%E9%96%8B%E3%80%81%E9%BB%92%E7%9B%AE%E3%81%AB%E3%81%8B%E3%81%8B%E3%82%8B%E9%96%8B%E3%81%8D%E3%81%AB%E3%81%8F%E3%81%95%E3%81%8C%E3%81%82%E3%82%8C%E3%81%B0%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E3%81%AE%E6%89%8B%E8%A1%93%E3%80%81%E7%9C%89%E3%81%94%E3%81%A8%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E5%A0%B4%E5%90%88%E3%81%AF%E9%A1%8D%E5%81%B4%E3%81%AE%E5%87%A6%E7%BD%AE%E3%81%8C%E5%90%91%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E5%8E%9F%E5%9B%A0%E3%81%8C%E3%81%A9%E3%81%93%E3%81%AB%E3%81%82%E3%82%8B%E3%81%8B%E3%81%A7%E7%AD%94%E3%81%88%E3%81%8C%E5%A4%89%E3%82%8F%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E8%A8%BA%E5%AF%9F%E3%81%A7%E8%A6%8B%E6%A5%B5%E3%82%81%E3%82%8B%E3%81%AE%E3%81%8C%E8%BF%91%E9%81%93%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/shiratama_cha_/status/2098088156176523439", "isNew": true, "firstSeen": "2026-09-11"}, {"id": "2097302173227102438", "url": "https://x.com/roadtonewclinic/status/2097302173227102438", "text": "裏ハムラのオプション ①ミッドフェイスリフト(DNLFリフト) ⇨あり。まるッとします ②涙袋形成 ⇨あり。最初から涙袋ない人は出ない ③脂肪注入 ⇨なし。ミッドフェイスリフト出来ない、自信がない、効果がない ④fPRP ⇨なし。ゴルゴのこれは最悪 ⑤糸リフト ⇨論外 ⑥ヒアルロン酸注入 ⇨さらに論外", "date": "2026-09-08", "author": "roadtonewclinic", "authorName": "ワイルド美容外科医", "followers": 424, "impressions": 1282, "likes": 9, "reposts": 2, "replies": 1, "quotes": 0, "bookmarks": 1, "rate": 1.33, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "考え方に賛同します。裏ハムラ法で眼窩脂肪を移動させても、頬側の下垂が残ればゴルゴの溝は残ります。だからevoリフト法のように中顔面ごと引き上げる工程が要ります。足して埋めるのではなく、戻すという順番が大事です。", "why": "同業の断定に賛同しつつ機序で補強。専門性が最も伝わる一本", "compose": "https://x.com/compose/post?text=%E8%80%83%E3%81%88%E6%96%B9%E3%81%AB%E8%B3%9B%E5%90%8C%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E8%A3%8F%E3%83%8F%E3%83%A0%E3%83%A9%E6%B3%95%E3%81%A7%E7%9C%BC%E7%AA%A9%E8%84%82%E8%82%AA%E3%82%92%E7%A7%BB%E5%8B%95%E3%81%95%E3%81%9B%E3%81%A6%E3%82%82%E3%80%81%E9%A0%AC%E5%81%B4%E3%81%AE%E4%B8%8B%E5%9E%82%E3%81%8C%E6%AE%8B%E3%82%8C%E3%81%B0%E3%82%B4%E3%83%AB%E3%82%B4%E3%81%AE%E6%BA%9D%E3%81%AF%E6%AE%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E3%81%A0%E3%81%8B%E3%82%89evo%E3%83%AA%E3%83%95%E3%83%88%E6%B3%95%E3%81%AE%E3%82%88%E3%81%86%E3%81%AB%E4%B8%AD%E9%A1%94%E9%9D%A2%E3%81%94%E3%81%A8%E5%BC%95%E3%81%8D%E4%B8%8A%E3%81%92%E3%82%8B%E5%B7%A5%E7%A8%8B%E3%81%8C%E8%A6%81%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E8%B6%B3%E3%81%97%E3%81%A6%E5%9F%8B%E3%82%81%E3%82%8B%E3%81%AE%E3%81%A7%E3%81%AF%E3%81%AA%E3%81%8F%E3%80%81%E6%88%BB%E3%81%99%E3%81%A8%E3%81%84%E3%81%86%E9%A0%86%E7%95%AA%E3%81%8C%E5%A4%A7%E4%BA%8B%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/roadtonewclinic/status/2097302173227102438", "isNew": false, "firstSeen": "2026-09-10"}, {"id": "2096562017155027104", "url": "https://x.com/summerforest351/status/2096562017155027104", "text": "最近行った ハムラ+中顔面挙上ケースの モニターケース 1枚目 表ハムラ+中顔面挙上1カ月目 2枚目 表ハムラ+中顔面挙上1カ月目 3枚目 表ハムラ+中顔面挙上3カ月目 4枚目 裏ハムラ+中顔面挙上1カ月目 ゴルデーンウィーク前のケースがそろそろ戻ってきています。 https://t.co/bCsv7tCCrj", "date": "2026-09-06", "author": "summerforest351", "authorName": "ベク(白)先生", "followers": 9322, "impressions": 1170, "likes": 8, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 2, "rate": 1.03, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "ハムラと中顔面の引き上げを同時に行う考え方に賛成です。目の下の段差は下まぶただけでなく、頬が下がって境目が深くなることでも生まれます。当院でも表ミッドフェイスリフト法として同じ選択をしています。", "why": "中顔面まで含めて考える症例。当院の術式思想と重なる", "compose": "https://x.com/compose/post?text=%E3%83%8F%E3%83%A0%E3%83%A9%E3%81%A8%E4%B8%AD%E9%A1%94%E9%9D%A2%E3%81%AE%E5%BC%95%E3%81%8D%E4%B8%8A%E3%81%92%E3%82%92%E5%90%8C%E6%99%82%E3%81%AB%E8%A1%8C%E3%81%86%E8%80%83%E3%81%88%E6%96%B9%E3%81%AB%E8%B3%9B%E6%88%90%E3%81%A7%E3%81%99%E3%80%82%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%AE%E6%AE%B5%E5%B7%AE%E3%81%AF%E4%B8%8B%E3%81%BE%E3%81%B6%E3%81%9F%E3%81%A0%E3%81%91%E3%81%A7%E3%81%AA%E3%81%8F%E3%80%81%E9%A0%AC%E3%81%8C%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E5%A2%83%E7%9B%AE%E3%81%8C%E6%B7%B1%E3%81%8F%E3%81%AA%E3%82%8B%E3%81%93%E3%81%A8%E3%81%A7%E3%82%82%E7%94%9F%E3%81%BE%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82%E5%BD%93%E9%99%A2%E3%81%A7%E3%82%82%E8%A1%A8%E3%83%9F%E3%83%83%E3%83%89%E3%83%95%E3%82%A7%E3%82%A4%E3%82%B9%E3%83%AA%E3%83%95%E3%83%88%E6%B3%95%E3%81%A8%E3%81%97%E3%81%A6%E5%90%8C%E3%81%98%E9%81%B8%E6%8A%9E%E3%82%92%E3%81%97%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/summerforest351/status/2096562017155027104", "isNew": false, "firstSeen": "2026-09-07"}, {"id": "2096766568286085407", "url": "https://x.com/excellent_ps/status/2096766568286085407", "text": "【キム・ドヨン副院長のフィラーシリーズ #03｜涙袋ヒアルロン酸】👀✨ 「笑った時にもう少し涙袋がほしい」 「ぷっくりさせたいけど、不自然にはしたくない」 そんな方に人気なのが涙袋ヒアルロン酸🤍 目の形や左右差を見ながら、 必要な部分に少量ずつ注入し、自然な立体感を目指します。 Before https://t.co/T75OK07CeP", "date": "2026-09-07", "author": "excellent_ps", "authorName": "💗フルリュン美容外科💗韓国整形【二重・目元整形・ヒアルロン酸】", "followers": 4160, "impressions": 841, "likes": 2, "reposts": 1, "replies": 0, "quotes": 0, "bookmarks": 1, "rate": 0.71, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "少量ずつ、という原則には賛同します。涙袋のヒアルロン酸は年単位で残ることがあり、足すほどに笑った時のふくらみが不自然になっていきます。追加する前に前回分がどれだけ残っているか確認しておくと、失敗が減ります。", "why": "過剰注入への警鐘。批判でなく原則への賛同から入れる", "compose": "https://x.com/compose/post?text=%E5%B0%91%E9%87%8F%E3%81%9A%E3%81%A4%E3%80%81%E3%81%A8%E3%81%84%E3%81%86%E5%8E%9F%E5%89%87%E3%81%AB%E3%81%AF%E8%B3%9B%E5%90%8C%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E6%B6%99%E8%A2%8B%E3%81%AE%E3%83%92%E3%82%A2%E3%83%AB%E3%83%AD%E3%83%B3%E9%85%B8%E3%81%AF%E5%B9%B4%E5%8D%98%E4%BD%8D%E3%81%A7%E6%AE%8B%E3%82%8B%E3%81%93%E3%81%A8%E3%81%8C%E3%81%82%E3%82%8A%E3%80%81%E8%B6%B3%E3%81%99%E3%81%BB%E3%81%A9%E3%81%AB%E7%AC%91%E3%81%A3%E3%81%9F%E6%99%82%E3%81%AE%E3%81%B5%E3%81%8F%E3%82%89%E3%81%BF%E3%81%8C%E4%B8%8D%E8%87%AA%E7%84%B6%E3%81%AB%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%84%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B%E5%89%8D%E3%81%AB%E5%89%8D%E5%9B%9E%E5%88%86%E3%81%8C%E3%81%A9%E3%82%8C%E3%81%A0%E3%81%91%E6%AE%8B%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E3%81%8B%E7%A2%BA%E8%AA%8D%E3%81%97%E3%81%A6%E3%81%8A%E3%81%8F%E3%81%A8%E3%80%81%E5%A4%B1%E6%95%97%E3%81%8C%E6%B8%9B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/excellent_ps/status/2096766568286085407", "isNew": false, "firstSeen": "2026-09-10"}], "posted": [{"date": "2026-09-09", "url": "https://x.com/kumacli_mohri/status/2097583751513715142", "text": "補足しますと、医療広告ガイドラインで加工が禁じられているぶん、撮影条件をそろえることが症例写真の生命線になります。照明も角度も距離も固定して初めて、変化が変化として伝わります。撮る側の責任は大きいと思います。 https://t.co/o89MjCKFsv", "impressions": 836, "likes": 1, "quotedUrl": "https://x.com/mizu_notwater/status/2096218964833829191", "quotedAuthor": "mizu_notwater", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-09", "url": "https://x.com/kumacli_mohri/status/2097578858803495201", "text": "テレビで取り上げられたとおり、クマは青・茶・黒なんて呼び方は患者さんに分かりやすいための一つの概念として表現する事はあります。 ただし治療を受ける前までには色分けで判断せず、本質的な理由まで深ぼって理解してほしいです。 https://t.co/1E03eTHONx", "impressions": 1587, "likes": 5, "quotedUrl": "https://x.com/kattunonly0322/status/2095457150470688853", "quotedAuthor": "kattunonly0322", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-08", "url": "https://x.com/kumacli_mohri/status/2097218686738436175", "text": "たるみ治療が盛り上がるのは良いことだと思います。ただ、たるみの原因は皮膚や脂肪だけではありません。 むしろ適度な脂肪はたるみを予防する上で不可欠な要素です。 ⚠️新しい美容皮膚科の機械・注入剤は1年様子見が鉄則です https://t.co/6HXqgGBieD", "impressions": 1202, "likes": 4, "quotedUrl": "https://x.com/takepon5895/status/2096411728821240286", "quotedAuthor": "takepon5895", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-07", "url": "https://x.com/kumacli_mohri/status/2096824429091094937", "text": "挙げられている項目、どれも的確だと思います。特に症例写真は、照明と角度と表情がそろっていない比較では情報として成立しません。当院でも同一条件での撮影を徹底しています。 あと1点大事な事があります。 直後、1週間後の症例をさも完成かのように上げてるケースに注意してほしいです。 https://t.co/TbcWc3DejB https://t.co/o2r1gLTrnW", "impressions": 1879, "likes": 5, "quotedUrl": "https://x.com/17dsy_/status/2095451039269028204", "quotedAuthor": "17dsy_", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-07", "url": "https://x.com/kumacli_mohri/status/2096818523473617101", "text": "カウンセリングは本来、受けない選択も含めて一緒に決める場だと思っています。引き止めが強い、その日のうちに決めさせようとする。そういう場面に出会ったら、いったん持ち帰って構いません。急ぐ理由はありません。 https://t.co/UuyU0NmKsN", "impressions": 964, "likes": 2, "quotedUrl": "https://x.com/sekkai/status/2095507406092632452", "quotedAuthor": "sekkai", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-05", "url": "https://x.com/kumacli_mohri/status/2096384100898947529", "text": "脱脂だけであれば5日という感覚は妥当です。内出血や目立った腫れは1週間前後で落ち着きます。 ただダウンタイムが少ないから全てのクマ治療を脱脂でしよう！と考えてしまう方が一定数いらっしゃいますのでこれは気をつけてほしいです。 https://t.co/qmY5fEvcC4", "impressions": 1858, "likes": 4, "quotedUrl": "https://x.com/17dsy_/status/2094360220629971150", "quotedAuthor": "17dsy_", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-04", "url": "https://x.com/kumacli_mohri/status/2095754144976081329", "text": "同意です。脱脂単独で仕上がる方は、私の実感でも1割に届きません。 20代で2-3割。 膨らみだけを取ると凹みと影クマは悪くなります。 年齢が上がるにつれて眼窩脂肪を減らす事によるネガティブなパラメータが大きくなりますので 若年、少量の脱脂で良くなるというのがまず適応として前提です。 https://t.co/K4UqpLMgg3", "impressions": 3935, "likes": 9, "quotedUrl": "https://x.com/roppongi_sakai/status/2094928056062451839", "quotedAuthor": "roppongi_sakai", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-03", "url": "https://x.com/kumacli_mohri/status/2095390357907509559", "text": "こめかみ周辺にできるものの多くは脂漏性角化症で、化粧品で消えることは基本的にありません。保湿で見え方が変わることはありますが、構造そのものは残ります。気になる場合は焼灼で短時間で取れますので、その前にご相談ください。 https://t.co/mQ7ff2WuGe", "impressions": 1743, "likes": 4, "quotedUrl": "https://x.com/kc_ringo_929/status/2094744721239499203", "quotedAuthor": "kc_ringo_929", "tierName": "皮膚科『これ何？』系", "fromSystem": true}, {"date": "2026-09-03", "url": "https://x.com/kumacli_mohri/status/2095382574206210073", "text": "どっちを選ぶかは本人の自由、自分らしく楽しく生きられるならそれが一番ですよね。 ただし、どちらをモデルにしても 40代を過ぎると目周りだけは、ケアしてる人としてない人で本当に差が出る。 https://t.co/PhBewAcdt1 https://t.co/hiCXQXYKUU", "impressions": 2571, "likes": 7, "quotedUrl": "https://x.com/i/status/2094634147700789740", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-09-03", "url": "https://x.com/kumacli_mohri/status/2095376516230299713", "text": "カモにされるかどうかは、術式ではなく適応の見極めで決まります。脱脂も裏ハムラも、合う方に行えば十分に良い治療です。問題は、診断せずに術式ありきで勧める側にあります。何を受けるかより、誰に診てもらうかを見てください。 https://t.co/mzSxZuiELa", "impressions": 3341, "likes": 13, "quotedUrl": "https://x.com/roppongi_sakai/status/2094712035850543262", "quotedAuthor": "roppongi_sakai", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-01", "url": "https://x.com/kumacli_mohri/status/2094685334781219272", "text": "クマ治療もぜひここに入れてほしい。 30〜40代の「疲れて見える」の正体は、目の下のクマであることが本当に多いです。放置するほど印象は定着し、選択肢も狭まる。 クマは原因別に対応が違って、 ・茶クマ→レーザーや内服薬 ・青クマ→ナノリッチ脂肪注入 ・黒クマ→脱脂・裏ハムラなど根本治療 https://t.co/1l7R3OZHlv https://t.co/3xCZIzjay4", "impressions": 5233, "likes": 12, "quotedUrl": "https://x.com/i/status/2094282592422166741", "quotedAuthor": null, "tierName": null, "fromSystem": false}]}</script>
 <script>(function () {
   const LIMIT = 140;
   const KEY = "kuma-x-state";
+  const UNDO_MS = 8000;          // 見送りを取り消せる時間
   const app = document.getElementById("app");
   const S = JSON.parse(document.getElementById("state").textContent);
 
@@ -176,15 +214,48 @@
   try { marks = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { marks = {}; }
   const put = () => { try { localStorage.setItem(KEY, JSON.stringify(marks)); } catch (e) {} };
 
+  // 直した下書きは描画をまたいで持つ。見送りや投稿の確認で画面を作り直すたびに
+  // 他のカードの手直しが消えていた。
+  const edits = {};
+  // 見送った直後の数秒だけ、そのカードの位置に「戻す」を残しておく
+  const undoing = new Map();     // id -> タイマー
+  let msg = "";                  // 読み上げと控えの一行
+
   let offset = 0;
   const esc = s => String(s).replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const n = v => Number(v || 0).toLocaleString("ja-JP");
   const st = it => marks[it.id] || "open";
+  const draftOf = it => (it.id in edits ? edits[it.id] : (it.draft || ""));
   const compose = (it, text) =>
     "https://x.com/compose/post?text=" + encodeURIComponent((text || "").trim() + "\n" + it.url);
 
-  function open_() { return S.items.filter(i => st(i) === "open"); }
+  // 画面に出す札。"pending" は「Xを開いたが、投稿したかはまだ聞いていない」
+  const inPlay = i => st(i) === "open" || st(i) === "pending";
+  function shownList() { return S.items.filter(i => inPlay(i) || undoing.has(i.id)); }
+
+  function localToday() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") +
+      "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  // 「2026-09-11 更新（今朝6時）」。日付だけだと日付とすら気づかれない。
+  function updatedWord() {
+    const m = /^(\d{1,2}):(\d{2})$/.exec(S.updatedAt || "");
+    if (!m) return "";
+    const h = +m[1], mi = m[2];
+    const when = h < 12 ? "今朝" : (h < 18 ? "今日" : "昨夜");
+    return `（${when}${h}時${mi === "00" ? "" : mi + "分"}）`;
+  }
+
+  // 自動更新が止まった朝に、古い候補を今日のものと思って投稿されるのが一番こわい
+  function staleBanner() {
+    if (S.updated === localToday()) return "";
+    return `<div class="alert" role="alert">今朝の更新が届いていません。<br>
+      この画面は <b>${esc(S.updated)}</b> に作られたもので、下の候補は今日のものではありません。
+      広報にご連絡ください。</div>`;
+  }
 
   // すでに投稿した引用リポスト。X本体から突き合わせた実績なので、
   // 端末を変えても、ブラウザの記録が消えても残る。
@@ -197,7 +268,8 @@
         <summary>すでに投稿した引用リポスト ${rows.length}本
           <span class="log-count">（うち候補から ${fromSys}本）</span></summary>
         <p class="log-note">X本体から取得した実績です。同じ投稿を二度引用しないための控えです。
-          「候補から」はこのページで出した候補、「ご自身」は先生が自力で見つけて投稿されたものです。</p>
+          「候補から」はこのページで出した候補、「ご自身」は先生が自力で見つけて投稿されたものです。
+          上の「今日の投稿」はこの画面で今日押した分の数え上げなので、本数は一致しません。</p>
         ${rows.map(r => `
           <a class="log-row" href="${esc(r.url)}" target="_blank" rel="noopener">
             <span class="log-date">${esc(r.date)}</span>
@@ -214,31 +286,35 @@
   function render() {
     const posted = S.items.filter(i => st(i) === "posted").length;
     const skipped = S.items.filter(i => st(i) === "skipped").length;
-    const rest = open_();
+    const left = S.items.filter(inPlay).length;
+    const rest = shownList();
     const shown = rest.slice(offset, offset + S.show);
     const more = rest.length - offset - shown.length;
 
     app.innerHTML = `
+      ${staleBanner()}
       <header>
-        <p class="eyebrow">${esc(S.updated)} ／ @kumacli_mohri</p>
+        <p class="eyebrow">${esc(S.updated)} 更新${
+          S.updated === localToday() ? updatedWord() : ""} ／ @kumacli_mohri</p>
         <h1>今日の引用候補</h1>
-        <p class="sub">引用元を見て、そのまま出すか直すかを決めてください。「Xで投稿する」を押すとXアプリが開き、本文と引用元が入った状態になります。そこで「ポスト」を押すと投稿されます。</p>
+        <p class="sub">引用元を見て、そのまま出すか直すかを決めてください。「Xで投稿する」を押すとXが別のタブで開き、本文と引用元が入った状態になります。そこで「ポスト」を押すと投稿されます。</p>
         <div class="tally">
-          <span class="chip ${posted >= S.target ? "on" : ""}">投稿 ${posted} / ${S.target}</span>
-          <span class="chip">見送り ${skipped}</span>
-          <span class="chip">在庫 ${rest.length}</span>
+          <span class="chip ${posted >= S.target ? "on" : ""}">今日の投稿 ${posted}件 ／ 目標 ${S.target}件</span>
+          <span class="chip">見送り ${skipped}件</span>
+          <span class="chip">残り ${left}件</span>
         </div>
+        <p class="legend"><b>数字の見かた</b>　📊 表示＝見られた回数。<b>反応率</b>＝見た人のうち何%が動いたか。表示が多くても反応率が低い投稿は、宣伝や身内向けのことが多く、引用しても伸びにくい傾向です。</p>
       </header>
       ${shown.length ? shown.map(card).join("")
         : '<div class="done-note">在庫がなくなりました。広報に候補の取り直しを依頼してください。</div>'}
       ${more > 0 ? `<button class="more" id="more">別の候補を見る（あと ${more} 件）</button>` : ""}
       ${offset > 0 ? `<button class="more" id="back">前の候補に戻る</button>` : ""}
+      <div class="status" id="status" role="status" aria-live="polite">${esc(msg)}</div>
       ${postedLog()}
       <div class="note">
-        <b>反応率</b>は見た人のうち何%が動いたかです。表示回数が多くても反応率が低い投稿は、宣伝や身内向けのことが多く、引用しても伸びにくい傾向があります。<br><br>
-        下書きは先生の過去の引用103本に合わせています（中央値105字・絵文字なし）。${LIMIT}字を超えると赤くなります。
-      </div>
-      <div class="status" id="status"></div>`;
+        下書きは先生の過去の引用103本に合わせています（中央値105字・絵文字なし）。${LIMIT}字を超えると赤くなります。<br><br>
+        この画面の記録（見送り・投稿）は、<b>お使いの端末のブラウザに保存されます。</b>スマホとパソコンでは別々に記録されるので、スマホで見送った候補はパソコンではまだ残っています。
+      </div>`;
 
     shown.forEach(bind);
     const mb = document.getElementById("more");
@@ -247,10 +323,26 @@
     if (bb) bb.onclick = () => { offset = Math.max(0, offset - S.show); render(); };
   }
 
-  function card(it) {
+  // 見送ったカードの席。黙って消さず、数秒だけ「戻す」を置く。
+  // スマホの誤タップ1回で候補1件が二度と出てこないのを防ぐため。
+  function undoStrip(it) {
     return `
-      <section class="card">
+      <section class="card undone">
+        <div class="undo-bar">
+          <span class="undo-msg">見送りました<span class="undo-who">@${esc(it.author)}</span></span>
+          <button class="btn-undo" id="u${esc(it.id)}">戻す</button>
+        </div>
+      </section>`;
+  }
+
+  function card(it) {
+    if (undoing.has(it.id)) return undoStrip(it);
+    const pending = st(it) === "pending";
+    return `
+      <section class="card${pending ? " asking" : ""}">
         <div class="card-h"><span class="tier">${esc(it.tierName || "")}</span>${
+          it.isNew ? `<span class="tier fresh">新着</span>`
+                   : `<span class="tier seen">昨日までの候補</span>`}${
           it.stale ? `<span class="tier stale">やや古い投稿</span>` : ""}</div>
         ${it.why ? `<div class="src"><p class="why">${esc(it.why)}</p></div>` : ""}
         <div class="src">
@@ -262,43 +354,121 @@
           </div>
           <p class="src-text">${esc(it.text)}</p>
           <div class="stats">
-            <span>📊 ${n(it.impressions)}</span><span>👍 ${n(it.likes)}</span>
-            <span>🔁 ${n(it.reposts)}</span><span>💬 ${n(it.replies)}</span>
-            <span>🔖 ${n(it.bookmarks)}</span>
+            <span>📊 表示 ${n(it.impressions)}</span><span>👍 いいね ${n(it.likes)}</span>
+            <span>🔁 リポスト ${n(it.reposts)}</span><span>💬 返信 ${n(it.replies)}</span>
+            <span>🔖 ブックマーク ${n(it.bookmarks)}</span>
             <span class="rate">反応率 ${it.rate}%</span>
           </div>
-          <a class="src-link" href="${esc(it.url)}">元の投稿をXで見る →</a>
+          <a class="src-link" href="${esc(it.url)}" target="_blank" rel="noopener">元の投稿をXで見る（別のタブ）→</a>
         </div>
         <div class="draft">
-          <div class="draft-label">下書き<span class="count" id="n${it.id}"></span></div>
-          <textarea id="t${it.id}" aria-label="下書き">${esc(it.draft)}</textarea>
+          <div class="draft-label">下書き<span class="count" id="n${esc(it.id)}"></span></div>
+          <textarea id="t${esc(it.id)}" aria-label="下書き" rows="1">${esc(draftOf(it))}</textarea>
+          ${pending ? `
+          <div class="confirm">
+            <p class="confirm-q">Xの画面で「ポスト」を押しましたか？</p>
+            <div class="actions">
+              <button class="btn-yes" id="y${esc(it.id)}">投稿しました</button>
+              <button class="btn-no" id="w${esc(it.id)}">まだ／やめました</button>
+            </div>
+          </div>` : `
           <div class="actions">
-            <a class="btn-post" id="p${it.id}" href="${esc(it.compose)}">Xで投稿する</a>
-            <button class="btn-skip" id="k${it.id}">見送る</button>
-          </div>
+            <a class="btn-post" id="p${esc(it.id)}" href="${esc(it.compose)}"
+               target="_blank" rel="noopener">Xで投稿する</a>
+            <button class="btn-skip" id="k${esc(it.id)}">見送る</button>
+          </div>`}
         </div>
       </section>`;
   }
 
+  // 下書きは「そのまま出すか直すか」を決める対象そのものなので、
+  // 高さを固定せず中身に合わせて伸ばす。固定だと375pxで全件が途中で切れていた。
+  function grow(ta) {
+    // 幅が決まっていないうちに測ると1文字ずつ折り返した高さが出る。
+    // 幅がついた時点で resizeAll が測り直すので、ここでは何もしない。
+    if (!ta.clientWidth) return;
+    ta.style.height = "auto";
+    // box-sizing:border-box なので、scrollHeight（枠の内側）に枠の分を足さないと
+    // 最後の2pxが隠れ、行の途中で切れたように見える
+    const frame = ta.offsetHeight - ta.clientHeight;
+    ta.style.height = (ta.scrollHeight + frame) + "px";
+  }
+
+  // 画面の幅が変わったら測り直す。回転・フォント到着・表示され直しのいずれでも
+  // 下書きが切れたままにならないように。
+  let lastW = -1;
+  function resizeAll(force) {
+    const w = app.clientWidth;
+    if (!force && w === lastW) return;   // 高さの変化では回らない（無限ループ防止）
+    lastW = w;
+    document.querySelectorAll("textarea").forEach(grow);
+  }
+
   function bind(it) {
+    if (undoing.has(it.id)) {
+      const ub = document.getElementById("u" + it.id);
+      if (ub) ub.onclick = () => {
+        clearTimeout(undoing.get(it.id));
+        undoing.delete(it.id);
+        delete marks[it.id];
+        put();
+        msg = "見送りを取り消しました。";
+        render();
+      };
+      return;
+    }
+
     const ta = document.getElementById("t" + it.id);
     const cnt = document.getElementById("n" + it.id);
     const link = document.getElementById("p" + it.id);
     const upd = () => {
+      edits[it.id] = ta.value;
       const len = [...ta.value].length;
       cnt.textContent = len + " / " + LIMIT + "字";
       cnt.classList.toggle("over", len > LIMIT);
-      link.href = compose(it, ta.value);   // 編集した内容をリンクに反映
+      if (link) link.href = compose(it, ta.value);   // 編集した内容をリンクに反映
+      grow(ta);
     };
     ta.addEventListener("input", upd); upd();
 
-    link.onclick = () => { marks[it.id] = "posted"; put(); setTimeout(render, 400); };
-    document.getElementById("k" + it.id).onclick = () => {
-      marks[it.id] = "skipped"; put(); render();
+    if (link) {
+      // 押しただけで「投稿した」と数えない。Xで閉じた日に朝の本数がずれる。
+      // 別タブで開くので、戻ってきた時にこのカードで一度だけ聞く。
+      link.onclick = () => {
+        marks[it.id] = "pending"; put();
+        setTimeout(render, 400);
+      };
+    }
+    const yes = document.getElementById("y" + it.id);
+    if (yes) yes.onclick = () => {
+      marks[it.id] = "posted"; put();
+      msg = "投稿として数えました。";
+      render();
+    };
+    const no = document.getElementById("w" + it.id);
+    if (no) no.onclick = () => {
+      delete marks[it.id]; put();
+      msg = "候補に戻しました。";
+      render();
+    };
+
+    const sk = document.getElementById("k" + it.id);
+    if (sk) sk.onclick = () => {
+      marks[it.id] = "skipped"; put();
+      undoing.set(it.id, setTimeout(() => { undoing.delete(it.id); render(); }, UNDO_MS));
+      msg = "見送りました。数秒のあいだは「戻す」で取り消せます。";
+      render();
     };
   }
 
   render();
+  // Webフォントが後から届くと行数が変わる。届いた時点で測り直す。
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => resizeAll(true));
+  }
+  addEventListener("load", () => resizeAll(true));
+  addEventListener("resize", () => resizeAll(false));
+  if (window.ResizeObserver) new ResizeObserver(() => resizeAll(false)).observe(app);
 })();
 </script>
 </body></html>
