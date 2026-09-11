@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>X引用候補の現在地</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --ink:#15202a;
+    --ink-2:#465a6a;
+    --muted:#7b8c99;
+    --surface:#fbfcfd;
+    --surface-2:#f0f4f7;
+    --surface-3:#e6ecf1;
+    --line:#d8e1e8;
+    --line-soft:#e7edf2;
+    --kuma:#2a78d6;
+    --hada:#eb6834;
+    --kuma-soft:#dbe8f8;
+    --hada-soft:#fbe3d8;
+    --flag:#8a6d1f;
+    --flag-bg:#fbf3dd;
+    --serif:"Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --sans:"Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --mono:"IBM Plex Mono", ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --ink:#e8eff4;
+      --ink-2:#a8bcc9;
+      --muted:#7e909d;
+      --surface:#121a21;
+      --surface-2:#1a242d;
+      --surface-3:#233039;
+      --line:#2d3b46;
+      --line-soft:#243039;
+      --kuma:#3987e5;
+      --hada:#d95926;
+      --kuma-soft:#1c3348;
+      --hada-soft:#3d2418;
+      --flag:#d8b768;
+      --flag-bg:#2b2415;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --ink:#e8eff4;
+    --ink-2:#a8bcc9;
+    --muted:#7e909d;
+    --surface:#121a21;
+    --surface-2:#1a242d;
+    --surface-3:#233039;
+    --line:#2d3b46;
+    --line-soft:#243039;
+    --kuma:#3987e5;
+    --hada:#d95926;
+    --kuma-soft:#1c3348;
+    --hada-soft:#3d2418;
+    --flag:#d8b768;
+    --flag-bg:#2b2415;
+  }
+
+  body{
+    background:var(--surface);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16.5px;
+    line-height:1.95;
+    letter-spacing:.012em;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:720px;margin:0 auto;padding:44px 22px 90px;}
+
+  .eyebrow{
+    font-family:var(--sans);font-weight:500;font-size:12.5px;letter-spacing:.08em;
+    color:var(--muted);text-transform:uppercase;margin:0 0 12px;
+  }
+  h1{
+    font-family:var(--serif);font-weight:900;font-size:31px;line-height:1.4;
+    margin:0 0 14px;text-wrap:balance;letter-spacing:.01em;
+  }
+  .lede{color:var(--ink-2);font-size:16px;margin:0;line-height:2;}
+  .meta{
+    font-family:var(--sans);font-size:12.5px;color:var(--muted);
+    margin:20px 0 0;padding-top:16px;border-top:1px solid var(--line);
+  }
+
+  h2{
+    font-family:var(--serif);font-weight:700;font-size:22px;line-height:1.55;
+    margin:0 0 6px;text-wrap:balance;
+  }
+  .sec{margin-top:54px;}
+  .sec-no{
+    font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--kuma);
+    display:block;margin-bottom:7px;
+  }
+  .sec > p{margin:14px 0;}
+  .sec > p:first-of-type{margin-top:10px;}
+  strong{font-weight:700;}
+  .u{
+    background:linear-gradient(transparent 64%, var(--kuma-soft) 64%);
+    font-weight:700;
+  }
+
+  /* 結論 */
+  .verdict{
+    margin-top:34px;border:1px solid var(--line);border-radius:3px;
+    background:var(--surface-2);padding:24px 24px 22px;
+  }
+  .verdict h2{font-size:19px;margin-bottom:20px;}
+  .verdict ol{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:20px;}
+  .verdict li{display:flex;gap:13px;align-items:flex-start;}
+  .vnum{
+    font-family:var(--mono);font-size:11px;font-weight:600;color:var(--surface);
+    background:var(--ink);border-radius:50%;width:21px;height:21px;flex:0 0 21px;
+    display:flex;align-items:center;justify-content:center;margin-top:5px;
+  }
+  .vbody b{
+    display:block;font-family:var(--serif);font-weight:700;font-size:17.5px;line-height:1.6;
+    margin-bottom:4px;
+  }
+  .vbody span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.95;}
+
+  /* リスト */
+  .tiers{
+    display:grid;grid-template-columns:1fr;gap:0;margin:18px 0 0;
+    border-top:1px solid var(--line-soft);
+  }
+  .tier{
+    display:flex;gap:14px;align-items:baseline;padding:11px 2px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .tier b{font-weight:700;flex:0 0 138px;font-size:15px;}
+  .tier span{color:var(--ink-2);font-size:14.5px;line-height:1.8;}
+
+  .flow{margin:18px 0 0;display:flex;flex-direction:column;gap:0;}
+  .step{
+    display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line-soft);
+  }
+  .step:first-child{border-top:1px solid var(--line-soft);}
+  .step-k{
+    font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--muted);
+    flex:0 0 62px;padding-top:3px;letter-spacing:.04em;
+  }
+  .step-b{flex:1;}
+  .step-b b{display:block;font-weight:700;margin-bottom:2px;}
+  .step-b span{color:var(--ink-2);font-size:14.5px;line-height:1.8;}
+
+  /* 4つの要望 */
+  .asks{display:flex;flex-direction:column;gap:16px;margin-top:22px;}
+  .ask{
+    border:1px solid var(--line);border-left:3px solid var(--kuma);
+    border-radius:2px;padding:18px 20px;background:var(--surface);
+  }
+  .ask.warn{border-left-color:var(--hada);}
+  .ask-h{
+    font-family:var(--serif);font-weight:700;font-size:18px;
+    margin:0 0 4px;line-height:1.5;
+  }
+  .ask-tag{
+    font-family:var(--sans);font-weight:500;font-size:12px;letter-spacing:.1em;
+    color:var(--muted);display:block;margin-bottom:6px;
+  }
+  .ask-a{
+    display:inline-block;font-size:13.5px;font-weight:700;
+    padding:2px 9px;border-radius:2px;margin:8px 0 2px;
+    background:var(--kuma-soft);color:var(--kuma);
+  }
+  .ask.warn .ask-a{background:var(--hada-soft);color:var(--hada);}
+  .ask p{margin:10px 0 0;font-size:15.5px;color:var(--ink-2);line-height:1.95;}
+  .ask p strong{color:var(--ink);}
+
+  .fig{
+    margin:22px 0 0;padding:18px 16px 14px;
+    border:1px solid var(--line);border-radius:3px;background:var(--surface-2);
+  }
+  .fig-h{font-weight:700;font-size:16px;margin:0 0 4px;}
+  .fig-s{font-size:14px;color:var(--muted);margin:0 0 14px;line-height:1.75;}
+  .fig svg{display:block;width:100%;height:auto;}
+  .fig-n{font-size:14.5px;color:var(--ink-2);margin:14px 0 0;line-height:1.9;}
+  .legend{display:flex;gap:16px;margin:0 0 12px;flex-wrap:wrap;}
+  .lg{display:flex;gap:7px;align-items:center;font-size:14px;color:var(--ink-2);}
+  .sw{width:11px;height:11px;border-radius:2px;flex:0 0 11px;}
+
+  /* 表 */
+  .tw{overflow-x:auto;margin:20px 0 0;border:1px solid var(--line);border-radius:3px;}
+  table{border-collapse:collapse;width:100%;min-width:470px;font-size:15px;}
+  th,td{padding:10px 13px;text-align:right;border-bottom:1px solid var(--line-soft);}
+  th:first-child,td:first-child{text-align:left;}
+  thead th{
+    font-size:13px;color:var(--muted);font-weight:500;background:var(--surface-2);
+    letter-spacing:.03em;white-space:nowrap;
+  }
+  tbody td{font-variant-numeric:tabular-nums;}
+  tbody td:first-child{font-weight:700;white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tr.now td{background:var(--surface-2);}
+  tr.pick td{background:var(--flag-bg);color:var(--flag);font-weight:600;}
+  tr.pick td:first-child{color:var(--flag);}
+
+  /* 採用実績 */
+  .used{margin:18px 0 0;border-top:1px solid var(--line-soft);}
+  .u-row{
+    display:flex;align-items:center;gap:12px;padding:9px 2px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .u-imp{
+    font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;
+    flex:0 0 82px;text-align:right;color:var(--ink);
+  }
+  .u-bar{flex:1;height:14px;background:var(--surface-3);border-radius:2px;overflow:hidden;}
+  .u-bar i{display:block;height:100%;background:var(--kuma);border-radius:2px;}
+  .u-like{
+    font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ink);
+    flex:0 0 58px;text-align:right;
+  }
+  .cutline{
+    display:flex;align-items:center;gap:10px;margin:7px 0;
+    font-family:var(--sans);font-size:13.5px;font-weight:700;color:var(--hada);
+  }
+  .cutline::before,.cutline::after{
+    content:"";height:1px;background:var(--hada);flex:1;opacity:.55;
+  }
+  .u-head{
+    display:flex;gap:12px;padding:0 2px 7px;font-size:12.5px;color:var(--muted);
+    font-family:var(--sans);
+  }
+  .u-head .u-imp,.u-head .u-like{color:var(--muted);}
+  .u-head .u-bar{background:none;}
+
+  /* 判断 */
+  .decide{display:flex;flex-direction:column;gap:14px;margin-top:22px;}
+  .dec{
+    border:1px solid var(--line);border-radius:3px;padding:17px 19px;
+    background:var(--surface-2);
+  }
+  .dec b{display:block;font-family:var(--serif);font-weight:700;font-size:17px;margin-bottom:6px;}
+  .dec p{margin:0;font-size:15px;color:var(--ink-2);line-height:1.95;}
+
+  .caveat{
+    margin-top:50px;padding:18px 20px;border-radius:3px;
+    background:var(--surface-2);border:1px dashed var(--line);
+  }
+  .caveat b{display:block;font-weight:700;margin-bottom:8px;font-size:16px;}
+  .caveat p{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.95;}
+
+  .foot{
+    margin-top:44px;padding-top:18px;border-top:1px solid var(--line);
+    font-family:var(--sans);font-size:12.5px;color:var(--muted);line-height:2;
+  }
+
+  /* ご要望 → こうします */
+  .answers{display:flex;flex-direction:column;gap:0;margin:20px 0 0;
+    border-top:2px solid var(--ink);}
+  .ans{display:grid;grid-template-columns:1fr 1.25fr;gap:0 22px;
+    padding:16px 2px;border-bottom:1px solid var(--line);}
+  .ans-l .req{font-weight:700;font-size:16.5px;line-height:1.55;display:block;margin-bottom:7px;}
+  .ans-l .yes{display:inline-block;font-size:13.5px;font-weight:700;
+    padding:2px 10px;border-radius:2px;background:var(--kuma-soft);color:var(--kuma);}
+  .ans.warn .yes{background:var(--hada-soft);color:var(--hada);}
+  .ans-r{font-size:15.5px;line-height:1.9;color:var(--ink-2);}
+  .ans-r b{color:var(--ink);font-weight:700;}
+  .ans-r .do{display:block;font-size:12.5px;font-weight:500;color:var(--muted);
+    letter-spacing:.06em;margin-bottom:2px;}
+
+  /* 5つの席 */
+  .seats{display:flex;flex-direction:column;gap:7px;margin:20px 0 0;}
+  .seat{display:flex;align-items:center;gap:13px;padding:12px 15px;
+    border:1px solid var(--line);border-radius:3px;background:var(--surface);}
+  .seat-n{font-family:var(--mono);font-size:12px;font-weight:600;
+    width:23px;height:23px;flex:0 0 23px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface-3);color:var(--ink-2);}
+  .seat.k{border-left:3px solid var(--kuma);}
+  .seat.k .seat-n{background:var(--kuma);color:#fff;}
+  .seat.b{border-left:3px solid var(--flag);}
+  .seat.b .seat-n{background:var(--flag);color:#fff;}
+  .seat.h{border-left:3px solid var(--hada);}
+  .seat.h .seat-n{background:var(--hada);color:#fff;}
+  .seat-t{font-weight:700;font-size:15.5px;}
+  .seat-s{font-size:13.5px;color:var(--muted);margin-left:auto;text-align:right;}
+
+  /* 区切り */
+  .divider{margin:60px 0 0;padding:16px 0 0;border-top:2px solid var(--ink);
+    font-size:14.5px;color:var(--muted);line-height:1.85;}
+  .divider b{display:block;color:var(--ink);font-size:17px;margin-bottom:3px;}
+
+  @media (max-width:560px){
+    .ans{grid-template-columns:1fr;gap:11px;}
+    .seat{flex-wrap:wrap;}
+    .seat-s{margin-left:36px;text-align:left;width:100%;}
+  }
+  @media (max-width:560px){
+    .page{padding:32px 16px 70px;}
+    h1{font-size:26px;}
+    .tier{flex-direction:column;gap:2px;}
+    .tier b{flex:none;}
+    .u-imp{flex:0 0 64px;}
+    .u-like{flex:0 0 50px;}
+  }
+
+  /* 言葉の定義 */
+  .whatis{margin:26px 0 0;padding:20px 22px;border:2px solid var(--ink);border-radius:3px;
+    background:var(--surface);}
+  .whatis h3{margin:0 0 4px;font-size:17px;font-weight:700;line-height:1.55;}
+  .whatis .sub{margin:0 0 16px;font-size:14.5px;color:var(--ink-2);line-height:1.85;}
+  .wrow{display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:3px;
+    background:var(--surface-2);}
+  .wrow + .warrow{margin:0;}
+  .warrow{text-align:center;font-size:13px;color:var(--muted);padding:6px 0;line-height:1.4;}
+  .wrow.on{background:var(--kuma-soft);border:1px solid var(--kuma);}
+  .wtag{font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;
+    background:var(--surface-3);color:var(--ink-2);white-space:nowrap;flex:0 0 auto;}
+  .wrow.on .wtag{background:var(--kuma);color:#fff;}
+  .wtxt{font-size:14.5px;line-height:1.75;}
+  .wrow.on .wtxt{font-weight:700;color:var(--kuma);}
+  .wrow.off .wtxt{color:var(--muted);}
+
+  /* 検索の回り方 */
+  .rounds{margin:18px 0 0;}
+  .rnd{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line-soft);}
+  .rnd:first-child{border-top:1px solid var(--line-soft);}
+  .rnd-k{font-size:13px;font-weight:700;color:var(--muted);flex:0 0 52px;}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .chip{font-size:13px;padding:3px 10px;border-radius:999px;
+    background:var(--surface-3);color:var(--ink-2);white-space:nowrap;}
+  .chip.k{background:var(--kuma);color:#fff;font-weight:700;}
+  .rnd-end{font-size:14px;color:var(--ink-2);padding:13px 0 0;line-height:1.85;}
+
+  /* 教えていただきたいこと */
+  .qs{display:flex;flex-direction:column;gap:0;margin:20px 0 0;
+    border-top:1px solid var(--line);}
+  .q{padding:17px 2px;border-bottom:1px solid var(--line);}
+  .q b{display:block;font-weight:700;font-size:16.5px;line-height:1.7;margin-bottom:5px;}
+  .q p{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.9;}
+  .q .why{display:block;margin-top:6px;font-size:14px;color:var(--muted);}
+</style>
+</head><body>
+<div class="page">
+
+  <p class="eyebrow">広報チーム → 毛利先生</p>
+  <h1>X引用候補の現在地</h1>
+  <p class="lede">いただいた4つのご要望は、すべて対応できます。どう変えるかと、決めていただきたいことを先に書きました。</p>
+  <p class="meta">2026年9月11日 ／ 調べた対象：先生にお出しした候補61件・実際に投稿された9件</p>
+
+  <div class="whatis">
+    <h3>先に、言葉の意味だけ</h3>
+    <p class="sub">この資料で「表示回数」「インプ」「1万回」と書いているのは、すべて同じものです。<strong>引用する相手の投稿が、何回見られているか（インプレッション）</strong>を指します。先生が投稿されたあとの数字ではありません。</p>
+    <div class="wrow on">
+      <span class="wtag">相手の投稿</span>
+      <span class="wtxt">何回見られているか（インプ）　＝　この資料の数字</span>
+    </div>
+    <p class="warrow">↓　先生が引用リポストする</p>
+    <div class="wrow off">
+      <span class="wtag">先生の投稿</span>
+      <span class="wtxt">こちらのインプではありません</span>
+    </div>
+  </div>
+
+  <section class="sec" style="margin-top:38px;">
+    <h2>ご要望4つ、こうします</h2>
+    <div class="answers">
+      <div class="ans">
+        <span class="ans-l"><span class="req">クマを多めに</span><span class="yes">できます</span></span>
+        <span class="ans-r"><span class="do">どうするか</span>ページを開いて<b>最初に見える5件のうち2つを、クマ専用の席</b>にします。今は表示回数の順に並べているだけなので、クマが下に埋もれていました。</span>
+      </div>
+      <div class="ans warn">
+        <span class="ans-l"><span class="req">皮膚科に偏っている</span><span class="yes">できます</span></span>
+        <span class="ans-r"><span class="do">どうするか</span><b>肌の話は5件のうち1つまで</b>に制限します。この7日間、最初の5件のべ35枠のうち8枠（23%）を肌の話が占めていました。候補全体では10%しかないテーマです。</span>
+      </div>
+      <div class="ans">
+        <span class="ans-l"><span class="req">若手・無名の医師を出さない</span><span class="yes">できます</span></span>
+        <span class="ans-r"><span class="do">どうするか</span><b>フォロワーが少ない人を外します。</b>これまでフォロワー数を一切見ていませんでした。何人未満で切るかをご指定ください。</span>
+      </div>
+      <div class="ans warn">
+        <span class="ans-l"><span class="req">バズをもっと出す</span><span class="yes">形を変えれば</span></span>
+        <span class="ans-r"><span class="do">どうするか</span><b>引用元のインプが1万以上の投稿だけの席を1つ作り、毎日必ず1件入れます。</b>一方「引用元のインプが1万未満のものは候補にしない」という形にするとクマが半分に減るので、そちらは避けたいです（理由は後述）。</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>新しい並び</h2>
+    <p>ページの上から5つの席を、あらかじめ決めてしまう形です。</p>
+    <div class="seats">
+      <div class="seat k"><span class="seat-n">1</span><span class="seat-t">クマ・目元</span><span class="seat-s">本丸。沈まないよう確保</span></div>
+      <div class="seat k"><span class="seat-n">2</span><span class="seat-t">クマ・目元</span><span class="seat-s">同じく</span></div>
+      <div class="seat b"><span class="seat-n">3</span><span class="seat-t">バズ</span><span class="seat-s">引用元のインプが1万以上のもの</span></div>
+      <div class="seat"><span class="seat-n">4</span><span class="seat-t">業界の問題</span><span class="seat-s">先生が最も多く使われている</span></div>
+      <div class="seat h"><span class="seat-n">5</span><span class="seat-t">肌の話</span><span class="seat-s">ここだけ。1つに制限</span></div>
+    </div>
+    <p><strong>追加の費用はかかりません。</strong>読む件数は今の1日120件（約90円）のままです。</p>
+  </section>
+
+  <section class="sec">
+    <h2>決めていただきたいのは3つ</h2>
+    <div class="decide">
+      <div class="dec"><b>① この5つの席でよいか</b><p>クマ2つ・バズ1つ・業界1つ・肌1つ。費用は増えません。</p></div>
+      <div class="dec"><b>② バズ枠の基準は「引用元のインプ1万以上」でよいか</b><p>過去7日間で調べたところ、<strong>引用元のインプが1万を超える候補は毎日ありました</strong>（少ない日で1件、多い日で5件）。1万回のままで、枠が空く日はありません。<br>もっと上げる場合、3万回にすると7日のうち3日は空席になり、その日は代わりに数字の大きいものが入ります。</p></div>
+      <div class="dec"><b>③ フォロワー何人未満を外すか</b><p>3,000人あたりが目安ですが、候補が4割ほど減ります。ご指定いただければそのとおりにします。<br><strong>あわせて、フォロワーの多い医師の方は残してよいかも教えてください。</strong>先生がいちばん伸ばされた2本は、どちらもフォロワー5万2千人の医師の投稿への引用でした。同業者そのものを避けたいということであれば、人数に関係なく外します。</p></div>
+    </div>
+  </section>
+
+  <div class="divider">
+    <b>ここから下は、そう判断した理由です</b>
+    お時間のあるときで結構です。数字はすべて実際の記録から出しています。
+  </div>
+
+  <section class="sec">
+    <span class="sec-no">01</span>
+    <h2>なぜクマが埋もれていたのか</h2>
+    <p>この7日間でページに並んだ候補は、のべ<strong>97件</strong>。そのうち<strong>51件（52.6%）がクマ</strong>でした。数は足りていました。</p><p>ところが同じ7日間で「最初に見える5件」は、のべ<strong>35枠</strong>（5件×7日）。そこに入ったクマは<strong>14枠（40.0%）</strong>だけです。埋もれていた理由は、<span class="u">テーマごとに拾う基準が違うのに、並べるときは引用元が見られた回数の順でひとまとめにしている</span>ためです。</p>
+    <p>クマについて書かれた他の人の投稿は、Xでは数百〜2,000回しか見られません。そのため「800回以上見られていれば拾う」と低めに設定してあります。一方、肌やスキンケアの話は数万回見られるので、こちらは「5,000回以上」です。</p><p><strong>そのうえで全部を見られた回数の順に並べているので、わざわざ基準を下げて拾ったクマが、そのせいで下に沈みます。</strong></p>
+
+    <div class="fig">
+      <p class="fig-h">候補全体と、最初に見える5件の差</p>
+      <p class="fig-s">候補のべ97件に占める割合と、「最初の5件」のべ35枠に占める割合の差（ポイント）。<br>右に伸びているほど「最初の5件に多く出る」、左に伸びているほど「奥に沈む」</p>
+      <svg viewBox="0 0 680 300" role="img" aria-label="美容の誤解が12.6ポイント増え、クマが12.6ポイント減っている">
+        <line x1="375" y1="30" x2="375" y2="270" stroke="var(--line)" stroke-width="1"></line>
+        <text x="375" y="20" fill="var(--muted)" font-size="13" font-family="Noto Sans JP, sans-serif" text-anchor="middle">変化なし</text>
+        <text x="168" y="49" fill="var(--ink)" font-size="14" text-anchor="end" font-weight="700">美容の誤解</text>
+        <rect x="375" y="36" width="194" height="18" rx="3" fill="var(--hada)"></rect>
+        <text x="579" y="49" fill="var(--hada)" font-size="14" font-family="IBM Plex Mono, monospace" font-weight="600">+12.6</text>
+        <text x="168" y="89" fill="var(--ink-2)" font-size="14" text-anchor="end">時事・トレンド</text>
+        <rect x="375" y="76" width="32" height="18" rx="3" fill="var(--hada-soft)"></rect>
+        <text x="417" y="89" fill="var(--muted)" font-size="13" font-family="IBM Plex Mono, monospace">+2.1</text>
+        <text x="168" y="129" fill="var(--ink-2)" font-size="14" text-anchor="end">業界の問題</text>
+        <rect x="375" y="116" width="9" height="18" rx="2" fill="var(--hada-soft)"></rect>
+        <text x="394" y="129" fill="var(--muted)" font-size="13" font-family="IBM Plex Mono, monospace">+0.6</text>
+        <text x="168" y="169" fill="var(--ink-2)" font-size="14" text-anchor="end">広く一般</text>
+        <rect x="372" y="156" width="3" height="18" rx="1" fill="var(--kuma-soft)"></rect>
+        <text x="362" y="169" fill="var(--muted)" font-size="13" font-family="IBM Plex Mono, monospace" text-anchor="end">-0.2</text>
+        <text x="168" y="209" fill="var(--ink-2)" font-size="14" text-anchor="end">皮膚科</text>
+        <rect x="337" y="196" width="38" height="18" rx="3" fill="var(--kuma-soft)"></rect>
+        <text x="327" y="209" fill="var(--muted)" font-size="13" font-family="IBM Plex Mono, monospace" text-anchor="end">-2.5</text>
+        <text x="168" y="249" fill="var(--ink)" font-size="14" text-anchor="end" font-weight="700">クマ・目元</text>
+        <rect x="181" y="236" width="194" height="18" rx="3" fill="var(--kuma)"></rect>
+        <text x="171" y="249" fill="var(--kuma)" font-size="14" font-family="IBM Plex Mono, monospace" font-weight="600" text-anchor="end">-12.6</text>
+        <text x="375" y="290" fill="var(--muted)" font-size="13" font-family="Noto Sans JP, sans-serif" text-anchor="middle">← 奥に沈む　　　　　最初に出る →</text>
+      </svg>
+      <p class="fig-n">クマは候補全体では52.6%なのに、最初の5件では40.0%。12.6ポイント沈んでいます。美容の誤解はその逆で、10.3%が22.9%へ、ちょうど12.6ポイント浮いています。入れ替えているのは引用元が見られた回数だけで、内容の良し悪しは見ていません。<br>9月11日は、その日の候補12件のうち7件がクマだったのに、最初の5件に入ったのは1件だけでした。</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <span class="sec-no">02</span>
+    <h2>今どうやって探しているか</h2>
+    <p>「まずクマを探して、なければ他」ではありません。<strong>6つのテーマを平等に、1本ずつ順番に検索しています。</strong></p>
+
+    <div class="rounds">
+      <div class="rnd">
+        <span class="rnd-k">1周目</span>
+        <span class="chips"><span class="chip k">クマ</span><span class="chip">業界</span><span class="chip">皮膚科</span><span class="chip">美容</span><span class="chip">一般</span><span class="chip">時事</span></span>
+      </div>
+      <div class="rnd">
+        <span class="rnd-k">2周目</span>
+        <span class="chips"><span class="chip k">クマ</span><span class="chip">業界</span><span class="chip">皮膚科</span><span class="chip">美容</span><span class="chip">一般</span><span class="chip">時事</span></span>
+      </div>
+    </div>
+    <p class="rnd-end">ここで<strong>20件たまるか、120件読んだら終了</strong>です。Xは読むたびに課金されるため上限を決めてあります。通常はこの2周で終わります。<br>候補が5件を切った日だけ、世の中の話題 → 隣の施術 → 韓国・英語圏、と探す範囲を広げます。<strong>この7日間、一度もそこまで行っていません。</strong></p>
+    <p style="font-size:14.5px;color:var(--muted);">※ クマだけ2本引く設定にしてあったのですが、プログラム側で効いていませんでした。すでに直してあります。</p>
+  </section>
+
+  <section class="sec">
+    <span class="sec-no">03</span>
+    <h2>「引用元のインプが1万未満なら候補にしない」にすると、何が消えるか</h2>
+    <p>これまで先生にお出しした候補は、重複を除いて<strong>61件</strong>です。これを引用元のインプで選り分けました。<strong>1万回を超えていたのは12件、5件に1件だけ</strong>です。</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>引用元のインプ</th><th>残る候補</th><th>うちクマ</th><th>うち肌の話</th><th>先生が使った9件</th></tr></thead>
+        <tbody>
+          <tr class="now"><td>今のまま</td><td>61件</td><td>51%</td><td>18%</td><td>9件 残る</td></tr>
+          <tr><td>2,000回〜</td><td>46件</td><td>35%</td><td>24%</td><td>7件 残る</td></tr>
+          <tr><td>3,000回〜</td><td>38件</td><td>29%</td><td>29%</td><td>6件 残る</td></tr>
+          <tr><td>5,000回〜</td><td>25件</td><td>28%</td><td>28%</td><td>3件 残る</td></tr>
+          <tr class="pick"><td>1万回〜</td><td>12件</td><td>25%</td><td>42%</td><td>1件 残る</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13.5px;color:var(--muted);line-height:1.85;margin-top:10px;">「うちクマ」「うち肌の話」は、<strong>その基準で残った候補の中での割合</strong>です。たとえば1万回の行なら、残った12件のうちクマが3件で25%、肌の話が5件で42%。</p>
+    <p><strong>基準を上げるほどクマが減り、肌の話が増えます。</strong>クマの話は、そもそも大きく見られている投稿がほとんどないためです。3,000回で両者が並び、1万回では25%対42%と完全に逆転します。ご要望の「クマを多めに」と「肌に偏らないで」が、両方とも逆方向に動いてしまいます。</p>
+
+    <div class="fig">
+      <p class="fig-h">それに、先生が使われた9件のうち8件が消えます</p>
+      <p class="fig-s">実際に投稿された9件。左は引用元が見られた回数、青い棒は<strong>先生の投稿</strong>が得たいいねの数です</p>
+      <div class="used">
+        <div class="u-head"><span class="u-imp">引用元</span><span class="u-bar"></span><span class="u-like">いいね</span></div>
+        <div class="u-row"><span class="u-imp">130,945</span><span class="u-bar"><i style="width:31%"></i></span><span class="u-like">4</span></div>
+        <div class="cutline">引用元のインプ1万で切ると、ここから下は全部なくなります</div>
+        <div class="u-row"><span class="u-imp">8,771</span><span class="u-bar"><i style="width:100%"></i></span><span class="u-like">13</span></div>
+        <div class="u-row"><span class="u-imp">5,647</span><span class="u-bar"><i style="width:69%"></i></span><span class="u-like">9</span></div>
+        <div class="u-row"><span class="u-imp">4,152</span><span class="u-bar"><i style="width:8%"></i></span><span class="u-like">1</span></div>
+        <div class="u-row"><span class="u-imp">3,576</span><span class="u-bar"><i style="width:31%"></i></span><span class="u-like">4</span></div>
+        <div class="u-row"><span class="u-imp">3,207</span><span class="u-bar"><i style="width:15%"></i></span><span class="u-like">2</span></div>
+        <div class="u-row"><span class="u-imp">2,390</span><span class="u-bar"><i style="width:38%"></i></span><span class="u-like">5</span></div>
+        <div class="u-row"><span class="u-imp">1,480</span><span class="u-bar"><i style="width:31%"></i></span><span class="u-like">4</span></div>
+        <div class="u-row"><span class="u-imp">856</span><span class="u-bar"><i style="width:38%"></i></span><span class="u-like">5</span></div>
+      </div>
+      <p class="fig-n">引用元が1万回を超えていたのは、いちばん上の13万回の1件だけ。しかもその1件を引用した先生の投稿が、結果はいちばん下のほう（いいね4件）でした。<strong>いちばん伸びた2本（いいね13件と9件）の引用元は8,771回と5,647回なので、1万回で切ると候補に上がってきません。</strong></p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <span class="sec-no">04</span>
+    <h2>探しても見つからないもの</h2>
+    <p>実際にXを検索して、中身を一件ずつ確かめました。</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>何で探したか</th><th>引用元の表示回数</th><th>出てくる中身</th></tr></thead>
+        <tbody>
+          <tr><td>コンシーラー・隠す</td><td>27〜573回</td><td style="text-align:left;">一般の方の生の声。宣伝はゼロ</td></tr>
+          <tr><td>脂肪注入・ハムラ等</td><td>460〜3,878回</td><td style="text-align:left;">ほぼ全部、クリニックや医師の症例宣伝</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>「バズっていて、なおかつ医師の宣伝ではないクマの投稿」は、Xにほとんど存在しません。</strong>数字が出ているものは同業者の宣伝で、一般の方の声は数十〜数百回しか表示されないためです。<strong>「バズを増やす」と「無名の医師を出さない」は、クマに関しては同時に叶えるのが難しい</strong>ということになります。そのため、バズは席を1つ設けて確実に入れる形にし、クマの席は数字で切らずに残しています。</p>
+  </section>
+
+  <section class="sec">
+    <span class="sec-no">05</span>
+    <h2>ついでに直したこと</h2>
+    <p>調べる過程で、入っているべきなのに検索する言葉に入っていないものが見つかりました。すでに追加済みです（9個 → 13個）。</p>
+    <div class="tiers">
+      <div class="tier"><b>脂肪注入・ナノリッチ</b><span>青クマの主力治療なのに、どこにも入っていませんでした</span></div>
+      <div class="tier"><b>ひらがなの「くま」</b><span>患者さんの書き方を取り逃していました</span></div>
+      <div class="tier"><b>グロースファクター</b><span>しこりなどのトラブルが語られやすい言葉です</span></div>
+      <div class="tier"><b>ミッドフェイスリフト</b><span>evoリフト法・表ミッドフェイスリフト法の受け皿がありませんでした</span></div>
+    </div>
+  </section>
+
+  <div class="caveat">
+    <b>この数字の確からしさについて</b>
+    <p>すべて実際の記録から出していますが、<strong>お出しした候補61件、実際に投稿された9件</strong>が元です。とくに「1万回にすると1件しか残らない」は9件だけの話なので、たまたまの可能性も残ります。席を決める方式なら毎日バズが1件は必ず目に入るので、<strong>1か月ほどで20件くらい溜まり、本当に1万回以上が伸びるのかを確かめられます。</strong>いきなり「1万回未満は候補にしない」にすると、確かめる材料ごとなくなります。</p>
+  </div>
+
+  <p class="foot">
+    調べた対象：先生にお出しした候補61件（9月3日〜11日）／実際に投稿された9件／ページの履歴7日分
+  </p>
+
+</div>
+
+</body></html>
