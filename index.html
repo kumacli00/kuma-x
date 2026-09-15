@@ -6,53 +6,372 @@
 <title>今日の引用候補</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>
-  :root{
-    --paper:#F7F8FA; --surface:#FFFFFF; --sunken:#EEF1F5;
-    --ink:#151A22; --muted:#667081; --faint:#8C94A1;
-    --line:#DEE3EA; --line-soft:#EBEEF3;
-    --accent:#23666A; --accent-ink:#1B5155; --accent-bg:#E4EFEF;
-    --gold:#8A6420; --gold-bg:#F6EFDF;
-    --shadow:0 1px 2px rgba(21,26,34,.05),0 6px 20px rgba(21,26,34,.06);
-    --display:"Shippori Mincho","Hiragino Mincho ProN",serif;
-    --body:"Zen Kaku Gothic New","Hiragino Sans",system-ui,sans-serif;
-    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-  }
-  @media (prefers-color-scheme:dark){
-    :root:not([data-theme="light"]){
-      --paper:#0F131A; --surface:#161B24; --sunken:#1B212B;
-      --ink:#E7EAF0; --muted:#9BA4B2; --faint:#79828F;
-      --line:#262E3A; --line-soft:#1E2530;
-      --accent:#6FB5B5; --accent-ink:#8CC9C7; --accent-bg:#15282A;
-      --gold:#D2A85C; --gold-bg:#2A2317;
-      --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3);
-    }
-  }
-  :root[data-theme="dark"]{
-    --paper:#0F131A; --surface:#161B24; --sunken:#1B212B;
-    --ink:#E7EAF0; --muted:#9BA4B2; --faint:#79828F;
-    --line:#262E3A; --line-soft:#1E2530;
-    --accent:#6FB5B5; --accent-ink:#8CC9C7; --accent-bg:#15282A;
-    --gold:#D2A85C; --gold-bg:#2A2317;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3);
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--paper);color:var(--ink);
-    font-family:var(--body);font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:40rem;margin:0 auto;padding:2rem 1rem 5rem}
+<style>/* ============================================================
+   クマクリ ダッシュボード 共通スタイル（全ページの土台）
+
+   どの gen_*.py も、まずこのファイルを <style> に展開してから
+   ページ固有の CSS を後ろに足す。順番が意味を持つので入れ替えないこと。
+
+   ■ 2つの見た目（参考画像に合わせて 2026-09-15 に決めた）
+     1. 明るい管理画面（既定）
+        薄いグレーの地に白いタイル。数字は色つきで大きく。
+        上に .topbar があるページ（業務・経営・ネタ・議事録・KPI）は
+        .topbar が左の濃い色のサイドバーになる（ナビ・検索・絞り込みはそこに入る）。
+     2. ダークの光る版（<html class="theme-glow">）
+        紺の地に紫〜オレンジの光。診断レポート4本（IG / X / TikTok / YouTube）で使う。
+        色トークンを丸ごと差し替えているだけなので、部品のクラスは共通。
+
+   ■ 書体
+     見出し・本文・数字すべてゴシック（Noto Sans JP）。明朝は使わない（読みにくい）。
+     等幅（IBM Plex Mono）はコードだけ。
+
+   ■ 旧変数の別名
+     各ページの古い CSS（--plane / --card / --s1 など）がそのまま動くよう、
+     末尾で新しい色に橋渡ししている。新しく書く CSS は新しい名前を使うこと。
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+:root{
+  color-scheme:light;
+  --ground:#EEF1F5;
+  --surface:#FFFFFF;
+  --surface-2:#F4F6F9;
+  --ink:#1E2430;
+  --ink-soft:#586273;
+  --ink-faint:#76808F;
+  --rule:#E2E6EC;
+  --rule-soft:#EDF0F4;
+  --zebra:#F8FAFC;
+  /* 主色：ティール（道具・肯定） */
+  --accent:#149E9B;
+  --accent-soft:#DCF3F2;
+  --accent-ink:#0F7D7A;
+  /* 副色：紫（診断・強調） */
+  --kuma:#7C5CFF;
+  --kuma-soft:#ECE7FF;
+  --kuma-ink:#5A3FE0;
+  /* 状態 */
+  --warn:#E14B50;
+  --warn-soft:#FDE8E9;
+  --good:#2FB36A;
+  --good-soft:#E2F6EA;
+  --gold:#D99A00;
+  --gold-soft:#FFF3D1;
+  /* タイルの数字を順に塗る色（参考画像2の色つき数字） */
+  --n1:#1E2430;--n2:#2FB36A;--n3:#E14B50;--n4:#149E9B;--n5:#7C5CFF;--n6:#F08A24;
+  /* サイドバー */
+  --side:#20434E;
+  --side-2:#183740;
+  --side-ink:rgba(255,255,255,.78);
+  --shadow:0 1px 2px rgba(30,36,48,.04),0 10px 30px rgba(30,36,48,.06);
+  --r:14px;
+  --glow:linear-gradient(90deg,#7C5CFF,#FF7A59);
+  --display:"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  --body:"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  --mono:"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  --code:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+/* ---- ダークの光る版（診断レポート） ---- */
+html.theme-glow{
+  color-scheme:dark;
+  --ground:#0F1326;
+  --surface:#171C35;
+  --surface-2:#1F2544;
+  --ink:#EEF0FA;
+  --ink-soft:#B5BBD4;
+  --ink-faint:#8A92B0;
+  --rule:#2B3358;
+  --rule-soft:#242B4C;
+  --zebra:rgba(255,255,255,.025);
+  --accent:#FF7A59;
+  --accent-soft:rgba(255,122,89,.16);
+  --accent-ink:#FF9E86;
+  --kuma:#A66CFF;
+  --kuma-soft:rgba(166,108,255,.18);
+  --kuma-ink:#C7A4FF;
+  --warn:#FF5C7A;
+  --warn-soft:rgba(255,92,122,.16);
+  --good:#3FE0A6;
+  --good-soft:rgba(63,224,166,.14);
+  --gold:#FFC857;
+  --gold-soft:rgba(255,200,87,.16);
+  --n1:#EEF0FA;--n2:#3FE0A6;--n3:#FF7A59;--n4:#5AD8FF;--n5:#C7A4FF;--n6:#FFC857;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 40px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--body);font-size:15.5px;line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+html.theme-glow body{
+  background:var(--ground);
+  background-image:
+    radial-gradient(60% 40% at 15% 0%,rgba(124,92,255,.35),transparent 60%),
+    radial-gradient(45% 35% at 90% 5%,rgba(255,122,89,.28),transparent 60%),
+    radial-gradient(50% 40% at 60% 100%,rgba(90,216,255,.10),transparent 60%);
+  background-attachment:fixed;
+}
+h1,h2,h3,h4{font-family:var(--display);font-weight:700;text-wrap:balance;letter-spacing:-.005em;line-height:1.4;color:var(--ink)}
+a{color:var(--accent-ink)}
+b,strong{font-weight:700;color:var(--ink)}
+code,kbd{font-family:var(--code);font-size:.9em;background:var(--surface-2);border:1px solid var(--rule-soft);border-radius:4px;padding:1px 5px}
+.mono{font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+::selection{background:var(--accent-soft)}
+
+/* ---- ページ幅 ---- */
+.wrap{max-width:960px;margin:0 auto;padding:0 24px 88px}
+
+/* ---- マストヘッド（レポート型・日次道具） ----
+   <header>
+     <span class="karte">Instagram 診断</span>   ← 小さな札になる
+     <div class="eyebrow">…</div> <h1>…</h1> <p class="lede">…</p> <div class="provenance">…</div>
+   </header> */
+header{position:relative;padding:44px 0 26px;margin:0 0 26px;border-bottom:1px solid var(--rule)}
+header > h1{font-size:32px;margin:0 0 16px;line-height:1.4;font-weight:900;letter-spacing:-.01em}
+.karte{
+  display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.12em;
+  padding:4px 12px;border-radius:999px;margin:0 0 14px;
+  color:#fff;background:var(--kuma);
+}
+.karte.tool{background:var(--accent)}
+.eyebrow{font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint);font-weight:700;margin:0 0 10px}
+.lede{font-size:16px;color:var(--ink-soft);max-width:64ch;margin:0 0 6px;line-height:1.85}
+.provenance{margin-top:20px;font-size:12.5px;color:var(--ink-faint);display:flex;flex-wrap:wrap;gap:6px 20px;font-variant-numeric:tabular-nums}
+.provenance span{white-space:nowrap}
+/* 光る版：見出しの下に光の線 */
+html.theme-glow header{border-bottom:0;padding-top:52px}
+html.theme-glow header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:2px;background:var(--glow)}
+html.theme-glow .karte{background:var(--glow);color:#fff}
+html.theme-glow header > h1{font-size:34px;color:#fff;text-shadow:0 2px 24px rgba(124,92,255,.35)}
+html.theme-glow .eyebrow{color:var(--kuma-ink)}
+
+/* ---- アプリ型（左サイドバー） ----
+   <div class="topbar">
+     <header class="app">
+       <span class="karte tool">業務ナレッジ</span>
+       <div class="app-t"><h1>…</h1><div class="sub">…</div></div>
+     </header>
+     <nav class="tabs"><button class="tab active">…</button>…</nav>
+     （#searchbar / .controls などもこの中に入れてよい）
+   </div>
+   <main>…</main>
+   広い画面では .topbar が左の縦長サイドバーに、狭い画面では上の帯になる。 */
+body:has(> .topbar){display:grid;grid-template-columns:256px minmax(0,1fr);min-height:100vh;align-items:start}
+body:has(> .topbar) > main,body:has(> .topbar) > .wrap{grid-column:2;min-width:0}
+.topbar{
+  grid-column:1;grid-row:1 / span 20;position:sticky;top:0;height:100vh;overflow:auto;
+  background:var(--side);background-image:linear-gradient(180deg,var(--side),var(--side-2));
+  color:#fff;display:flex;flex-direction:column;gap:6px;padding:18px 14px 24px;
+  scrollbar-width:thin;
+}
+header.app{border:0;padding:6px 8px 14px;margin:0;display:block;border-bottom:1px solid rgba(255,255,255,.12)}
+header.app > .karte{
+  display:inline-block;background:rgba(255,255,255,.14);color:#fff;
+  font-size:10.5px;letter-spacing:.14em;padding:3px 10px;border-radius:999px;margin:0 0 12px;
+}
+header.app h1{font-size:18px;margin:0;line-height:1.35;font-weight:900;color:#fff}
+header.app .sub{color:var(--side-ink);font-size:12px;margin-top:6px;line-height:1.6;font-variant-numeric:tabular-nums}
+nav.tabs,nav.index{display:flex;flex-direction:column;gap:2px;padding:8px 0 4px}
+nav.tabs .tab,nav.index .tab{
+  appearance:none;border:0;background:transparent;color:var(--side-ink);cursor:pointer;text-align:left;
+  font-family:var(--body);font-size:14px;font-weight:700;padding:10px 12px;border-radius:9px;
+  text-decoration:none;line-height:1.4;display:flex;align-items:center;gap:10px;
+}
+nav.tabs .tab::before,nav.index .tab::before{content:"";width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);flex:none}
+nav.tabs .tab:hover,nav.index .tab:hover{background:rgba(255,255,255,.08);color:#fff}
+nav.tabs .tab.active,nav.index .tab.active{background:#fff;color:var(--side);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+nav.tabs .tab.active::before,nav.index .tab.active::before{background:var(--accent)}
+/* サイドバーの中の検索・絞り込み（work の #searchbar、neta の .controls） */
+.topbar #searchbar,.topbar .controls{padding:10px 6px 4px;background:transparent;border:0;display:block}
+.topbar input[type=search],.topbar input[type=text],.topbar #searchbar input,.topbar #kw{
+  width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;
+  border-radius:9px;padding:9px 12px;font:inherit;font-size:13.5px;outline:none;
+}
+.topbar input::placeholder{color:rgba(255,255,255,.5)}
+.topbar input:focus,.topbar #searchbar input:focus,.topbar #kw:focus{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4)}
+.topbar #searchinfo,.topbar .findhint{display:block;color:var(--side-ink);font-size:12px;margin-top:6px}
+.topbar .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.topbar .chip{
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--side-ink);
+  padding:4px 10px;border-radius:999px;font-size:12px;cursor:pointer;font-weight:700;font-family:var(--body);
+}
+.topbar .chip:hover{background:rgba(255,255,255,.12);color:#fff}
+.topbar .chip.active{background:#fff;color:var(--side);border-color:#fff}
+main{padding:28px 32px 80px}
+@media (max-width:900px){
+  body:has(> .topbar){display:block}
+  .topbar{position:sticky;top:0;z-index:10;height:auto;max-height:none;overflow:visible;grid-row:auto;padding:12px 14px 10px;gap:4px}
+  header.app{display:flex;align-items:center;gap:12px;padding:0 0 8px}
+  header.app > .karte{margin:0}
+  header.app h1{font-size:16px}
+  header.app .sub{display:none}
+  nav.tabs,nav.index{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:4px 0 2px;scrollbar-width:none}
+  nav.tabs::-webkit-scrollbar,nav.index::-webkit-scrollbar{display:none}
+  nav.tabs .tab,nav.index .tab{padding:7px 12px;font-size:13px;white-space:nowrap}
+  nav.tabs .tab::before,nav.index .tab::before{display:none}
+  .topbar .chips{margin-top:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  main{padding:18px 16px 70px}
+}
+
+/* ---- 節見出し ---- */
+section{margin-top:56px}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-top:6px}
+.sec-num{font-size:12px;font-weight:900;color:#fff;background:var(--kuma);letter-spacing:.06em;flex:none;padding:3px 10px;border-radius:999px;line-height:1.5;font-variant-numeric:tabular-nums}
+html.theme-glow .sec-num{background:var(--glow)}
+h2{font-size:24px;margin:0;font-weight:900}
+.sec-sub{color:var(--ink-soft);margin:8px 0 24px;max-width:64ch;font-size:15px}
+h3{font-size:17px;margin:24px 0 8px}
+p{margin:0 0 18px}
+
+/* ---- カード ---- */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:20px 22px;margin:16px 0;box-shadow:var(--shadow)}
+html.theme-glow .card{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09);backdrop-filter:blur(8px)}
+
+/* ---- 数字タイル（白いタイル・色つきの数字） ---- */
+.stats,.kpis,.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:26px 0;background:none;border:0}
+.stat,.kpis>.kpi,.kpi-grid>.kpi{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:20px 20px 18px;margin:0;
+  box-shadow:var(--shadow);position:relative;min-width:0;
+}
+html.theme-glow .stat,html.theme-glow .kpis>.kpi,html.theme-glow .kpi-grid>.kpi{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09)}
+.stat .k,.kpi .label,.kpi-label{font-size:12px;color:var(--ink-faint);letter-spacing:.02em;margin-bottom:10px;line-height:1.5;font-weight:700}
+.stat .v,.kpi .val,.kpi-val{font-size:34px;font-weight:900;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin:0;color:var(--n1)}
+.stat .n,.kpi .note,.kpi-sub{font-size:12.5px;color:var(--ink-soft);margin-top:10px;line-height:1.55}
+.stat:nth-child(6n+2) .v,.kpi:nth-child(6n+2) .val,.kpi:nth-child(6n+2) .kpi-val{color:var(--n2)}
+.stat:nth-child(6n+3) .v,.kpi:nth-child(6n+3) .val,.kpi:nth-child(6n+3) .kpi-val{color:var(--n3)}
+.stat:nth-child(6n+4) .v,.kpi:nth-child(6n+4) .val,.kpi:nth-child(6n+4) .kpi-val{color:var(--n4)}
+.stat:nth-child(6n+5) .v,.kpi:nth-child(6n+5) .val,.kpi:nth-child(6n+5) .kpi-val{color:var(--n5)}
+.stat:nth-child(6n+6) .v,.kpi:nth-child(6n+6) .val,.kpi:nth-child(6n+6) .kpi-val{color:var(--n6)}
+.v.warn,.val.warn,.stat .v.warn{color:var(--warn)!important} .v.good,.val.good,.stat .v.good{color:var(--good)!important} .v.acc,.val.acc{color:var(--accent)!important}
+
+/* ---- ファネル ---- */
+.funnel{display:flex;flex-direction:column;gap:10px;margin:26px 0}
+.fstep{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 20px;flex-wrap:wrap;box-shadow:var(--shadow)}
+html.theme-glow .fstep{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09)}
+.fbar{height:26px;background:var(--glow);flex:none;border-radius:8px;min-width:4px;max-width:100%}
+.fmeta{flex:1;min-width:0}
+.fname{font-size:14.5px;font-weight:700}
+.fnote{font-size:12.5px;color:var(--ink-faint);line-height:1.6}
+.fval{font-size:22px;font-weight:900;flex:none;font-variant-numeric:tabular-nums}
+.fstep.est{border-style:dashed}
+.fstep.est .fbar{background:var(--ink-faint);opacity:.5}
+
+/* ---- 良い点リスト ---- */
+.good-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:26px 0}
+.good-item{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+html.theme-glow .good-item{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09)}
+.good-item h3{font-size:15px;margin:0 0 8px;font-weight:700}
+.good-item h3::before{content:"✓";color:var(--good);margin-right:8px;font-weight:900}
+.good-item p{font-size:13.5px;color:var(--ink-soft);margin:0}
+
+/* ---- 表 ---- */
+.tw{overflow-x:auto;margin:26px 0;border:1px solid var(--rule);background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow)}
+html.theme-glow .tw{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.09)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+thead th{background:var(--surface-2);font-size:12px;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;border-bottom:1px solid var(--rule);white-space:nowrap}
+html.theme-glow thead th{background:rgba(255,255,255,.05)}
+tbody tr:nth-child(even) td{background:var(--zebra)}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+tr.hi td{background:var(--kuma-soft)!important}
+tr.lo td{background:var(--warn-soft)!important}
+
+/* ---- 目次 ---- */
+.toc{margin:28px 0 0;border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+html.theme-glow .toc{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09)}
+.toc-head,.toc>h2,.toc>b{display:block;padding:12px 20px;border-bottom:1px solid var(--rule);font-size:13px;letter-spacing:.04em;color:var(--ink-soft);font-weight:700;margin:0}
+.toc ol{list-style:none;margin:0;padding:8px 0;display:grid;grid-template-columns:1fr 1fr;gap:0;columns:auto}
+.toc li{margin:0;font-size:14.5px;break-inside:avoid}
+.toc a{display:flex;gap:12px;align-items:baseline;padding:7px 20px;color:var(--ink);text-decoration:none;line-height:1.6}
+.toc a:hover{background:var(--surface-2);color:var(--accent-ink)}
+.toc .tn{font-size:12px;font-weight:900;color:var(--kuma-ink);flex:none;min-width:2.2em;font-variant-numeric:tabular-nums}
+@media (max-width:640px){.toc ol{grid-template-columns:1fr}}
+
+/* ---- 先頭へ戻る ---- */
+.to-top,.to-toc{
+  position:fixed;right:16px;bottom:16px;z-index:50;display:none;align-items:center;gap:7px;
+  padding:10px 15px;border-radius:999px;background:var(--surface);border:1px solid var(--rule);
+  box-shadow:var(--shadow);color:var(--ink);text-decoration:none;font:inherit;font-size:13px;font-weight:700;line-height:1;cursor:pointer;
+}
+.to-top.is-on,.to-toc.is-on{display:inline-flex}
+.to-top:hover,.to-toc:hover{color:var(--accent-ink);border-color:var(--accent)}
+
+/* ---- 札（タグ・状態） ---- */
+.tag,.badge,.pill,.chip{font-family:var(--body);font-weight:700;border-radius:999px}
+
+/* ---- ボタン ---- */
+button{font-family:var(--body)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--body);font-size:14px;font-weight:700;padding:10px 18px;border-radius:999px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;text-decoration:none;line-height:1.3}
+.btn:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--accent-ink)}
+.btn.ghost:hover{background:var(--accent-soft)}
+
+/* ---- 畳む ---- */
+details>summary{cursor:pointer}
+details>summary::-webkit-details-marker{display:none}
+
+/* ---- 注記の帯 ---- */
+.callout,.note-box{background:var(--surface-2);border-left:4px solid var(--accent);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;margin:14px 0;font-size:14px;color:var(--ink-soft)}
+.callout.warn{border-left-color:var(--warn);background:var(--warn-soft);color:var(--ink)}
+
+/* ---- 印刷 ---- */
+@media print{
+  body{background:#fff}
+  .to-top,.to-toc{display:none!important}
+  .topbar{position:static;height:auto}
+}
+
+/* ---- 動きを抑える ---- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+/* ---- 狭い画面 ---- */
+@media (max-width:640px){
+  .wrap{padding:0 16px 64px}
+  header{padding:26px 0 20px;margin-bottom:22px}
+  header > h1{font-size:26px;overflow-wrap:anywhere}
+  html.theme-glow header > h1{font-size:27px}
+  h2{font-size:21px}
+  .stat .v,.kpi .val,.kpi-val{font-size:28px}
+  .stats,.kpis,.kpi-grid{gap:10px;grid-template-columns:repeat(2,1fr)}
+  th,td{padding:9px 11px}
+}
+
+/* ============================================================
+   旧変数の別名（各ページの既存 CSS を新しい色で動かすため）
+   ============================================================ */
+:root,html.theme-glow{
+  --plane:var(--ground);--border:var(--rule);--muted:var(--ink-faint);--ink2:var(--ink-soft);
+  --accentsoft:var(--accent-soft);--goodsoft:var(--good-soft);--bad:var(--warn);--badsoft:var(--warn-soft);
+  --warnsoft:var(--gold-soft);--goldsoft:var(--gold-soft);--done:var(--ink-faint);
+  --s1:var(--kuma);--s1soft:var(--kuma-soft);--grid:var(--rule-soft);--axis:var(--rule);--bd:var(--rule);
+  --bg:var(--ground);--card:var(--surface);--line:var(--rule);--line-soft:var(--rule-soft);--sub:var(--ink-faint);
+  --fg:var(--ink);--paper:var(--ground);--sunken:var(--surface-2);--faint:var(--ink-faint);
+  --accent-bg:var(--accent-soft);--gold-bg:var(--gold-soft);
+}
+
+  /* 今日の引用候補（道具のページ＝緑）
+     sns/report_base.css の "後" に読まれる。配色・書体・header と背表紙タブ・
+     .wrap の余白は共通側。ここには この画面だけの部品を置く。 */
+
+  body{font-size:16px;line-height:1.8}
+  .wrap{max-width:40rem}
 
   header{margin-bottom:1.75rem}
-  .eyebrow{font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
 
   /* 自動更新が止まった朝に気づけるように。古い候補を今日のものと思わせない */
-  .alert{margin:0 0 1.25rem;padding:.9rem 1rem;border-radius:6px;
+  .alert{margin:0 0 1.25rem;padding:.9rem 1rem;border-radius:var(--r);
     background:var(--gold-bg);color:var(--gold);border:1px solid currentColor;
     font-size:.92rem;font-weight:700;line-height:1.7}
   .alert b{font-family:var(--mono)}
-  h1{font-family:var(--display);font-weight:600;font-size:1.75rem;
-    line-height:1.4;margin:0 0 .6rem}
+  header > h1{font-weight:600;font-size:1.75rem;line-height:1.4;margin:0 0 .6rem}
   .sub{font-size:.88rem;color:var(--muted);margin:0}
   .tally{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;
     padding-top:1rem;border-top:1px solid var(--line)}
@@ -63,11 +382,10 @@
   .legend{margin:.9rem 0 0;font-size:.84rem;line-height:1.7;color:var(--muted)}
   .legend b{color:var(--ink)}
   .chip.on{background:var(--accent);color:#fff}
-  :root[data-theme="dark"] .chip.on{color:#0F131A}
-  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip.on{color:#0F131A}}
 
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:6px;
-    margin-bottom:1.25rem;overflow:hidden;box-shadow:var(--shadow);
+  /* 共通の .card は余白つきの紙片。ここでは中の区画が余白を持つので外す */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:0;margin:0 0 1.25rem;overflow:hidden;
     transition:opacity .2s}
   .card.done{border-color:var(--accent)}
   .card.skip{opacity:.45}
@@ -87,7 +405,9 @@
   .src-who b{color:var(--ink);font-weight:700;font-size:.86rem}
   .src-text{font-size:.92rem;line-height:1.75;margin:0 0 .6rem;
     color:var(--ink);white-space:pre-wrap;word-break:break-word}
-  .stats{display:flex;flex-wrap:wrap;gap:.2rem .8rem;
+  /* 共通の .stats は数字タイルの格子。ここでは1行の数字の並びなので打ち消す */
+  .stats{display:flex;flex-wrap:wrap;gap:.2rem .8rem;margin:0;
+    background:none;border:0;border-radius:0;overflow:visible;
     font-family:var(--body);font-size:.82rem;color:var(--muted);
     font-variant-numeric:tabular-nums}
   .stats .rate{color:var(--accent-ink);font-weight:600}
@@ -100,30 +420,28 @@
     color:var(--muted);margin-bottom:.4rem;display:flex;align-items:center}
   .count{margin-left:auto;font-family:var(--mono);font-weight:400;
     font-size:.8rem;font-variant-numeric:tabular-nums}
-  .count.over{color:#B4471F;font-weight:600}
+  .count.over{color:var(--warn);font-weight:600}
   /* 高さは page.js が中身に合わせて伸ばす。固定すると下書きが途中で切れる */
   textarea{width:100%;min-height:3rem;padding:.75rem;border:1px solid var(--line);
-    border-radius:4px;background:var(--paper);color:var(--ink);display:block;
+    border-radius:var(--r);background:var(--paper);color:var(--ink);display:block;
     font-family:var(--body);font-size:.95rem;line-height:1.8;
     resize:none;overflow:hidden}
   textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
 
   .actions{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap}
   button{font-family:var(--body);font-size:.88rem;font-weight:700;
-    padding:.7rem 1rem;border-radius:4px;border:1px solid transparent;
+    padding:.7rem 1rem;border-radius:var(--r);border:1px solid transparent;
     cursor:pointer;min-height:2.9rem}
   button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .btn-post{background:var(--accent);color:#fff;flex:1;min-width:9rem;
     display:inline-flex;align-items:center;justify-content:center;
     font-family:var(--body);font-size:.88rem;font-weight:700;
-    padding:.7rem 1rem;border-radius:4px;min-height:2.9rem;
+    padding:.7rem 1rem;border-radius:var(--r);min-height:2.9rem;
     text-decoration:none;cursor:pointer}
-  :root[data-theme="dark"] .btn-post{color:#0F131A}
-  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-post{color:#0F131A}}
   .btn-copy{background:var(--surface);color:var(--accent-ink);
     border:1px solid var(--accent);display:inline-flex;align-items:center;
     justify-content:center;font-family:var(--body);font-size:.88rem;font-weight:700;
-    padding:.7rem 1rem;border-radius:4px;min-height:2.9rem;
+    padding:.7rem 1rem;border-radius:var(--r);min-height:2.9rem;
     text-decoration:none;cursor:pointer}
   .btn-skip{background:transparent;color:var(--muted);border-color:var(--line)}
   button:hover{opacity:.88}
@@ -131,19 +449,17 @@
 
   /* Xから戻ってきた時の確認。押しただけで投稿に数えないため */
   .card.asking{border-color:var(--gold)}
-  .confirm{margin-top:.75rem;padding:.75rem .85rem;border-radius:4px;
+  .confirm{margin-top:.75rem;padding:.75rem .85rem;border-radius:var(--r);
     background:var(--gold-bg);border:1px solid var(--gold)}
   .confirm-q{margin:0 0 .5rem;font-size:.9rem;font-weight:700;color:var(--gold)}
   .confirm .actions{margin-top:0}
   /* min-width は 375px で2つ並ばない幅。並ぶと文字が折り返して読みにくかった */
   .btn-yes{background:var(--accent);color:#fff;flex:1;min-width:10rem}
-  :root[data-theme="dark"] .btn-yes{color:#0F131A}
-  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-yes{color:#0F131A}}
   .btn-no{background:var(--surface);color:var(--muted);border-color:var(--line);
     flex:1;min-width:10rem}
 
   /* 見送りの取り消し。誤タップ1回で候補が消えたままにならないように */
-  .card.undone{background:var(--sunken);box-shadow:none;border-style:dashed}
+  .card.undone{background:var(--sunken);border-style:dashed}
   .undo-bar{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.7rem 1rem}
   .undo-msg{font-size:.92rem;font-weight:700;color:var(--muted)}
   .undo-who{font-family:var(--mono);font-size:.8rem;font-weight:400;
@@ -152,14 +468,13 @@
     border:1px solid var(--accent);padding:.5rem 1.1rem;min-height:2.6rem}
 
   .note{margin-top:1.5rem;padding:1rem 1.15rem;background:var(--surface);
-    border:1px solid var(--line);border-radius:6px;font-size:.88rem;
+    border:1px solid var(--line);border-radius:var(--r);font-size:.88rem;
     line-height:1.75;color:var(--muted)}
   .note b{color:var(--ink)}
   .status{font-size:.84rem;color:var(--muted);margin-top:.5rem;min-height:1.2rem}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
   .more{display:block;width:100%;margin:.5rem 0 1.5rem;padding:.9rem;
-    background:var(--surface);border:1px dashed var(--line);border-radius:6px;
+    background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);
     color:var(--accent);font-weight:700;font-size:.9rem;cursor:pointer}
   .more:hover{background:var(--accent-bg)}
   .tier{font-family:var(--body);font-size:.78rem;font-weight:500;letter-spacing:.02em;
@@ -174,11 +489,11 @@
   .why{font-size:.88rem;color:var(--muted);line-height:1.7;margin:.35rem 0 0}
   .card-h{flex-wrap:wrap}
 
-  .done-note{padding:1rem 1.15rem;background:var(--accent-bg);border-radius:6px;
+  .done-note{padding:1rem 1.15rem;background:var(--accent-bg);border-radius:var(--r);
     color:var(--accent-ink);font-size:.88rem;font-weight:700;text-align:center}
 
   /* すでに投稿した引用リポストの控え */
-  .log{margin:1.4rem 0 0;border:1px solid var(--line);border-radius:6px;
+  .log{margin:1.4rem 0 0;border:1px solid var(--line);border-radius:var(--r);
     background:var(--surface);overflow:hidden}
   .log>summary{cursor:pointer;padding:.7rem .9rem;font-size:.82rem;font-weight:700;
     color:var(--muted);list-style:none}
@@ -201,7 +516,7 @@
 </style>
 </head><body>
 <div class="wrap"><div id="app"></div></div>
-<script id="state" type="application/json">{"updated": "2026-09-15", "updatedAt": "11:00", "show": 5, "target": 2, "items": [{"id": "2097975520071917678", "url": "https://x.com/gjtvdbujumktj/status/2097975520071917678", "text": "こういう目の下のゴルゴ線⬇️ アイクリーム塗った後にアイパッチして寝たらゴルゴ線無くなる、しーっかりアイクリームの成分が浸透するからね‼️ https://t.co/M2lKECrXdS https://t.co/uqEbdGPnUu", "date": "2026-09-10", "author": "gjtvdbujumktj", "authorName": "ねこ🎀🇰🇷7m", "followers": 612, "impressions": 35664, "likes": 348, "reposts": 32, "replies": 2, "quotes": 1, "bookmarks": 128, "rate": 1.89, "tier": "wrinkle", "tierName": "シワ・たるみ・ほうれい線", "query": "(ゴルゴ線 OR マリオネットライン OR ブルドッグ)", "draft": "保湿で角質層が潤うと一時的に皮膚がふっくらして影が薄く見えることはありますよね。ただ、いわゆるゴルゴ線は靭帯の引き込みや深い層の脂肪の減退といった構造的な問題が大きく関係しています。表層のスキンケアだけで根本的に解消するのは限界があるのが実際です。", "why": "スキンケアの効果を認めつつ、ゴルゴ線の医学的な発生機序を補足して誤解を正せるため。", "compose": "https://x.com/compose/post?text=%E4%BF%9D%E6%B9%BF%E3%81%A7%E8%A7%92%E8%B3%AA%E5%B1%A4%E3%81%8C%E6%BD%A4%E3%81%86%E3%81%A8%E4%B8%80%E6%99%82%E7%9A%84%E3%81%AB%E7%9A%AE%E8%86%9A%E3%81%8C%E3%81%B5%E3%81%A3%E3%81%8F%E3%82%89%E3%81%97%E3%81%A6%E5%BD%B1%E3%81%8C%E8%96%84%E3%81%8F%E8%A6%8B%E3%81%88%E3%82%8B%E3%81%93%E3%81%A8%E3%81%AF%E3%81%82%E3%82%8A%E3%81%BE%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E3%81%9F%E3%81%A0%E3%80%81%E3%81%84%E3%82%8F%E3%82%86%E3%82%8B%E3%82%B4%E3%83%AB%E3%82%B4%E7%B7%9A%E3%81%AF%E9%9D%AD%E5%B8%AF%E3%81%AE%E5%BC%95%E3%81%8D%E8%BE%BC%E3%81%BF%E3%82%84%E6%B7%B1%E3%81%84%E5%B1%A4%E3%81%AE%E8%84%82%E8%82%AA%E3%81%AE%E6%B8%9B%E9%80%80%E3%81%A8%E3%81%84%E3%81%A3%E3%81%9F%E6%A7%8B%E9%80%A0%E7%9A%84%E3%81%AA%E5%95%8F%E9%A1%8C%E3%81%8C%E5%A4%A7%E3%81%8D%E3%81%8F%E9%96%A2%E4%BF%82%E3%81%97%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E8%A1%A8%E5%B1%A4%E3%81%AE%E3%82%B9%E3%82%AD%E3%83%B3%E3%82%B1%E3%82%A2%E3%81%A0%E3%81%91%E3%81%A7%E6%A0%B9%E6%9C%AC%E7%9A%84%E3%81%AB%E8%A7%A3%E6%B6%88%E3%81%99%E3%82%8B%E3%81%AE%E3%81%AF%E9%99%90%E7%95%8C%E3%81%8C%E3%81%82%E3%82%8B%E3%81%AE%E3%81%8C%E5%AE%9F%E9%9A%9B%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/gjtvdbujumktj/status/2097975520071917678", "isNew": false, "firstSeen": "2026-09-13"}, {"id": "2098041601029530002", "url": "https://x.com/fjfqv/status/2098041601029530002", "text": "パーツが整ってて今でも十分綺麗😭🫶🏼 もし美容整形に抵抗なければ、目の下の脱脂(クマ取り)をオススメしたいなあ 自分も今年やったけど、目の下の膨らみが無くなることで涙袋が描かなくても際立つようになる… https://t.co/8bw7a9BYRc", "date": "2026-09-10", "author": "fjfqv", "authorName": "お氣の毒に！！！！！！！", "followers": 0, "impressions": 8387, "likes": 5, "reposts": 0, "replies": 1, "quotes": 0, "bookmarks": 5, "rate": 0.2, "tier": "kuma", "tierName": "クマ・目元 直球", "query": "脱脂 (目の下 OR クマ)", "draft": "脱脂で涙袋がはっきりするのは本当ですね。涙袋のすぐ下に眼窩脂肪の膨らみがあると、境目がなだらかにつながって涙袋が埋もれて見えます。膨らみが減ると段差が戻り、本来の涙袋が浮き出てきます。ただ涙袋そのものの厚みには個人差があり、事前の見極めが大事になります。", "why": "脱脂で涙袋が出る体感を、膨らみと涙袋の境目が消える正確な機序で裏付けられる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E8%84%B1%E8%84%82%E3%81%A7%E6%B6%99%E8%A2%8B%E3%81%8C%E3%81%AF%E3%81%A3%E3%81%8D%E3%82%8A%E3%81%99%E3%82%8B%E3%81%AE%E3%81%AF%E6%9C%AC%E5%BD%93%E3%81%A7%E3%81%99%E3%81%AD%E3%80%82%E6%B6%99%E8%A2%8B%E3%81%AE%E3%81%99%E3%81%90%E4%B8%8B%E3%81%AB%E7%9C%BC%E7%AA%A9%E8%84%82%E8%82%AA%E3%81%AE%E8%86%A8%E3%82%89%E3%81%BF%E3%81%8C%E3%81%82%E3%82%8B%E3%81%A8%E3%80%81%E5%A2%83%E7%9B%AE%E3%81%8C%E3%81%AA%E3%81%A0%E3%82%89%E3%81%8B%E3%81%AB%E3%81%A4%E3%81%AA%E3%81%8C%E3%81%A3%E3%81%A6%E6%B6%99%E8%A2%8B%E3%81%8C%E5%9F%8B%E3%82%82%E3%82%8C%E3%81%A6%E8%A6%8B%E3%81%88%E3%81%BE%E3%81%99%E3%80%82%E8%86%A8%E3%82%89%E3%81%BF%E3%81%8C%E6%B8%9B%E3%82%8B%E3%81%A8%E6%AE%B5%E5%B7%AE%E3%81%8C%E6%88%BB%E3%82%8A%E3%80%81%E6%9C%AC%E6%9D%A5%E3%81%AE%E6%B6%99%E8%A2%8B%E3%81%8C%E6%B5%AE%E3%81%8D%E5%87%BA%E3%81%A6%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E6%B6%99%E8%A2%8B%E3%81%9D%E3%81%AE%E3%82%82%E3%81%AE%E3%81%AE%E5%8E%9A%E3%81%BF%E3%81%AB%E3%81%AF%E5%80%8B%E4%BA%BA%E5%B7%AE%E3%81%8C%E3%81%82%E3%82%8A%E3%80%81%E4%BA%8B%E5%89%8D%E3%81%AE%E8%A6%8B%E6%A5%B5%E3%82%81%E3%81%8C%E5%A4%A7%E4%BA%8B%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/fjfqv/status/2098041601029530002", "isNew": false, "firstSeen": "2026-09-12"}, {"id": "2099000119077302661", "url": "https://x.com/Kireinaritee/status/2099000119077302661", "text": "MEGUMIが奥まで浸透するスキンケアしないと意味ないって言ってるけど、これ間違いないな… https://t.co/gnWgIrWpmF", "date": "2026-09-13", "author": "Kireinaritee", "authorName": "肌綺麗になりてぇ。", "followers": 114, "impressions": 346935, "likes": 1349, "reposts": 80, "replies": 2, "quotes": 7, "bookmarks": 556, "rate": 0.76, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "query": "スキンケア (効果 OR 意味ない)", "draft": "肌の奥まで届けたい気持ちはよく分かります。ただ、皮膚には角層のバリア機能があり、化粧品の成分が届くのは基本的に角層までです。むしろ角層をしっかり潤すことが肌の土台を整えることにつながります。浸透の深さより、毎日続けられるかが大事になります。", "why": "「奥まで浸透」の誤解を角層バリアの機序で否定せず補足できる。表示35万で母数が大きい", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E8%82%8C%E3%81%AE%E5%A5%A5%E3%81%BE%E3%81%A7%E5%B1%8A%E3%81%91%E3%81%9F%E3%81%84%E6%B0%97%E6%8C%81%E3%81%A1%E3%81%AF%E3%82%88%E3%81%8F%E5%88%86%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AB%E3%81%AF%E8%A7%92%E5%B1%A4%E3%81%AE%E3%83%90%E3%83%AA%E3%82%A2%E6%A9%9F%E8%83%BD%E3%81%8C%E3%81%82%E3%82%8A%E3%80%81%E5%8C%96%E7%B2%A7%E5%93%81%E3%81%AE%E6%88%90%E5%88%86%E3%81%8C%E5%B1%8A%E3%81%8F%E3%81%AE%E3%81%AF%E5%9F%BA%E6%9C%AC%E7%9A%84%E3%81%AB%E8%A7%92%E5%B1%A4%E3%81%BE%E3%81%A7%E3%81%A7%E3%81%99%E3%80%82%E3%82%80%E3%81%97%E3%82%8D%E8%A7%92%E5%B1%A4%E3%82%92%E3%81%97%E3%81%A3%E3%81%8B%E3%82%8A%E6%BD%A4%E3%81%99%E3%81%93%E3%81%A8%E3%81%8C%E8%82%8C%E3%81%AE%E5%9C%9F%E5%8F%B0%E3%82%92%E6%95%B4%E3%81%88%E3%82%8B%E3%81%93%E3%81%A8%E3%81%AB%E3%81%A4%E3%81%AA%E3%81%8C%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E6%B5%B8%E9%80%8F%E3%81%AE%E6%B7%B1%E3%81%95%E3%82%88%E3%82%8A%E3%80%81%E6%AF%8E%E6%97%A5%E7%B6%9A%E3%81%91%E3%82%89%E3%82%8C%E3%82%8B%E3%81%8B%E3%81%8C%E5%A4%A7%E4%BA%8B%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/Kireinaritee/status/2099000119077302661", "isNew": true, "firstSeen": "2026-09-15"}, {"id": "2098600556013199419", "url": "https://x.com/roppongi_sakai/status/2098600556013199419", "text": "5大やらんでいいこと ・目尻切開たれ目形成グラマラスライン；目尻がパカパカしてシャンプーしみるから白目まで赤くなる ・軽症眼瞼下垂の診断で手術；傷跡さえきれいなら眉下切開が整形顔にならず自然 https://t.co/PZPRRFYFY7", "date": "2026-09-12", "author": "roppongi_sakai", "authorName": "六本木境クリニック", "followers": 52845, "impressions": 11281, "likes": 51, "reposts": 2, "replies": 2, "quotes": 0, "bookmarks": 19, "rate": 0.86, "tier": "industry", "tierName": "業界・警鐘", "query": "脱脂 (過剰 OR 取りすぎ OR やりすぎ)", "draft": "眉下切開が向く方は多いですよね。軽い眼瞼下垂に見えても、原因が挙筋の緩みではなく、皮膚のたるみによる被さりであることは少なくありません。その場合は挙筋を触らず眉下で皮膚を取るほうが、二重の幅も目つきも変わらず自然に仕上がります。", "why": "賛同から入り、軽症眼瞼下垂と皮膚の被さりを見分ける機序を補足して、眉下切開が自然に仕上がる理由を医師の言葉で示せるため。", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E7%9C%89%E4%B8%8B%E5%88%87%E9%96%8B%E3%81%8C%E5%90%91%E3%81%8F%E6%96%B9%E3%81%AF%E5%A4%9A%E3%81%84%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E8%BB%BD%E3%81%84%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E3%81%AB%E8%A6%8B%E3%81%88%E3%81%A6%E3%82%82%E3%80%81%E5%8E%9F%E5%9B%A0%E3%81%8C%E6%8C%99%E7%AD%8B%E3%81%AE%E7%B7%A9%E3%81%BF%E3%81%A7%E3%81%AF%E3%81%AA%E3%81%8F%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%81%AB%E3%82%88%E3%82%8B%E8%A2%AB%E3%81%95%E3%82%8A%E3%81%A7%E3%81%82%E3%82%8B%E3%81%93%E3%81%A8%E3%81%AF%E5%B0%91%E3%81%AA%E3%81%8F%E3%81%82%E3%82%8A%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82%E3%81%9D%E3%81%AE%E5%A0%B4%E5%90%88%E3%81%AF%E6%8C%99%E7%AD%8B%E3%82%92%E8%A7%A6%E3%82%89%E3%81%9A%E7%9C%89%E4%B8%8B%E3%81%A7%E7%9A%AE%E8%86%9A%E3%82%92%E5%8F%96%E3%82%8B%E3%81%BB%E3%81%86%E3%81%8C%E3%80%81%E4%BA%8C%E9%87%8D%E3%81%AE%E5%B9%85%E3%82%82%E7%9B%AE%E3%81%A4%E3%81%8D%E3%82%82%E5%A4%89%E3%82%8F%E3%82%89%E3%81%9A%E8%87%AA%E7%84%B6%E3%81%AB%E4%BB%95%E4%B8%8A%E3%81%8C%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/roppongi_sakai/status/2098600556013199419", "isNew": false, "firstSeen": "2026-09-13"}, {"id": "2098395849147687277", "url": "https://x.com/jeonghan_love7/status/2098395849147687277", "text": "世界的韓国アイドル BTSジミンのビフォーアフターがエグすぎ。 一重×170cm前半。 「結局、韓国アイドルなんて元の顔がいいからでしょ」 って思ってる男にこそ見てほしい。 髪、眉、肌、服、身体。 元の顔は変えられなくても、 “カッコよく見える要素”は後からいくらでも増やせる。 https://t.co/YUHNUO9NJk", "date": "2026-09-11", "author": "jeonghan_love7", "authorName": "天使", "followers": 2204, "impressions": 79225, "likes": 188, "reposts": 13, "replies": 3, "quotes": 2, "bookmarks": 72, "rate": 0.47, "tier": "news", "tierName": "時事・トレンド", "query": "(アイドル OR K-POP OR 韓国アイドル) (肌 OR 顔 OR 整形)", "draft": "元の顔を変えなくても印象は変えられる、というのはその通りだと思います。特に目の下は皮膚が薄く、むくみや血流の滞りがそのまま影として表に出るため、睡眠や肌の状態で見え方が大きく変わります。男性が見落としがちな、いちばん差が出る場所ですよね。", "why": "男性の垢抜けの話題から、目の下の皮膚の薄さという具体的な機序で目元に橋を架けられる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E5%85%83%E3%81%AE%E9%A1%94%E3%82%92%E5%A4%89%E3%81%88%E3%81%AA%E3%81%8F%E3%81%A6%E3%82%82%E5%8D%B0%E8%B1%A1%E3%81%AF%E5%A4%89%E3%81%88%E3%82%89%E3%82%8C%E3%82%8B%E3%80%81%E3%81%A8%E3%81%84%E3%81%86%E3%81%AE%E3%81%AF%E3%81%9D%E3%81%AE%E9%80%9A%E3%82%8A%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E7%89%B9%E3%81%AB%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%AF%E7%9A%AE%E8%86%9A%E3%81%8C%E8%96%84%E3%81%8F%E3%80%81%E3%82%80%E3%81%8F%E3%81%BF%E3%82%84%E8%A1%80%E6%B5%81%E3%81%AE%E6%BB%9E%E3%82%8A%E3%81%8C%E3%81%9D%E3%81%AE%E3%81%BE%E3%81%BE%E5%BD%B1%E3%81%A8%E3%81%97%E3%81%A6%E8%A1%A8%E3%81%AB%E5%87%BA%E3%82%8B%E3%81%9F%E3%82%81%E3%80%81%E7%9D%A1%E7%9C%A0%E3%82%84%E8%82%8C%E3%81%AE%E7%8A%B6%E6%85%8B%E3%81%A7%E8%A6%8B%E3%81%88%E6%96%B9%E3%81%8C%E5%A4%A7%E3%81%8D%E3%81%8F%E5%A4%89%E3%82%8F%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E7%94%B7%E6%80%A7%E3%81%8C%E8%A6%8B%E8%90%BD%E3%81%A8%E3%81%97%E3%81%8C%E3%81%A1%E3%81%AA%E3%80%81%E3%81%84%E3%81%A1%E3%81%B0%E3%82%93%E5%B7%AE%E3%81%8C%E5%87%BA%E3%82%8B%E5%A0%B4%E6%89%80%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%0Ahttps%3A//x.com/jeonghan_love7/status/2098395849147687277", "isNew": false, "firstSeen": "2026-09-14"}, {"id": "2097155887005900866", "url": "https://x.com/himekajpg/status/2097155887005900866", "text": "どんなに艶の出るハイライトやベース仕込んでも地肌が綺麗じゃないと意味ないからね…スキンケアは大事 https://t.co/pUSCohAueg https://t.co/S7NBZ5O3zp", "date": "2026-09-08", "author": "himekajpg", "authorName": "ﾍﾟﾃﾙｷﾞｳｽ", "followers": 1700, "impressions": 237172, "likes": 529, "reposts": 27, "replies": 0, "quotes": 4, "bookmarks": 74, "rate": 0.31, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "query": "スキンケア (効果 OR 意味ない)", "draft": "本当にその通りですよね。ハイライトは光を反射させて立体感を出しますが、肌表面のキメが乱れていたり乾燥していると光が均一に反射せず、凹凸や毛穴がかえって目立ちます。角層の水分が保たれてこそツヤが生きるので、ベースの前の保湿が一番の近道になります。", "why": "賛同から入り、ハイライトが乾燥肌で逆効果になる光の反射の機序を具体的に言い切れる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E6%9C%AC%E5%BD%93%E3%81%AB%E3%81%9D%E3%81%AE%E9%80%9A%E3%82%8A%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88%E3%81%AF%E5%85%89%E3%82%92%E5%8F%8D%E5%B0%84%E3%81%95%E3%81%9B%E3%81%A6%E7%AB%8B%E4%BD%93%E6%84%9F%E3%82%92%E5%87%BA%E3%81%97%E3%81%BE%E3%81%99%E3%81%8C%E3%80%81%E8%82%8C%E8%A1%A8%E9%9D%A2%E3%81%AE%E3%82%AD%E3%83%A1%E3%81%8C%E4%B9%B1%E3%82%8C%E3%81%A6%E3%81%84%E3%81%9F%E3%82%8A%E4%B9%BE%E7%87%A5%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%A8%E5%85%89%E3%81%8C%E5%9D%87%E4%B8%80%E3%81%AB%E5%8F%8D%E5%B0%84%E3%81%9B%E3%81%9A%E3%80%81%E5%87%B9%E5%87%B8%E3%82%84%E6%AF%9B%E7%A9%B4%E3%81%8C%E3%81%8B%E3%81%88%E3%81%A3%E3%81%A6%E7%9B%AE%E7%AB%8B%E3%81%A1%E3%81%BE%E3%81%99%E3%80%82%E8%A7%92%E5%B1%A4%E3%81%AE%E6%B0%B4%E5%88%86%E3%81%8C%E4%BF%9D%E3%81%9F%E3%82%8C%E3%81%A6%E3%81%93%E3%81%9D%E3%83%84%E3%83%A4%E3%81%8C%E7%94%9F%E3%81%8D%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E5%89%8D%E3%81%AE%E4%BF%9D%E6%B9%BF%E3%81%8C%E4%B8%80%E7%95%AA%E3%81%AE%E8%BF%91%E9%81%93%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/himekajpg/status/2097155887005900866", "isNew": true, "firstSeen": "2026-09-15"}, {"id": "2097860347457851678", "url": "https://x.com/fuma_ten/status/2097860347457851678", "text": "50歲内田有紀若すぎない？ 全然50歳に見えない、スタイルよすぎ https://t.co/b2PXeZnkrC", "date": "2026-09-10", "author": "fuma_ten", "authorName": "暇つぶし研究所", "followers": 36843, "impressions": 25713, "likes": 366, "reposts": 26, "replies": 4, "quotes": 0, "bookmarks": 39, "rate": 1.96, "tier": "bimajo", "tierName": "美魔女・年齢不詳の有名人", "query": "(40歳 OR 40代 OR 45歳 OR 50歳 OR 50代 OR 還暦) (見えない OR 若すぎ OR 老けない OR 年齢不詳)", "draft": "本当にお若いですよね。顔の年齢は、しわより先に目元と頬の境目の影で判断されやすくなります。加齢で頬の脂肪が下がり、目の下の骨も痩せてくると、その境目に段差ができるためです。そこが平らに保たれている方は、年齢を聞いても驚くほど若く見えます。", "why": "実在の方の顔を推測で語らず、年齢が目元と頬の境目の段差に出る一般的な機序だけを述べる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E6%9C%AC%E5%BD%93%E3%81%AB%E3%81%8A%E8%8B%A5%E3%81%84%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E9%A1%94%E3%81%AE%E5%B9%B4%E9%BD%A2%E3%81%AF%E3%80%81%E3%81%97%E3%82%8F%E3%82%88%E3%82%8A%E5%85%88%E3%81%AB%E7%9B%AE%E5%85%83%E3%81%A8%E9%A0%AC%E3%81%AE%E5%A2%83%E7%9B%AE%E3%81%AE%E5%BD%B1%E3%81%A7%E5%88%A4%E6%96%AD%E3%81%95%E3%82%8C%E3%82%84%E3%81%99%E3%81%8F%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E5%8A%A0%E9%BD%A2%E3%81%A7%E9%A0%AC%E3%81%AE%E8%84%82%E8%82%AA%E3%81%8C%E4%B8%8B%E3%81%8C%E3%82%8A%E3%80%81%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%AE%E9%AA%A8%E3%82%82%E7%97%A9%E3%81%9B%E3%81%A6%E3%81%8F%E3%82%8B%E3%81%A8%E3%80%81%E3%81%9D%E3%81%AE%E5%A2%83%E7%9B%AE%E3%81%AB%E6%AE%B5%E5%B7%AE%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%9F%E3%82%81%E3%81%A7%E3%81%99%E3%80%82%E3%81%9D%E3%81%93%E3%81%8C%E5%B9%B3%E3%82%89%E3%81%AB%E4%BF%9D%E3%81%9F%E3%82%8C%E3%81%A6%E3%81%84%E3%82%8B%E6%96%B9%E3%81%AF%E3%80%81%E5%B9%B4%E9%BD%A2%E3%82%92%E8%81%9E%E3%81%84%E3%81%A6%E3%82%82%E9%A9%9A%E3%81%8F%E3%81%BB%E3%81%A9%E8%8B%A5%E3%81%8F%E8%A6%8B%E3%81%88%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/fuma_ten/status/2097860347457851678", "isNew": false, "firstSeen": "2026-09-14"}, {"id": "2097973363205644524", "url": "https://x.com/maki1313_/status/2097973363205644524", "text": "管理栄養士の友達と話してたときに、「それ、全部〇〇が関係してるかも」って言われてびっくりした。 10位：ごはん食べるとすぐ眠くなる 9位：食べたのに満たされない 8位：夕方になると一気に疲れる 7位：ついお菓子に手が伸びる 6位：なんとなく胃が重い 5位：朝から顔がむくみがち", "date": "2026-09-10", "author": "maki1313_", "authorName": "まき＠健康マニア", "followers": 8264, "impressions": 15709, "likes": 92, "reposts": 56, "replies": 4, "quotes": 0, "bookmarks": 7, "rate": 1.44, "tier": "broad", "tierName": "一般・大リーチ", "query": "(老け見え OR 老けた)", "draft": "どれも身に覚えのある症状ですよね。栄養の偏りは肌にも出ます。特に鉄やたんぱく質が不足すると血色や皮膚の厚みに影響し、皮膚の薄い目の下では静脈が透けてクマとして目立ちやすくなります。食事は目元の土台になります。", "why": "元投稿が伏せている原因を決めつけず、栄養の偏りと目の下のクマという確かな機序だけを引き取った", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E3%81%A9%E3%82%8C%E3%82%82%E8%BA%AB%E3%81%AB%E8%A6%9A%E3%81%88%E3%81%AE%E3%81%82%E3%82%8B%E7%97%87%E7%8A%B6%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E6%A0%84%E9%A4%8A%E3%81%AE%E5%81%8F%E3%82%8A%E3%81%AF%E8%82%8C%E3%81%AB%E3%82%82%E5%87%BA%E3%81%BE%E3%81%99%E3%80%82%E7%89%B9%E3%81%AB%E9%89%84%E3%82%84%E3%81%9F%E3%82%93%E3%81%B1%E3%81%8F%E8%B3%AA%E3%81%8C%E4%B8%8D%E8%B6%B3%E3%81%99%E3%82%8B%E3%81%A8%E8%A1%80%E8%89%B2%E3%82%84%E7%9A%AE%E8%86%9A%E3%81%AE%E5%8E%9A%E3%81%BF%E3%81%AB%E5%BD%B1%E9%9F%BF%E3%81%97%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AE%E8%96%84%E3%81%84%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%A7%E3%81%AF%E9%9D%99%E8%84%88%E3%81%8C%E9%80%8F%E3%81%91%E3%81%A6%E3%82%AF%E3%83%9E%E3%81%A8%E3%81%97%E3%81%A6%E7%9B%AE%E7%AB%8B%E3%81%A1%E3%82%84%E3%81%99%E3%81%8F%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E9%A3%9F%E4%BA%8B%E3%81%AF%E7%9B%AE%E5%85%83%E3%81%AE%E5%9C%9F%E5%8F%B0%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/maki1313_/status/2097973363205644524", "isNew": false, "firstSeen": "2026-09-14"}, {"id": "2098973057037873315", "url": "https://x.com/MimiBeauty__/status/2098973057037873315", "text": "45年以上続くカネボウ化粧品のヒアルロン酸研究の英知を結集したブランド「DEW」のセミナーはいかがでしたか？🫧 ヒアルロン酸の魅力がたっぷり詰まったクリーム、早速使ってみたくなりました…💫 成分を知ることで、今日からのスキンケアももっと楽しみになりそうです✧ #MimiBeautySchool https://t.co/gfjlF5IGn7", "date": "2026-09-13", "author": "MimiBeauty__", "authorName": "Mimi Beauty", "followers": 486509, "impressions": 13459, "likes": 54, "reposts": 3, "replies": 0, "quotes": 0, "bookmarks": 1, "rate": 0.46, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "query": "ヒアルロン酸 (化粧品 OR 美容液)", "draft": "ヒアルロン酸の研究が進んでいるのは嬉しいことです。化粧品として塗るヒアルロン酸は角質層にとどまって水分を抱え、肌の乾燥による小じわの目立ちをやわらげます。一方で真皮より深い層の形を変える働きはありません。役割を分けて考えると選びやすくなります。", "why": "PR投稿に乗って化粧品を否定する形を避け、塗るヒアルロン酸の働きと届く層の違いだけを補足した", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E3%83%92%E3%82%A2%E3%83%AB%E3%83%AD%E3%83%B3%E9%85%B8%E3%81%AE%E7%A0%94%E7%A9%B6%E3%81%8C%E9%80%B2%E3%82%93%E3%81%A7%E3%81%84%E3%82%8B%E3%81%AE%E3%81%AF%E5%AC%89%E3%81%97%E3%81%84%E3%81%93%E3%81%A8%E3%81%A7%E3%81%99%E3%80%82%E5%8C%96%E7%B2%A7%E5%93%81%E3%81%A8%E3%81%97%E3%81%A6%E5%A1%97%E3%82%8B%E3%83%92%E3%82%A2%E3%83%AB%E3%83%AD%E3%83%B3%E9%85%B8%E3%81%AF%E8%A7%92%E8%B3%AA%E5%B1%A4%E3%81%AB%E3%81%A8%E3%81%A9%E3%81%BE%E3%81%A3%E3%81%A6%E6%B0%B4%E5%88%86%E3%82%92%E6%8A%B1%E3%81%88%E3%80%81%E8%82%8C%E3%81%AE%E4%B9%BE%E7%87%A5%E3%81%AB%E3%82%88%E3%82%8B%E5%B0%8F%E3%81%98%E3%82%8F%E3%81%AE%E7%9B%AE%E7%AB%8B%E3%81%A1%E3%82%92%E3%82%84%E3%82%8F%E3%82%89%E3%81%92%E3%81%BE%E3%81%99%E3%80%82%E4%B8%80%E6%96%B9%E3%81%A7%E7%9C%9F%E7%9A%AE%E3%82%88%E3%82%8A%E6%B7%B1%E3%81%84%E5%B1%A4%E3%81%AE%E5%BD%A2%E3%82%92%E5%A4%89%E3%81%88%E3%82%8B%E5%83%8D%E3%81%8D%E3%81%AF%E3%81%82%E3%82%8A%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82%E5%BD%B9%E5%89%B2%E3%82%92%E5%88%86%E3%81%91%E3%81%A6%E8%80%83%E3%81%88%E3%82%8B%E3%81%A8%E9%81%B8%E3%81%B3%E3%82%84%E3%81%99%E3%81%8F%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/MimiBeauty__/status/2098973057037873315", "isNew": false, "firstSeen": "2026-09-14"}, {"id": "2098196385615196330", "url": "https://x.com/yuinyaaaaan/status/2098196385615196330", "text": "目の下脱脂したら全て解決しそう 大きく弛んだクマがあるだけで初老に見えるよね 取れば15歳若返って ほぼほぼあのちゃんになる https://t.co/JFRoNjBbVJ", "date": "2026-09-10", "author": "yuinyaaaaan", "authorName": "ゆ🥺🌹　2030w", "followers": 1074, "impressions": 4307, "likes": 17, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 1, "rate": 0.44, "tier": "kuma", "tierName": "クマ・目元 直球", "query": "脱脂 (目の下 OR クマ)", "draft": "膨らみを取ると印象が大きく変わるのはその通りです。ただ、弛みの大きいクマは脂肪の膨らみだけでなく、皮膚のゆるみや頬との段差も重なっています。そこで脂肪だけを取りすぎると、今度は凹みやしわが目立ちます。取る量より、何が影を作っているかの見極めが先になります。", "why": "「脱脂で全部解決」への補足として、取りすぎで凹みが出る過剰脱脂への警鐘を型どおり入れられる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E8%86%A8%E3%82%89%E3%81%BF%E3%82%92%E5%8F%96%E3%82%8B%E3%81%A8%E5%8D%B0%E8%B1%A1%E3%81%8C%E5%A4%A7%E3%81%8D%E3%81%8F%E5%A4%89%E3%82%8F%E3%82%8B%E3%81%AE%E3%81%AF%E3%81%9D%E3%81%AE%E9%80%9A%E3%82%8A%E3%81%A7%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E3%80%81%E5%BC%9B%E3%81%BF%E3%81%AE%E5%A4%A7%E3%81%8D%E3%81%84%E3%82%AF%E3%83%9E%E3%81%AF%E8%84%82%E8%82%AA%E3%81%AE%E8%86%A8%E3%82%89%E3%81%BF%E3%81%A0%E3%81%91%E3%81%A7%E3%81%AA%E3%81%8F%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AE%E3%82%86%E3%82%8B%E3%81%BF%E3%82%84%E9%A0%AC%E3%81%A8%E3%81%AE%E6%AE%B5%E5%B7%AE%E3%82%82%E9%87%8D%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E3%81%9D%E3%81%93%E3%81%A7%E8%84%82%E8%82%AA%E3%81%A0%E3%81%91%E3%82%92%E5%8F%96%E3%82%8A%E3%81%99%E3%81%8E%E3%82%8B%E3%81%A8%E3%80%81%E4%BB%8A%E5%BA%A6%E3%81%AF%E5%87%B9%E3%81%BF%E3%82%84%E3%81%97%E3%82%8F%E3%81%8C%E7%9B%AE%E7%AB%8B%E3%81%A1%E3%81%BE%E3%81%99%E3%80%82%E5%8F%96%E3%82%8B%E9%87%8F%E3%82%88%E3%82%8A%E3%80%81%E4%BD%95%E3%81%8C%E5%BD%B1%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E3%81%8B%E3%81%AE%E8%A6%8B%E6%A5%B5%E3%82%81%E3%81%8C%E5%85%88%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/yuinyaaaaan/status/2098196385615196330", "isNew": false, "firstSeen": "2026-09-12"}, {"id": "2098088156176523439", "url": "https://x.com/shiratama_cha_/status/2098088156176523439", "text": "眼瞼下垂じゃなくて眉下切開じゃなくて額券上の方がいいのかな？？調べれば調べるほど分からなくなる😇❓調べ尽くさないと❗️ https://t.co/tRvEptEnAK", "date": "2026-09-10", "author": "shiratama_cha_", "authorName": "しらたまちゃ", "followers": 2227, "impressions": 1788, "likes": 16, "reposts": 1, "replies": 0, "quotes": 1, "bookmarks": 2, "rate": 1.4, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "迷われるのは自然だと思います。上まぶたのたるみが主なら眉下切開、黒目にかかる開きにくさがあれば眼瞼下垂の手術、眉ごと下がっている場合は額側の処置が向きます。原因がどこにあるかで答えが変わるので、診察で見極めるのが近道です。", "why": "本人が施術選びで迷っている生の声で、当院の得意領域にそのまま答えられる", "compose": "https://x.com/compose/post?text=%E8%BF%B7%E3%82%8F%E3%82%8C%E3%82%8B%E3%81%AE%E3%81%AF%E8%87%AA%E7%84%B6%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E4%B8%8A%E3%81%BE%E3%81%B6%E3%81%9F%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%81%8C%E4%B8%BB%E3%81%AA%E3%82%89%E7%9C%89%E4%B8%8B%E5%88%87%E9%96%8B%E3%80%81%E9%BB%92%E7%9B%AE%E3%81%AB%E3%81%8B%E3%81%8B%E3%82%8B%E9%96%8B%E3%81%8D%E3%81%AB%E3%81%8F%E3%81%95%E3%81%8C%E3%81%82%E3%82%8C%E3%81%B0%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E3%81%AE%E6%89%8B%E8%A1%93%E3%80%81%E7%9C%89%E3%81%94%E3%81%A8%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E5%A0%B4%E5%90%88%E3%81%AF%E9%A1%8D%E5%81%B4%E3%81%AE%E5%87%A6%E7%BD%AE%E3%81%8C%E5%90%91%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E5%8E%9F%E5%9B%A0%E3%81%8C%E3%81%A9%E3%81%93%E3%81%AB%E3%81%82%E3%82%8B%E3%81%8B%E3%81%A7%E7%AD%94%E3%81%88%E3%81%8C%E5%A4%89%E3%82%8F%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E8%A8%BA%E5%AF%9F%E3%81%A7%E8%A6%8B%E6%A5%B5%E3%82%81%E3%82%8B%E3%81%AE%E3%81%8C%E8%BF%91%E9%81%93%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/shiratama_cha_/status/2098088156176523439", "isNew": false, "firstSeen": "2026-09-11"}], "posted": [{"date": "2026-09-13", "url": "https://x.com/kumacli_mohri/status/2099054585117892964", "text": "写真一枚目はリフトだけでほうれい線が改善したケース。 二枚目は注入治療でほうれい線が改善したケース。 つまり、ほうれい線は皮膚表面の問題だけでなく、中顔面の脂肪の下垂や骨の吸収が大きく関係しています。 https://t.co/1oziBWYSBj https://t.co/4Zt6rIGLro", "impressions": 901, "likes": 2, "quotedUrl": "https://x.com/complexarasa/status/2098088996454973849", "quotedAuthor": "complexarasa", "tierName": "シワ・たるみ・ほうれい線", "fromSystem": true}, {"date": "2026-09-12", "url": "https://x.com/kumacli_mohri/status/2098642269847031838", "text": "何があったんでしょうね☺️ https://t.co/sxO9pVrQQH", "impressions": 5396, "likes": 17, "quotedUrl": "https://x.com/i/status/2098640883981967754", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-09-11", "url": "https://x.com/kumacli_mohri/status/2098439905198457211", "text": "そもそもpinch testは裏ハムラの適応の可否を決めるために行うものではないです。 逆に視野不全で裏ハムラが出来ないことってあんまりないと思います。 https://t.co/vd9bgG3RnJ", "impressions": 6009, "likes": 10, "quotedUrl": "https://x.com/i/status/2098389232314372472", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-09-11", "url": "https://x.com/kumacli_mohri/status/2098286681900339636", "text": "額を丸くしたい気持ちと、目を開けたい気持ちは分けて考えると整理できます。眼瞼下垂手術は目の開きを良くする手術、眉下切開は上まぶたの皮膚のたるみ、厚みを減らす手術で、どちらも額の形は変えません。 ただし、どちらも前頭筋の緊張がとれるために なだらかな額になるというのが正しいです。 https://t.co/34SjInF48g https://t.co/QzBOZ1ykyI", "impressions": 1516, "likes": 2, "quotedUrl": "https://x.com/__20aoo/status/2097147947653935611", "quotedAuthor": "__20aoo", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-09", "url": "https://x.com/kumacli_mohri/status/2097583751513715142", "text": "補足しますと、医療広告ガイドラインで加工が禁じられているぶん、撮影条件をそろえることが症例写真の生命線になります。照明も角度も距離も固定して初めて、変化が変化として伝わります。撮る側の責任は大きいと思います。 https://t.co/o89MjCKFsv", "impressions": 1164, "likes": 2, "quotedUrl": "https://x.com/mizu_notwater/status/2096218964833829191", "quotedAuthor": "mizu_notwater", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-09", "url": "https://x.com/kumacli_mohri/status/2097578858803495201", "text": "テレビで取り上げられたとおり、クマは青・茶・黒なんて呼び方は患者さんに分かりやすいための一つの概念として表現する事はあります。 ただし治療を受ける前までには色分けで判断せず、本質的な理由まで深ぼって理解してほしいです。 https://t.co/1E03eTHONx", "impressions": 2657, "likes": 5, "quotedUrl": "https://x.com/kattunonly0322/status/2095457150470688853", "quotedAuthor": "kattunonly0322", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-08", "url": "https://x.com/kumacli_mohri/status/2097218686738436175", "text": "たるみ治療が盛り上がるのは良いことだと思います。ただ、たるみの原因は皮膚や脂肪だけではありません。 むしろ適度な脂肪はたるみを予防する上で不可欠な要素です。 ⚠️新しい美容皮膚科の機械・注入剤は1年様子見が鉄則です https://t.co/6HXqgGBieD", "impressions": 1435, "likes": 4, "quotedUrl": "https://x.com/takepon5895/status/2096411728821240286", "quotedAuthor": "takepon5895", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-07", "url": "https://x.com/kumacli_mohri/status/2096824429091094937", "text": "挙げられている項目、どれも的確だと思います。特に症例写真は、照明と角度と表情がそろっていない比較では情報として成立しません。当院でも同一条件での撮影を徹底しています。 あと1点大事な事があります。 直後、1週間後の症例をさも完成かのように上げてるケースに注意してほしいです。 https://t.co/TbcWc3DejB https://t.co/o2r1gLTrnW", "impressions": 2378, "likes": 5, "quotedUrl": "https://x.com/17dsy_/status/2095451039269028204", "quotedAuthor": "17dsy_", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-07", "url": "https://x.com/kumacli_mohri/status/2096818523473617101", "text": "カウンセリングは本来、受けない選択も含めて一緒に決める場だと思っています。引き止めが強い、その日のうちに決めさせようとする。そういう場面に出会ったら、いったん持ち帰って構いません。急ぐ理由はありません。 https://t.co/UuyU0NmKsN", "impressions": 1123, "likes": 3, "quotedUrl": "https://x.com/sekkai/status/2095507406092632452", "quotedAuthor": "sekkai", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-05", "url": "https://x.com/kumacli_mohri/status/2096384100898947529", "text": "脱脂だけであれば5日という感覚は妥当です。内出血や目立った腫れは1週間前後で落ち着きます。 ただダウンタイムが少ないから全てのクマ治療を脱脂でしよう！と考えてしまう方が一定数いらっしゃいますのでこれは気をつけてほしいです。 https://t.co/qmY5fEvcC4", "impressions": 2271, "likes": 4, "quotedUrl": "https://x.com/17dsy_/status/2094360220629971150", "quotedAuthor": "17dsy_", "tierName": "クマ・目元 直球", "fromSystem": true}]}</script>
+<script id="state" type="application/json">{"updated": "2026-09-15", "updatedAt": "16:41", "show": 5, "target": 2, "items": [{"id": "2097975520071917678", "url": "https://x.com/gjtvdbujumktj/status/2097975520071917678", "text": "こういう目の下のゴルゴ線⬇️ アイクリーム塗った後にアイパッチして寝たらゴルゴ線無くなる、しーっかりアイクリームの成分が浸透するからね‼️ https://t.co/M2lKECrXdS https://t.co/uqEbdGPnUu", "date": "2026-09-10", "author": "gjtvdbujumktj", "authorName": "ねこ🎀🇰🇷7m", "followers": 612, "impressions": 35664, "likes": 348, "reposts": 32, "replies": 2, "quotes": 1, "bookmarks": 128, "rate": 1.89, "tier": "wrinkle", "tierName": "シワ・たるみ・ほうれい線", "query": "(ゴルゴ線 OR マリオネットライン OR ブルドッグ)", "draft": "保湿で角質層が潤うと一時的に皮膚がふっくらして影が薄く見えることはありますよね。ただ、いわゆるゴルゴ線は靭帯の引き込みや深い層の脂肪の減退といった構造的な問題が大きく関係しています。表層のスキンケアだけで根本的に解消するのは限界があるのが実際です。", "why": "スキンケアの効果を認めつつ、ゴルゴ線の医学的な発生機序を補足して誤解を正せるため。", "compose": "https://x.com/compose/post?text=%E4%BF%9D%E6%B9%BF%E3%81%A7%E8%A7%92%E8%B3%AA%E5%B1%A4%E3%81%8C%E6%BD%A4%E3%81%86%E3%81%A8%E4%B8%80%E6%99%82%E7%9A%84%E3%81%AB%E7%9A%AE%E8%86%9A%E3%81%8C%E3%81%B5%E3%81%A3%E3%81%8F%E3%82%89%E3%81%97%E3%81%A6%E5%BD%B1%E3%81%8C%E8%96%84%E3%81%8F%E8%A6%8B%E3%81%88%E3%82%8B%E3%81%93%E3%81%A8%E3%81%AF%E3%81%82%E3%82%8A%E3%81%BE%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E3%81%9F%E3%81%A0%E3%80%81%E3%81%84%E3%82%8F%E3%82%86%E3%82%8B%E3%82%B4%E3%83%AB%E3%82%B4%E7%B7%9A%E3%81%AF%E9%9D%AD%E5%B8%AF%E3%81%AE%E5%BC%95%E3%81%8D%E8%BE%BC%E3%81%BF%E3%82%84%E6%B7%B1%E3%81%84%E5%B1%A4%E3%81%AE%E8%84%82%E8%82%AA%E3%81%AE%E6%B8%9B%E9%80%80%E3%81%A8%E3%81%84%E3%81%A3%E3%81%9F%E6%A7%8B%E9%80%A0%E7%9A%84%E3%81%AA%E5%95%8F%E9%A1%8C%E3%81%8C%E5%A4%A7%E3%81%8D%E3%81%8F%E9%96%A2%E4%BF%82%E3%81%97%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E8%A1%A8%E5%B1%A4%E3%81%AE%E3%82%B9%E3%82%AD%E3%83%B3%E3%82%B1%E3%82%A2%E3%81%A0%E3%81%91%E3%81%A7%E6%A0%B9%E6%9C%AC%E7%9A%84%E3%81%AB%E8%A7%A3%E6%B6%88%E3%81%99%E3%82%8B%E3%81%AE%E3%81%AF%E9%99%90%E7%95%8C%E3%81%8C%E3%81%82%E3%82%8B%E3%81%AE%E3%81%8C%E5%AE%9F%E9%9A%9B%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/gjtvdbujumktj/status/2097975520071917678", "isNew": false, "firstSeen": "2026-09-13"}, {"id": "2098041601029530002", "url": "https://x.com/fjfqv/status/2098041601029530002", "text": "パーツが整ってて今でも十分綺麗😭🫶🏼 もし美容整形に抵抗なければ、目の下の脱脂(クマ取り)をオススメしたいなあ 自分も今年やったけど、目の下の膨らみが無くなることで涙袋が描かなくても際立つようになる… https://t.co/8bw7a9BYRc", "date": "2026-09-10", "author": "fjfqv", "authorName": "お氣の毒に！！！！！！！", "followers": 0, "impressions": 8387, "likes": 5, "reposts": 0, "replies": 1, "quotes": 0, "bookmarks": 5, "rate": 0.2, "tier": "kuma", "tierName": "クマ・目元 直球", "query": "脱脂 (目の下 OR クマ)", "draft": "脱脂で涙袋がはっきりするのは本当ですね。涙袋のすぐ下に眼窩脂肪の膨らみがあると、境目がなだらかにつながって涙袋が埋もれて見えます。膨らみが減ると段差が戻り、本来の涙袋が浮き出てきます。ただ涙袋そのものの厚みには個人差があり、事前の見極めが大事になります。", "why": "脱脂で涙袋が出る体感を、膨らみと涙袋の境目が消える正確な機序で裏付けられる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E8%84%B1%E8%84%82%E3%81%A7%E6%B6%99%E8%A2%8B%E3%81%8C%E3%81%AF%E3%81%A3%E3%81%8D%E3%82%8A%E3%81%99%E3%82%8B%E3%81%AE%E3%81%AF%E6%9C%AC%E5%BD%93%E3%81%A7%E3%81%99%E3%81%AD%E3%80%82%E6%B6%99%E8%A2%8B%E3%81%AE%E3%81%99%E3%81%90%E4%B8%8B%E3%81%AB%E7%9C%BC%E7%AA%A9%E8%84%82%E8%82%AA%E3%81%AE%E8%86%A8%E3%82%89%E3%81%BF%E3%81%8C%E3%81%82%E3%82%8B%E3%81%A8%E3%80%81%E5%A2%83%E7%9B%AE%E3%81%8C%E3%81%AA%E3%81%A0%E3%82%89%E3%81%8B%E3%81%AB%E3%81%A4%E3%81%AA%E3%81%8C%E3%81%A3%E3%81%A6%E6%B6%99%E8%A2%8B%E3%81%8C%E5%9F%8B%E3%82%82%E3%82%8C%E3%81%A6%E8%A6%8B%E3%81%88%E3%81%BE%E3%81%99%E3%80%82%E8%86%A8%E3%82%89%E3%81%BF%E3%81%8C%E6%B8%9B%E3%82%8B%E3%81%A8%E6%AE%B5%E5%B7%AE%E3%81%8C%E6%88%BB%E3%82%8A%E3%80%81%E6%9C%AC%E6%9D%A5%E3%81%AE%E6%B6%99%E8%A2%8B%E3%81%8C%E6%B5%AE%E3%81%8D%E5%87%BA%E3%81%A6%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E6%B6%99%E8%A2%8B%E3%81%9D%E3%81%AE%E3%82%82%E3%81%AE%E3%81%AE%E5%8E%9A%E3%81%BF%E3%81%AB%E3%81%AF%E5%80%8B%E4%BA%BA%E5%B7%AE%E3%81%8C%E3%81%82%E3%82%8A%E3%80%81%E4%BA%8B%E5%89%8D%E3%81%AE%E8%A6%8B%E6%A5%B5%E3%82%81%E3%81%8C%E5%A4%A7%E4%BA%8B%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/fjfqv/status/2098041601029530002", "isNew": false, "firstSeen": "2026-09-12"}, {"id": "2099000119077302661", "url": "https://x.com/Kireinaritee/status/2099000119077302661", "text": "MEGUMIが奥まで浸透するスキンケアしないと意味ないって言ってるけど、これ間違いないな… https://t.co/gnWgIrWpmF", "date": "2026-09-13", "author": "Kireinaritee", "authorName": "肌綺麗になりてぇ。", "followers": 114, "impressions": 346935, "likes": 1349, "reposts": 80, "replies": 2, "quotes": 7, "bookmarks": 556, "rate": 0.76, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "query": "スキンケア (効果 OR 意味ない)", "draft": "肌の奥まで届けたい気持ちはよく分かります。ただ、皮膚には角層のバリア機能があり、化粧品の成分が届くのは基本的に角層までです。むしろ角層をしっかり潤すことが肌の土台を整えることにつながります。浸透の深さより、毎日続けられるかが大事になります。", "why": "「奥まで浸透」の誤解を角層バリアの機序で否定せず補足できる。表示35万で母数が大きい", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E8%82%8C%E3%81%AE%E5%A5%A5%E3%81%BE%E3%81%A7%E5%B1%8A%E3%81%91%E3%81%9F%E3%81%84%E6%B0%97%E6%8C%81%E3%81%A1%E3%81%AF%E3%82%88%E3%81%8F%E5%88%86%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AB%E3%81%AF%E8%A7%92%E5%B1%A4%E3%81%AE%E3%83%90%E3%83%AA%E3%82%A2%E6%A9%9F%E8%83%BD%E3%81%8C%E3%81%82%E3%82%8A%E3%80%81%E5%8C%96%E7%B2%A7%E5%93%81%E3%81%AE%E6%88%90%E5%88%86%E3%81%8C%E5%B1%8A%E3%81%8F%E3%81%AE%E3%81%AF%E5%9F%BA%E6%9C%AC%E7%9A%84%E3%81%AB%E8%A7%92%E5%B1%A4%E3%81%BE%E3%81%A7%E3%81%A7%E3%81%99%E3%80%82%E3%82%80%E3%81%97%E3%82%8D%E8%A7%92%E5%B1%A4%E3%82%92%E3%81%97%E3%81%A3%E3%81%8B%E3%82%8A%E6%BD%A4%E3%81%99%E3%81%93%E3%81%A8%E3%81%8C%E8%82%8C%E3%81%AE%E5%9C%9F%E5%8F%B0%E3%82%92%E6%95%B4%E3%81%88%E3%82%8B%E3%81%93%E3%81%A8%E3%81%AB%E3%81%A4%E3%81%AA%E3%81%8C%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E6%B5%B8%E9%80%8F%E3%81%AE%E6%B7%B1%E3%81%95%E3%82%88%E3%82%8A%E3%80%81%E6%AF%8E%E6%97%A5%E7%B6%9A%E3%81%91%E3%82%89%E3%82%8C%E3%82%8B%E3%81%8B%E3%81%8C%E5%A4%A7%E4%BA%8B%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/Kireinaritee/status/2099000119077302661", "isNew": true, "firstSeen": "2026-09-15"}, {"id": "2098600556013199419", "url": "https://x.com/roppongi_sakai/status/2098600556013199419", "text": "5大やらんでいいこと ・目尻切開たれ目形成グラマラスライン；目尻がパカパカしてシャンプーしみるから白目まで赤くなる ・軽症眼瞼下垂の診断で手術；傷跡さえきれいなら眉下切開が整形顔にならず自然 https://t.co/PZPRRFYFY7", "date": "2026-09-12", "author": "roppongi_sakai", "authorName": "六本木境クリニック", "followers": 52845, "impressions": 11281, "likes": 51, "reposts": 2, "replies": 2, "quotes": 0, "bookmarks": 19, "rate": 0.86, "tier": "industry", "tierName": "業界・警鐘", "query": "脱脂 (過剰 OR 取りすぎ OR やりすぎ)", "draft": "眉下切開が向く方は多いですよね。軽い眼瞼下垂に見えても、原因が挙筋の緩みではなく、皮膚のたるみによる被さりであることは少なくありません。その場合は挙筋を触らず眉下で皮膚を取るほうが、二重の幅も目つきも変わらず自然に仕上がります。", "why": "賛同から入り、軽症眼瞼下垂と皮膚の被さりを見分ける機序を補足して、眉下切開が自然に仕上がる理由を医師の言葉で示せるため。", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E7%9C%89%E4%B8%8B%E5%88%87%E9%96%8B%E3%81%8C%E5%90%91%E3%81%8F%E6%96%B9%E3%81%AF%E5%A4%9A%E3%81%84%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E8%BB%BD%E3%81%84%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E3%81%AB%E8%A6%8B%E3%81%88%E3%81%A6%E3%82%82%E3%80%81%E5%8E%9F%E5%9B%A0%E3%81%8C%E6%8C%99%E7%AD%8B%E3%81%AE%E7%B7%A9%E3%81%BF%E3%81%A7%E3%81%AF%E3%81%AA%E3%81%8F%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%81%AB%E3%82%88%E3%82%8B%E8%A2%AB%E3%81%95%E3%82%8A%E3%81%A7%E3%81%82%E3%82%8B%E3%81%93%E3%81%A8%E3%81%AF%E5%B0%91%E3%81%AA%E3%81%8F%E3%81%82%E3%82%8A%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82%E3%81%9D%E3%81%AE%E5%A0%B4%E5%90%88%E3%81%AF%E6%8C%99%E7%AD%8B%E3%82%92%E8%A7%A6%E3%82%89%E3%81%9A%E7%9C%89%E4%B8%8B%E3%81%A7%E7%9A%AE%E8%86%9A%E3%82%92%E5%8F%96%E3%82%8B%E3%81%BB%E3%81%86%E3%81%8C%E3%80%81%E4%BA%8C%E9%87%8D%E3%81%AE%E5%B9%85%E3%82%82%E7%9B%AE%E3%81%A4%E3%81%8D%E3%82%82%E5%A4%89%E3%82%8F%E3%82%89%E3%81%9A%E8%87%AA%E7%84%B6%E3%81%AB%E4%BB%95%E4%B8%8A%E3%81%8C%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/roppongi_sakai/status/2098600556013199419", "isNew": false, "firstSeen": "2026-09-13"}, {"id": "2098395849147687277", "url": "https://x.com/jeonghan_love7/status/2098395849147687277", "text": "世界的韓国アイドル BTSジミンのビフォーアフターがエグすぎ。 一重×170cm前半。 「結局、韓国アイドルなんて元の顔がいいからでしょ」 って思ってる男にこそ見てほしい。 髪、眉、肌、服、身体。 元の顔は変えられなくても、 “カッコよく見える要素”は後からいくらでも増やせる。 https://t.co/YUHNUO9NJk", "date": "2026-09-11", "author": "jeonghan_love7", "authorName": "天使", "followers": 2204, "impressions": 79225, "likes": 188, "reposts": 13, "replies": 3, "quotes": 2, "bookmarks": 72, "rate": 0.47, "tier": "news", "tierName": "時事・トレンド", "query": "(アイドル OR K-POP OR 韓国アイドル) (肌 OR 顔 OR 整形)", "draft": "元の顔を変えなくても印象は変えられる、というのはその通りだと思います。特に目の下は皮膚が薄く、むくみや血流の滞りがそのまま影として表に出るため、睡眠や肌の状態で見え方が大きく変わります。男性が見落としがちな、いちばん差が出る場所ですよね。", "why": "男性の垢抜けの話題から、目の下の皮膚の薄さという具体的な機序で目元に橋を架けられる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E5%85%83%E3%81%AE%E9%A1%94%E3%82%92%E5%A4%89%E3%81%88%E3%81%AA%E3%81%8F%E3%81%A6%E3%82%82%E5%8D%B0%E8%B1%A1%E3%81%AF%E5%A4%89%E3%81%88%E3%82%89%E3%82%8C%E3%82%8B%E3%80%81%E3%81%A8%E3%81%84%E3%81%86%E3%81%AE%E3%81%AF%E3%81%9D%E3%81%AE%E9%80%9A%E3%82%8A%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E7%89%B9%E3%81%AB%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%AF%E7%9A%AE%E8%86%9A%E3%81%8C%E8%96%84%E3%81%8F%E3%80%81%E3%82%80%E3%81%8F%E3%81%BF%E3%82%84%E8%A1%80%E6%B5%81%E3%81%AE%E6%BB%9E%E3%82%8A%E3%81%8C%E3%81%9D%E3%81%AE%E3%81%BE%E3%81%BE%E5%BD%B1%E3%81%A8%E3%81%97%E3%81%A6%E8%A1%A8%E3%81%AB%E5%87%BA%E3%82%8B%E3%81%9F%E3%82%81%E3%80%81%E7%9D%A1%E7%9C%A0%E3%82%84%E8%82%8C%E3%81%AE%E7%8A%B6%E6%85%8B%E3%81%A7%E8%A6%8B%E3%81%88%E6%96%B9%E3%81%8C%E5%A4%A7%E3%81%8D%E3%81%8F%E5%A4%89%E3%82%8F%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E7%94%B7%E6%80%A7%E3%81%8C%E8%A6%8B%E8%90%BD%E3%81%A8%E3%81%97%E3%81%8C%E3%81%A1%E3%81%AA%E3%80%81%E3%81%84%E3%81%A1%E3%81%B0%E3%82%93%E5%B7%AE%E3%81%8C%E5%87%BA%E3%82%8B%E5%A0%B4%E6%89%80%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%0Ahttps%3A//x.com/jeonghan_love7/status/2098395849147687277", "isNew": false, "firstSeen": "2026-09-14"}, {"id": "2097155887005900866", "url": "https://x.com/himekajpg/status/2097155887005900866", "text": "どんなに艶の出るハイライトやベース仕込んでも地肌が綺麗じゃないと意味ないからね…スキンケアは大事 https://t.co/pUSCohAueg https://t.co/S7NBZ5O3zp", "date": "2026-09-08", "author": "himekajpg", "authorName": "ﾍﾟﾃﾙｷﾞｳｽ", "followers": 1700, "impressions": 237172, "likes": 529, "reposts": 27, "replies": 0, "quotes": 4, "bookmarks": 74, "rate": 0.31, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "query": "スキンケア (効果 OR 意味ない)", "draft": "本当にその通りですよね。ハイライトは光を反射させて立体感を出しますが、肌表面のキメが乱れていたり乾燥していると光が均一に反射せず、凹凸や毛穴がかえって目立ちます。角層の水分が保たれてこそツヤが生きるので、ベースの前の保湿が一番の近道になります。", "why": "賛同から入り、ハイライトが乾燥肌で逆効果になる光の反射の機序を具体的に言い切れる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E6%9C%AC%E5%BD%93%E3%81%AB%E3%81%9D%E3%81%AE%E9%80%9A%E3%82%8A%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88%E3%81%AF%E5%85%89%E3%82%92%E5%8F%8D%E5%B0%84%E3%81%95%E3%81%9B%E3%81%A6%E7%AB%8B%E4%BD%93%E6%84%9F%E3%82%92%E5%87%BA%E3%81%97%E3%81%BE%E3%81%99%E3%81%8C%E3%80%81%E8%82%8C%E8%A1%A8%E9%9D%A2%E3%81%AE%E3%82%AD%E3%83%A1%E3%81%8C%E4%B9%B1%E3%82%8C%E3%81%A6%E3%81%84%E3%81%9F%E3%82%8A%E4%B9%BE%E7%87%A5%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%A8%E5%85%89%E3%81%8C%E5%9D%87%E4%B8%80%E3%81%AB%E5%8F%8D%E5%B0%84%E3%81%9B%E3%81%9A%E3%80%81%E5%87%B9%E5%87%B8%E3%82%84%E6%AF%9B%E7%A9%B4%E3%81%8C%E3%81%8B%E3%81%88%E3%81%A3%E3%81%A6%E7%9B%AE%E7%AB%8B%E3%81%A1%E3%81%BE%E3%81%99%E3%80%82%E8%A7%92%E5%B1%A4%E3%81%AE%E6%B0%B4%E5%88%86%E3%81%8C%E4%BF%9D%E3%81%9F%E3%82%8C%E3%81%A6%E3%81%93%E3%81%9D%E3%83%84%E3%83%A4%E3%81%8C%E7%94%9F%E3%81%8D%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E5%89%8D%E3%81%AE%E4%BF%9D%E6%B9%BF%E3%81%8C%E4%B8%80%E7%95%AA%E3%81%AE%E8%BF%91%E9%81%93%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/himekajpg/status/2097155887005900866", "isNew": true, "firstSeen": "2026-09-15"}, {"id": "2097860347457851678", "url": "https://x.com/fuma_ten/status/2097860347457851678", "text": "50歲内田有紀若すぎない？ 全然50歳に見えない、スタイルよすぎ https://t.co/b2PXeZnkrC", "date": "2026-09-10", "author": "fuma_ten", "authorName": "暇つぶし研究所", "followers": 36843, "impressions": 25713, "likes": 366, "reposts": 26, "replies": 4, "quotes": 0, "bookmarks": 39, "rate": 1.96, "tier": "bimajo", "tierName": "美魔女・年齢不詳の有名人", "query": "(40歳 OR 40代 OR 45歳 OR 50歳 OR 50代 OR 還暦) (見えない OR 若すぎ OR 老けない OR 年齢不詳)", "draft": "本当にお若いですよね。顔の年齢は、しわより先に目元と頬の境目の影で判断されやすくなります。加齢で頬の脂肪が下がり、目の下の骨も痩せてくると、その境目に段差ができるためです。そこが平らに保たれている方は、年齢を聞いても驚くほど若く見えます。", "why": "実在の方の顔を推測で語らず、年齢が目元と頬の境目の段差に出る一般的な機序だけを述べる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E6%9C%AC%E5%BD%93%E3%81%AB%E3%81%8A%E8%8B%A5%E3%81%84%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E9%A1%94%E3%81%AE%E5%B9%B4%E9%BD%A2%E3%81%AF%E3%80%81%E3%81%97%E3%82%8F%E3%82%88%E3%82%8A%E5%85%88%E3%81%AB%E7%9B%AE%E5%85%83%E3%81%A8%E9%A0%AC%E3%81%AE%E5%A2%83%E7%9B%AE%E3%81%AE%E5%BD%B1%E3%81%A7%E5%88%A4%E6%96%AD%E3%81%95%E3%82%8C%E3%82%84%E3%81%99%E3%81%8F%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E5%8A%A0%E9%BD%A2%E3%81%A7%E9%A0%AC%E3%81%AE%E8%84%82%E8%82%AA%E3%81%8C%E4%B8%8B%E3%81%8C%E3%82%8A%E3%80%81%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%AE%E9%AA%A8%E3%82%82%E7%97%A9%E3%81%9B%E3%81%A6%E3%81%8F%E3%82%8B%E3%81%A8%E3%80%81%E3%81%9D%E3%81%AE%E5%A2%83%E7%9B%AE%E3%81%AB%E6%AE%B5%E5%B7%AE%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%9F%E3%82%81%E3%81%A7%E3%81%99%E3%80%82%E3%81%9D%E3%81%93%E3%81%8C%E5%B9%B3%E3%82%89%E3%81%AB%E4%BF%9D%E3%81%9F%E3%82%8C%E3%81%A6%E3%81%84%E3%82%8B%E6%96%B9%E3%81%AF%E3%80%81%E5%B9%B4%E9%BD%A2%E3%82%92%E8%81%9E%E3%81%84%E3%81%A6%E3%82%82%E9%A9%9A%E3%81%8F%E3%81%BB%E3%81%A9%E8%8B%A5%E3%81%8F%E8%A6%8B%E3%81%88%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/fuma_ten/status/2097860347457851678", "isNew": false, "firstSeen": "2026-09-14"}, {"id": "2097973363205644524", "url": "https://x.com/maki1313_/status/2097973363205644524", "text": "管理栄養士の友達と話してたときに、「それ、全部〇〇が関係してるかも」って言われてびっくりした。 10位：ごはん食べるとすぐ眠くなる 9位：食べたのに満たされない 8位：夕方になると一気に疲れる 7位：ついお菓子に手が伸びる 6位：なんとなく胃が重い 5位：朝から顔がむくみがち", "date": "2026-09-10", "author": "maki1313_", "authorName": "まき＠健康マニア", "followers": 8264, "impressions": 15709, "likes": 92, "reposts": 56, "replies": 4, "quotes": 0, "bookmarks": 7, "rate": 1.44, "tier": "broad", "tierName": "一般・大リーチ", "query": "(老け見え OR 老けた)", "draft": "どれも身に覚えのある症状ですよね。栄養の偏りは肌にも出ます。特に鉄やたんぱく質が不足すると血色や皮膚の厚みに影響し、皮膚の薄い目の下では静脈が透けてクマとして目立ちやすくなります。食事は目元の土台になります。", "why": "元投稿が伏せている原因を決めつけず、栄養の偏りと目の下のクマという確かな機序だけを引き取った", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E3%81%A9%E3%82%8C%E3%82%82%E8%BA%AB%E3%81%AB%E8%A6%9A%E3%81%88%E3%81%AE%E3%81%82%E3%82%8B%E7%97%87%E7%8A%B6%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E6%A0%84%E9%A4%8A%E3%81%AE%E5%81%8F%E3%82%8A%E3%81%AF%E8%82%8C%E3%81%AB%E3%82%82%E5%87%BA%E3%81%BE%E3%81%99%E3%80%82%E7%89%B9%E3%81%AB%E9%89%84%E3%82%84%E3%81%9F%E3%82%93%E3%81%B1%E3%81%8F%E8%B3%AA%E3%81%8C%E4%B8%8D%E8%B6%B3%E3%81%99%E3%82%8B%E3%81%A8%E8%A1%80%E8%89%B2%E3%82%84%E7%9A%AE%E8%86%9A%E3%81%AE%E5%8E%9A%E3%81%BF%E3%81%AB%E5%BD%B1%E9%9F%BF%E3%81%97%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AE%E8%96%84%E3%81%84%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%A7%E3%81%AF%E9%9D%99%E8%84%88%E3%81%8C%E9%80%8F%E3%81%91%E3%81%A6%E3%82%AF%E3%83%9E%E3%81%A8%E3%81%97%E3%81%A6%E7%9B%AE%E7%AB%8B%E3%81%A1%E3%82%84%E3%81%99%E3%81%8F%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E9%A3%9F%E4%BA%8B%E3%81%AF%E7%9B%AE%E5%85%83%E3%81%AE%E5%9C%9F%E5%8F%B0%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/maki1313_/status/2097973363205644524", "isNew": false, "firstSeen": "2026-09-14"}, {"id": "2098973057037873315", "url": "https://x.com/MimiBeauty__/status/2098973057037873315", "text": "45年以上続くカネボウ化粧品のヒアルロン酸研究の英知を結集したブランド「DEW」のセミナーはいかがでしたか？🫧 ヒアルロン酸の魅力がたっぷり詰まったクリーム、早速使ってみたくなりました…💫 成分を知ることで、今日からのスキンケアももっと楽しみになりそうです✧ #MimiBeautySchool https://t.co/gfjlF5IGn7", "date": "2026-09-13", "author": "MimiBeauty__", "authorName": "Mimi Beauty", "followers": 486509, "impressions": 13459, "likes": 54, "reposts": 3, "replies": 0, "quotes": 0, "bookmarks": 1, "rate": 0.46, "tier": "beauty", "tierName": "美容・スキンケアの誤解", "query": "ヒアルロン酸 (化粧品 OR 美容液)", "draft": "ヒアルロン酸の研究が進んでいるのは嬉しいことです。化粧品として塗るヒアルロン酸は角質層にとどまって水分を抱え、肌の乾燥による小じわの目立ちをやわらげます。一方で真皮より深い層の形を変える働きはありません。役割を分けて考えると選びやすくなります。", "why": "PR投稿に乗って化粧品を否定する形を避け、塗るヒアルロン酸の働きと届く層の違いだけを補足した", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E3%83%92%E3%82%A2%E3%83%AB%E3%83%AD%E3%83%B3%E9%85%B8%E3%81%AE%E7%A0%94%E7%A9%B6%E3%81%8C%E9%80%B2%E3%82%93%E3%81%A7%E3%81%84%E3%82%8B%E3%81%AE%E3%81%AF%E5%AC%89%E3%81%97%E3%81%84%E3%81%93%E3%81%A8%E3%81%A7%E3%81%99%E3%80%82%E5%8C%96%E7%B2%A7%E5%93%81%E3%81%A8%E3%81%97%E3%81%A6%E5%A1%97%E3%82%8B%E3%83%92%E3%82%A2%E3%83%AB%E3%83%AD%E3%83%B3%E9%85%B8%E3%81%AF%E8%A7%92%E8%B3%AA%E5%B1%A4%E3%81%AB%E3%81%A8%E3%81%A9%E3%81%BE%E3%81%A3%E3%81%A6%E6%B0%B4%E5%88%86%E3%82%92%E6%8A%B1%E3%81%88%E3%80%81%E8%82%8C%E3%81%AE%E4%B9%BE%E7%87%A5%E3%81%AB%E3%82%88%E3%82%8B%E5%B0%8F%E3%81%98%E3%82%8F%E3%81%AE%E7%9B%AE%E7%AB%8B%E3%81%A1%E3%82%92%E3%82%84%E3%82%8F%E3%82%89%E3%81%92%E3%81%BE%E3%81%99%E3%80%82%E4%B8%80%E6%96%B9%E3%81%A7%E7%9C%9F%E7%9A%AE%E3%82%88%E3%82%8A%E6%B7%B1%E3%81%84%E5%B1%A4%E3%81%AE%E5%BD%A2%E3%82%92%E5%A4%89%E3%81%88%E3%82%8B%E5%83%8D%E3%81%8D%E3%81%AF%E3%81%82%E3%82%8A%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82%E5%BD%B9%E5%89%B2%E3%82%92%E5%88%86%E3%81%91%E3%81%A6%E8%80%83%E3%81%88%E3%82%8B%E3%81%A8%E9%81%B8%E3%81%B3%E3%82%84%E3%81%99%E3%81%8F%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/MimiBeauty__/status/2098973057037873315", "isNew": false, "firstSeen": "2026-09-14"}, {"id": "2098196385615196330", "url": "https://x.com/yuinyaaaaan/status/2098196385615196330", "text": "目の下脱脂したら全て解決しそう 大きく弛んだクマがあるだけで初老に見えるよね 取れば15歳若返って ほぼほぼあのちゃんになる https://t.co/JFRoNjBbVJ", "date": "2026-09-10", "author": "yuinyaaaaan", "authorName": "ゆ🥺🌹　2030w", "followers": 1074, "impressions": 4307, "likes": 17, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 1, "rate": 0.44, "tier": "kuma", "tierName": "クマ・目元 直球", "query": "脱脂 (目の下 OR クマ)", "draft": "膨らみを取ると印象が大きく変わるのはその通りです。ただ、弛みの大きいクマは脂肪の膨らみだけでなく、皮膚のゆるみや頬との段差も重なっています。そこで脂肪だけを取りすぎると、今度は凹みやしわが目立ちます。取る量より、何が影を作っているかの見極めが先になります。", "why": "「脱脂で全部解決」への補足として、取りすぎで凹みが出る過剰脱脂への警鐘を型どおり入れられる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E8%86%A8%E3%82%89%E3%81%BF%E3%82%92%E5%8F%96%E3%82%8B%E3%81%A8%E5%8D%B0%E8%B1%A1%E3%81%8C%E5%A4%A7%E3%81%8D%E3%81%8F%E5%A4%89%E3%82%8F%E3%82%8B%E3%81%AE%E3%81%AF%E3%81%9D%E3%81%AE%E9%80%9A%E3%82%8A%E3%81%A7%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E3%80%81%E5%BC%9B%E3%81%BF%E3%81%AE%E5%A4%A7%E3%81%8D%E3%81%84%E3%82%AF%E3%83%9E%E3%81%AF%E8%84%82%E8%82%AA%E3%81%AE%E8%86%A8%E3%82%89%E3%81%BF%E3%81%A0%E3%81%91%E3%81%A7%E3%81%AA%E3%81%8F%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AE%E3%82%86%E3%82%8B%E3%81%BF%E3%82%84%E9%A0%AC%E3%81%A8%E3%81%AE%E6%AE%B5%E5%B7%AE%E3%82%82%E9%87%8D%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E3%81%9D%E3%81%93%E3%81%A7%E8%84%82%E8%82%AA%E3%81%A0%E3%81%91%E3%82%92%E5%8F%96%E3%82%8A%E3%81%99%E3%81%8E%E3%82%8B%E3%81%A8%E3%80%81%E4%BB%8A%E5%BA%A6%E3%81%AF%E5%87%B9%E3%81%BF%E3%82%84%E3%81%97%E3%82%8F%E3%81%8C%E7%9B%AE%E7%AB%8B%E3%81%A1%E3%81%BE%E3%81%99%E3%80%82%E5%8F%96%E3%82%8B%E9%87%8F%E3%82%88%E3%82%8A%E3%80%81%E4%BD%95%E3%81%8C%E5%BD%B1%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E3%81%8B%E3%81%AE%E8%A6%8B%E6%A5%B5%E3%82%81%E3%81%8C%E5%85%88%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0Ahttps%3A//x.com/yuinyaaaaan/status/2098196385615196330", "isNew": false, "firstSeen": "2026-09-12"}, {"id": "2098088156176523439", "url": "https://x.com/shiratama_cha_/status/2098088156176523439", "text": "眼瞼下垂じゃなくて眉下切開じゃなくて額券上の方がいいのかな？？調べれば調べるほど分からなくなる😇❓調べ尽くさないと❗️ https://t.co/tRvEptEnAK", "date": "2026-09-10", "author": "shiratama_cha_", "authorName": "しらたまちゃ", "followers": 2227, "impressions": 1788, "likes": 16, "reposts": 1, "replies": 0, "quotes": 1, "bookmarks": 2, "rate": 1.4, "tier": "kuma", "tierName": "クマ・目元 直球", "draft": "迷われるのは自然だと思います。上まぶたのたるみが主なら眉下切開、黒目にかかる開きにくさがあれば眼瞼下垂の手術、眉ごと下がっている場合は額側の処置が向きます。原因がどこにあるかで答えが変わるので、診察で見極めるのが近道です。", "why": "本人が施術選びで迷っている生の声で、当院の得意領域にそのまま答えられる", "compose": "https://x.com/compose/post?text=%E8%BF%B7%E3%82%8F%E3%82%8C%E3%82%8B%E3%81%AE%E3%81%AF%E8%87%AA%E7%84%B6%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E4%B8%8A%E3%81%BE%E3%81%B6%E3%81%9F%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%81%8C%E4%B8%BB%E3%81%AA%E3%82%89%E7%9C%89%E4%B8%8B%E5%88%87%E9%96%8B%E3%80%81%E9%BB%92%E7%9B%AE%E3%81%AB%E3%81%8B%E3%81%8B%E3%82%8B%E9%96%8B%E3%81%8D%E3%81%AB%E3%81%8F%E3%81%95%E3%81%8C%E3%81%82%E3%82%8C%E3%81%B0%E7%9C%BC%E7%9E%BC%E4%B8%8B%E5%9E%82%E3%81%AE%E6%89%8B%E8%A1%93%E3%80%81%E7%9C%89%E3%81%94%E3%81%A8%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E5%A0%B4%E5%90%88%E3%81%AF%E9%A1%8D%E5%81%B4%E3%81%AE%E5%87%A6%E7%BD%AE%E3%81%8C%E5%90%91%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E5%8E%9F%E5%9B%A0%E3%81%8C%E3%81%A9%E3%81%93%E3%81%AB%E3%81%82%E3%82%8B%E3%81%8B%E3%81%A7%E7%AD%94%E3%81%88%E3%81%8C%E5%A4%89%E3%82%8F%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E8%A8%BA%E5%AF%9F%E3%81%A7%E8%A6%8B%E6%A5%B5%E3%82%81%E3%82%8B%E3%81%AE%E3%81%8C%E8%BF%91%E9%81%93%E3%81%A7%E3%81%99%E3%80%82%0Ahttps%3A//x.com/shiratama_cha_/status/2098088156176523439", "isNew": false, "firstSeen": "2026-09-11"}], "posted": [{"date": "2026-09-13", "url": "https://x.com/kumacli_mohri/status/2099054585117892964", "text": "写真一枚目はリフトだけでほうれい線が改善したケース。 二枚目は注入治療でほうれい線が改善したケース。 つまり、ほうれい線は皮膚表面の問題だけでなく、中顔面の脂肪の下垂や骨の吸収が大きく関係しています。 https://t.co/1oziBWYSBj https://t.co/4Zt6rIGLro", "impressions": 901, "likes": 2, "quotedUrl": "https://x.com/complexarasa/status/2098088996454973849", "quotedAuthor": "complexarasa", "tierName": "シワ・たるみ・ほうれい線", "fromSystem": true}, {"date": "2026-09-12", "url": "https://x.com/kumacli_mohri/status/2098642269847031838", "text": "何があったんでしょうね☺️ https://t.co/sxO9pVrQQH", "impressions": 5396, "likes": 17, "quotedUrl": "https://x.com/i/status/2098640883981967754", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-09-11", "url": "https://x.com/kumacli_mohri/status/2098439905198457211", "text": "そもそもpinch testは裏ハムラの適応の可否を決めるために行うものではないです。 逆に視野不全で裏ハムラが出来ないことってあんまりないと思います。 https://t.co/vd9bgG3RnJ", "impressions": 6009, "likes": 10, "quotedUrl": "https://x.com/i/status/2098389232314372472", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-09-11", "url": "https://x.com/kumacli_mohri/status/2098286681900339636", "text": "額を丸くしたい気持ちと、目を開けたい気持ちは分けて考えると整理できます。眼瞼下垂手術は目の開きを良くする手術、眉下切開は上まぶたの皮膚のたるみ、厚みを減らす手術で、どちらも額の形は変えません。 ただし、どちらも前頭筋の緊張がとれるために なだらかな額になるというのが正しいです。 https://t.co/34SjInF48g https://t.co/QzBOZ1ykyI", "impressions": 1516, "likes": 2, "quotedUrl": "https://x.com/__20aoo/status/2097147947653935611", "quotedAuthor": "__20aoo", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-09", "url": "https://x.com/kumacli_mohri/status/2097583751513715142", "text": "補足しますと、医療広告ガイドラインで加工が禁じられているぶん、撮影条件をそろえることが症例写真の生命線になります。照明も角度も距離も固定して初めて、変化が変化として伝わります。撮る側の責任は大きいと思います。 https://t.co/o89MjCKFsv", "impressions": 1164, "likes": 2, "quotedUrl": "https://x.com/mizu_notwater/status/2096218964833829191", "quotedAuthor": "mizu_notwater", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-09", "url": "https://x.com/kumacli_mohri/status/2097578858803495201", "text": "テレビで取り上げられたとおり、クマは青・茶・黒なんて呼び方は患者さんに分かりやすいための一つの概念として表現する事はあります。 ただし治療を受ける前までには色分けで判断せず、本質的な理由まで深ぼって理解してほしいです。 https://t.co/1E03eTHONx", "impressions": 2657, "likes": 5, "quotedUrl": "https://x.com/kattunonly0322/status/2095457150470688853", "quotedAuthor": "kattunonly0322", "tierName": "クマ・目元 直球", "fromSystem": true}, {"date": "2026-09-08", "url": "https://x.com/kumacli_mohri/status/2097218686738436175", "text": "たるみ治療が盛り上がるのは良いことだと思います。ただ、たるみの原因は皮膚や脂肪だけではありません。 むしろ適度な脂肪はたるみを予防する上で不可欠な要素です。 ⚠️新しい美容皮膚科の機械・注入剤は1年様子見が鉄則です https://t.co/6HXqgGBieD", "impressions": 1435, "likes": 4, "quotedUrl": "https://x.com/takepon5895/status/2096411728821240286", "quotedAuthor": "takepon5895", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-07", "url": "https://x.com/kumacli_mohri/status/2096824429091094937", "text": "挙げられている項目、どれも的確だと思います。特に症例写真は、照明と角度と表情がそろっていない比較では情報として成立しません。当院でも同一条件での撮影を徹底しています。 あと1点大事な事があります。 直後、1週間後の症例をさも完成かのように上げてるケースに注意してほしいです。 https://t.co/TbcWc3DejB https://t.co/o2r1gLTrnW", "impressions": 2378, "likes": 5, "quotedUrl": "https://x.com/17dsy_/status/2095451039269028204", "quotedAuthor": "17dsy_", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-07", "url": "https://x.com/kumacli_mohri/status/2096818523473617101", "text": "カウンセリングは本来、受けない選択も含めて一緒に決める場だと思っています。引き止めが強い、その日のうちに決めさせようとする。そういう場面に出会ったら、いったん持ち帰って構いません。急ぐ理由はありません。 https://t.co/UuyU0NmKsN", "impressions": 1123, "likes": 3, "quotedUrl": "https://x.com/sekkai/status/2095507406092632452", "quotedAuthor": "sekkai", "tierName": "業界・警鐘", "fromSystem": true}, {"date": "2026-09-05", "url": "https://x.com/kumacli_mohri/status/2096384100898947529", "text": "脱脂だけであれば5日という感覚は妥当です。内出血や目立った腫れは1週間前後で落ち着きます。 ただダウンタイムが少ないから全てのクマ治療を脱脂でしよう！と考えてしまう方が一定数いらっしゃいますのでこれは気をつけてほしいです。 https://t.co/qmY5fEvcC4", "impressions": 2271, "likes": 4, "quotedUrl": "https://x.com/17dsy_/status/2094360220629971150", "quotedAuthor": "17dsy_", "tierName": "クマ・目元 直球", "fromSystem": true}]}</script>
 <script>(function () {
   const LIMIT = 140;
   const KEY = "kuma-x-state";
@@ -294,6 +609,7 @@
     app.innerHTML = `
       ${staleBanner()}
       <header>
+        <span class="karte tool">引用候補</span>
         <p class="eyebrow">${esc(S.updated)} 更新${
           S.updated === localToday() ? updatedWord() : ""} ／ @kumacli_mohri</p>
         <h1>今日の引用候補</h1>
