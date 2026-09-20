@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>今日の引用候補</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>/* ============================================================
+   クマクリ ダッシュボード 共通スタイル（全ページの土台）
+
+   どの gen_*.py も、まずこのファイルを <style> に展開してから
+   ページ固有の CSS を後ろに足す。順番が意味を持つので入れ替えないこと。
+
+   ■ 2つの見た目（参考画像に合わせて 2026-09-15 に決めた）
+     1. 明るい管理画面（既定）
+        薄いグレーの地に白いタイル。数字は色つきで大きく。
+        上に .topbar があるページ（業務・経営・ネタ・議事録・KPI）は
+        .topbar が左の濃い色のサイドバーになる（ナビ・検索・絞り込みはそこに入る）。
+     2. ダークの光る版（<html class="theme-glow">）
+        紺の地に紫〜オレンジの光。診断レポート4本（IG / X / TikTok / YouTube）で使う。
+        色トークンを丸ごと差し替えているだけなので、部品のクラスは共通。
+
+   ■ 書体
+     見出し・本文・数字すべてゴシック（Noto Sans JP）。明朝は使わない（読みにくい）。
+     等幅（IBM Plex Mono）はコードだけ。
+
+   ■ 旧変数の別名
+     各ページの古い CSS（--plane / --card / --s1 など）がそのまま動くよう、
+     末尾で新しい色に橋渡ししている。新しく書く CSS は新しい名前を使うこと。
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+:root{
+  color-scheme:light;
+  --ground:#EEF1F5;
+  --surface:#FFFFFF;
+  --surface-2:#F4F6F9;
+  --ink:#1E2430;
+  --ink-soft:#586273;
+  --ink-faint:#76808F;
+  --rule:#E2E6EC;
+  --rule-soft:#EDF0F4;
+  --zebra:#F8FAFC;
+  /* 主色：ティール（道具・肯定） */
+  --accent:#149E9B;
+  --accent-soft:#DCF3F2;
+  --accent-ink:#0F7D7A;
+  /* 副色：紫（診断・強調） */
+  --kuma:#7C5CFF;
+  --kuma-soft:#ECE7FF;
+  --kuma-ink:#5A3FE0;
+  /* 状態 */
+  --warn:#E14B50;
+  --warn-soft:#FDE8E9;
+  --good:#2FB36A;
+  --good-soft:#E2F6EA;
+  --gold:#D99A00;
+  --gold-soft:#FFF3D1;
+  /* タイルの数字を順に塗る色（参考画像2の色つき数字） */
+  --n1:#1E2430;--n2:#2FB36A;--n3:#E14B50;--n4:#149E9B;--n5:#7C5CFF;--n6:#F08A24;
+  /* サイドバー */
+  --side:#20434E;
+  --side-2:#183740;
+  --side-ink:rgba(255,255,255,.78);
+  --shadow:0 1px 2px rgba(30,36,48,.04),0 10px 30px rgba(30,36,48,.06);
+  --r:14px;
+  --glow:linear-gradient(90deg,#7C5CFF,#FF7A59);
+  --display:"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  --body:"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  --mono:"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  --code:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+/* ---- ダークの光る版（診断レポート） ---- */
+html.theme-glow{
+  color-scheme:dark;
+  --ground:#0F1326;
+  --surface:#171C35;
+  --surface-2:#1F2544;
+  --ink:#EEF0FA;
+  --ink-soft:#B5BBD4;
+  --ink-faint:#8A92B0;
+  --rule:#2B3358;
+  --rule-soft:#242B4C;
+  --zebra:rgba(255,255,255,.025);
+  --accent:#FF7A59;
+  --accent-soft:rgba(255,122,89,.16);
+  --accent-ink:#FF9E86;
+  --kuma:#A66CFF;
+  --kuma-soft:rgba(166,108,255,.18);
+  --kuma-ink:#C7A4FF;
+  --warn:#FF5C7A;
+  --warn-soft:rgba(255,92,122,.16);
+  --good:#3FE0A6;
+  --good-soft:rgba(63,224,166,.14);
+  --gold:#FFC857;
+  --gold-soft:rgba(255,200,87,.16);
+  --n1:#EEF0FA;--n2:#3FE0A6;--n3:#FF7A59;--n4:#5AD8FF;--n5:#C7A4FF;--n6:#FFC857;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 40px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--body);font-size:15.5px;line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+html.theme-glow body{
+  background:var(--ground);
+  background-image:
+    radial-gradient(60% 40% at 15% 0%,rgba(124,92,255,.35),transparent 60%),
+    radial-gradient(45% 35% at 90% 5%,rgba(255,122,89,.28),transparent 60%),
+    radial-gradient(50% 40% at 60% 100%,rgba(90,216,255,.10),transparent 60%);
+  background-attachment:fixed;
+}
+h1,h2,h3,h4{font-family:var(--display);font-weight:700;text-wrap:balance;letter-spacing:-.005em;line-height:1.4;color:var(--ink)}
+a{color:var(--accent-ink)}
+b,strong{font-weight:700;color:var(--ink)}
+code,kbd{font-family:var(--code);font-size:.9em;background:var(--surface-2);border:1px solid var(--rule-soft);border-radius:4px;padding:1px 5px}
+.mono{font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+::selection{background:var(--accent-soft)}
+
+/* ---- ページ幅 ---- */
+.wrap{max-width:960px;margin:0 auto;padding:0 24px 88px}
+
+/* ---- マストヘッド（レポート型・日次道具） ----
+   <header>
+     <span class="karte">Instagram 診断</span>   ← 小さな札になる
+     <div class="eyebrow">…</div> <h1>…</h1> <p class="lede">…</p> <div class="provenance">…</div>
+   </header> */
+header{position:relative;padding:44px 0 26px;margin:0 0 26px;border-bottom:1px solid var(--rule)}
+header > h1{font-size:32px;margin:0 0 16px;line-height:1.4;font-weight:900;letter-spacing:-.01em}
+.karte{
+  display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.12em;
+  padding:4px 12px;border-radius:999px;margin:0 0 14px;
+  color:#fff;background:var(--kuma);
+}
+.karte.tool{background:var(--accent)}
+.eyebrow{font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint);font-weight:700;margin:0 0 10px}
+.lede{font-size:16px;color:var(--ink-soft);max-width:64ch;margin:0 0 6px;line-height:1.85}
+.provenance{margin-top:20px;font-size:12.5px;color:var(--ink-faint);display:flex;flex-wrap:wrap;gap:6px 20px;font-variant-numeric:tabular-nums}
+.provenance span{white-space:nowrap}
+/* 光る版：見出しの下に光の線 */
+html.theme-glow header{border-bottom:0;padding-top:52px}
+html.theme-glow header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:2px;background:var(--glow)}
+html.theme-glow .karte{background:var(--glow);color:#fff}
+html.theme-glow header > h1{font-size:34px;color:#fff;text-shadow:0 2px 24px rgba(124,92,255,.35)}
+html.theme-glow .eyebrow{color:var(--kuma-ink)}
+
+/* ---- アプリ型（左サイドバー） ----
+   <div class="topbar">
+     <header class="app">
+       <span class="karte tool">業務ナレッジ</span>
+       <div class="app-t"><h1>…</h1><div class="sub">…</div></div>
+     </header>
+     <nav class="tabs"><button class="tab active">…</button>…</nav>
+     （#searchbar / .controls などもこの中に入れてよい）
+   </div>
+   <main>…</main>
+   広い画面では .topbar が左の縦長サイドバーに、狭い画面では上の帯になる。 */
+body:has(> .topbar){display:grid;grid-template-columns:256px minmax(0,1fr);min-height:100vh;align-items:start}
+body:has(> .topbar) > main,body:has(> .topbar) > .wrap{grid-column:2;min-width:0}
+.topbar{
+  grid-column:1;grid-row:1 / span 20;position:sticky;top:0;height:100vh;overflow:auto;
+  background:var(--side);background-image:linear-gradient(180deg,var(--side),var(--side-2));
+  color:#fff;display:flex;flex-direction:column;gap:6px;padding:18px 14px 24px;
+  scrollbar-width:thin;
+}
+header.app{border:0;padding:6px 8px 14px;margin:0;display:block;border-bottom:1px solid rgba(255,255,255,.12)}
+header.app > .karte{
+  display:inline-block;background:rgba(255,255,255,.14);color:#fff;
+  font-size:10.5px;letter-spacing:.14em;padding:3px 10px;border-radius:999px;margin:0 0 12px;
+}
+header.app h1{font-size:18px;margin:0;line-height:1.35;font-weight:900;color:#fff}
+header.app .sub{color:var(--side-ink);font-size:12px;margin-top:6px;line-height:1.6;font-variant-numeric:tabular-nums}
+nav.tabs,nav.index{display:flex;flex-direction:column;gap:2px;padding:8px 0 4px}
+nav.tabs .tab,nav.index .tab{
+  appearance:none;border:0;background:transparent;color:var(--side-ink);cursor:pointer;text-align:left;
+  font-family:var(--body);font-size:14px;font-weight:700;padding:10px 12px;border-radius:9px;
+  text-decoration:none;line-height:1.4;display:flex;align-items:center;gap:10px;
+}
+nav.tabs .tab::before,nav.index .tab::before{content:"";width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);flex:none}
+nav.tabs .tab:hover,nav.index .tab:hover{background:rgba(255,255,255,.08);color:#fff}
+nav.tabs .tab.active,nav.index .tab.active{background:#fff;color:var(--side);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+nav.tabs .tab.active::before,nav.index .tab.active::before{background:var(--accent)}
+/* サイドバーの中の検索・絞り込み（work の #searchbar、neta の .controls） */
+.topbar #searchbar,.topbar .controls{padding:10px 6px 4px;background:transparent;border:0;display:block}
+.topbar input[type=search],.topbar input[type=text],.topbar #searchbar input,.topbar #kw{
+  width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;
+  border-radius:9px;padding:9px 12px;font:inherit;font-size:13.5px;outline:none;
+}
+.topbar input::placeholder{color:rgba(255,255,255,.5)}
+.topbar input:focus,.topbar #searchbar input:focus,.topbar #kw:focus{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4)}
+.topbar #searchinfo,.topbar .findhint{display:block;color:var(--side-ink);font-size:12px;margin-top:6px}
+.topbar .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.topbar .chip{
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--side-ink);
+  padding:4px 10px;border-radius:999px;font-size:12px;cursor:pointer;font-weight:700;font-family:var(--body);
+}
+.topbar .chip:hover{background:rgba(255,255,255,.12);color:#fff}
+.topbar .chip.active{background:#fff;color:var(--side);border-color:#fff}
+main{padding:28px 32px 80px}
+@media (max-width:900px){
+  body:has(> .topbar){display:block}
+  .topbar{position:sticky;top:0;z-index:10;height:auto;max-height:none;overflow:visible;grid-row:auto;padding:12px 14px 10px;gap:4px}
+  header.app{display:flex;align-items:center;gap:12px;padding:0 0 8px}
+  header.app > .karte{margin:0}
+  header.app h1{font-size:16px}
+  header.app .sub{display:none}
+  nav.tabs,nav.index{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:4px 0 2px;scrollbar-width:none}
+  nav.tabs::-webkit-scrollbar,nav.index::-webkit-scrollbar{display:none}
+  nav.tabs .tab,nav.index .tab{padding:7px 12px;font-size:13px;white-space:nowrap}
+  nav.tabs .tab::before,nav.index .tab::before{display:none}
+  .topbar .chips{margin-top:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  main{padding:18px 16px 70px}
+}
+
+/* ---- 節見出し ---- */
+section{margin-top:56px}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-top:6px}
+.sec-num{font-size:12px;font-weight:900;color:#fff;background:var(--kuma);letter-spacing:.06em;flex:none;padding:3px 10px;border-radius:999px;line-height:1.5;font-variant-numeric:tabular-nums}
+html.theme-glow .sec-num{background:var(--glow)}
+h2{font-size:24px;margin:0;font-weight:900}
+.sec-sub{color:var(--ink-soft);margin:8px 0 24px;max-width:64ch;font-size:15px}
+h3{font-size:17px;margin:24px 0 8px}
+p{margin:0 0 18px}
+
+/* ---- カード ---- */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:20px 22px;margin:16px 0;box-shadow:var(--shadow)}
+html.theme-glow .card{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09);backdrop-filter:blur(8px)}
+
+/* ---- 数字タイル（白いタイル・色つきの数字） ---- */
+.stats,.kpis,.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:26px 0;background:none;border:0}
+.stat,.kpis>.kpi,.kpi-grid>.kpi{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:20px 20px 18px;margin:0;
+  box-shadow:var(--shadow);position:relative;min-width:0;
+}
+html.theme-glow .stat,html.theme-glow .kpis>.kpi,html.theme-glow .kpi-grid>.kpi{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09)}
+.stat .k,.kpi .label,.kpi-label{font-size:12px;color:var(--ink-faint);letter-spacing:.02em;margin-bottom:10px;line-height:1.5;font-weight:700}
+.stat .v,.kpi .val,.kpi-val{font-size:34px;font-weight:900;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin:0;color:var(--n1)}
+.stat .n,.kpi .note,.kpi-sub{font-size:12.5px;color:var(--ink-soft);margin-top:10px;line-height:1.55}
+.stat:nth-child(6n+2) .v,.kpi:nth-child(6n+2) .val,.kpi:nth-child(6n+2) .kpi-val{color:var(--n2)}
+.stat:nth-child(6n+3) .v,.kpi:nth-child(6n+3) .val,.kpi:nth-child(6n+3) .kpi-val{color:var(--n3)}
+.stat:nth-child(6n+4) .v,.kpi:nth-child(6n+4) .val,.kpi:nth-child(6n+4) .kpi-val{color:var(--n4)}
+.stat:nth-child(6n+5) .v,.kpi:nth-child(6n+5) .val,.kpi:nth-child(6n+5) .kpi-val{color:var(--n5)}
+.stat:nth-child(6n+6) .v,.kpi:nth-child(6n+6) .val,.kpi:nth-child(6n+6) .kpi-val{color:var(--n6)}
+.v.warn,.val.warn,.stat .v.warn{color:var(--warn)!important} .v.good,.val.good,.stat .v.good{color:var(--good)!important} .v.acc,.val.acc{color:var(--accent)!important}
+
+/* ---- ファネル ---- */
+.funnel{display:flex;flex-direction:column;gap:10px;margin:26px 0}
+.fstep{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 20px;flex-wrap:wrap;box-shadow:var(--shadow)}
+html.theme-glow .fstep{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09)}
+.fbar{height:26px;background:var(--glow);flex:none;border-radius:8px;min-width:4px;max-width:100%}
+.fmeta{flex:1;min-width:0}
+.fname{font-size:14.5px;font-weight:700}
+.fnote{font-size:12.5px;color:var(--ink-faint);line-height:1.6}
+.fval{font-size:22px;font-weight:900;flex:none;font-variant-numeric:tabular-nums}
+.fstep.est{border-style:dashed}
+.fstep.est .fbar{background:var(--ink-faint);opacity:.5}
+
+/* ---- 良い点リスト ---- */
+.good-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:26px 0}
+.good-item{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+html.theme-glow .good-item{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09)}
+.good-item h3{font-size:15px;margin:0 0 8px;font-weight:700}
+.good-item h3::before{content:"✓";color:var(--good);margin-right:8px;font-weight:900}
+.good-item p{font-size:13.5px;color:var(--ink-soft);margin:0}
+
+/* ---- 表 ---- */
+.tw{overflow-x:auto;margin:26px 0;border:1px solid var(--rule);background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow)}
+html.theme-glow .tw{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.09)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+thead th{background:var(--surface-2);font-size:12px;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;border-bottom:1px solid var(--rule);white-space:nowrap}
+html.theme-glow thead th{background:rgba(255,255,255,.05)}
+tbody tr:nth-child(even) td{background:var(--zebra)}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+tr.hi td{background:var(--kuma-soft)!important}
+tr.lo td{background:var(--warn-soft)!important}
+
+/* ---- 目次 ---- */
+.toc{margin:28px 0 0;border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+html.theme-glow .toc{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09)}
+.toc-head,.toc>h2,.toc>b{display:block;padding:12px 20px;border-bottom:1px solid var(--rule);font-size:13px;letter-spacing:.04em;color:var(--ink-soft);font-weight:700;margin:0}
+.toc ol{list-style:none;margin:0;padding:8px 0;display:grid;grid-template-columns:1fr 1fr;gap:0;columns:auto}
+.toc li{margin:0;font-size:14.5px;break-inside:avoid}
+.toc a{display:flex;gap:12px;align-items:baseline;padding:7px 20px;color:var(--ink);text-decoration:none;line-height:1.6}
+.toc a:hover{background:var(--surface-2);color:var(--accent-ink)}
+.toc .tn{font-size:12px;font-weight:900;color:var(--kuma-ink);flex:none;min-width:2.2em;font-variant-numeric:tabular-nums}
+@media (max-width:640px){.toc ol{grid-template-columns:1fr}}
+
+/* ---- 先頭へ戻る ---- */
+.to-top,.to-toc{
+  position:fixed;right:16px;bottom:16px;z-index:50;display:none;align-items:center;gap:7px;
+  padding:10px 15px;border-radius:999px;background:var(--surface);border:1px solid var(--rule);
+  box-shadow:var(--shadow);color:var(--ink);text-decoration:none;font:inherit;font-size:13px;font-weight:700;line-height:1;cursor:pointer;
+}
+.to-top.is-on,.to-toc.is-on{display:inline-flex}
+.to-top:hover,.to-toc:hover{color:var(--accent-ink);border-color:var(--accent)}
+
+/* ---- 札（タグ・状態） ---- */
+.tag,.badge,.pill,.chip{font-family:var(--body);font-weight:700;border-radius:999px}
+
+/* ---- ボタン ---- */
+button{font-family:var(--body)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--body);font-size:14px;font-weight:700;padding:10px 18px;border-radius:999px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;text-decoration:none;line-height:1.3}
+.btn:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--accent-ink)}
+.btn.ghost:hover{background:var(--accent-soft)}
+
+/* ---- 畳む ---- */
+details>summary{cursor:pointer}
+details>summary::-webkit-details-marker{display:none}
+
+/* ---- 注記の帯 ---- */
+.callout,.note-box{background:var(--surface-2);border-left:4px solid var(--accent);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;margin:14px 0;font-size:14px;color:var(--ink-soft)}
+.callout.warn{border-left-color:var(--warn);background:var(--warn-soft);color:var(--ink)}
+
+/* ---- 印刷 ---- */
+@media print{
+  body{background:#fff}
+  .to-top,.to-toc{display:none!important}
+  .topbar{position:static;height:auto}
+}
+
+/* ---- 動きを抑える ---- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+/* ---- 狭い画面 ---- */
+@media (max-width:640px){
+  .wrap{padding:0 16px 64px}
+  header{padding:26px 0 20px;margin-bottom:22px}
+  header > h1{font-size:26px;overflow-wrap:anywhere}
+  html.theme-glow header > h1{font-size:27px}
+  h2{font-size:21px}
+  .stat .v,.kpi .val,.kpi-val{font-size:28px}
+  .stats,.kpis,.kpi-grid{gap:10px;grid-template-columns:repeat(2,1fr)}
+  th,td{padding:9px 11px}
+}
+
+/* ============================================================
+   旧変数の別名（各ページの既存 CSS を新しい色で動かすため）
+   ============================================================ */
+:root,html.theme-glow{
+  --plane:var(--ground);--border:var(--rule);--muted:var(--ink-faint);--ink2:var(--ink-soft);
+  --accentsoft:var(--accent-soft);--goodsoft:var(--good-soft);--bad:var(--warn);--badsoft:var(--warn-soft);
+  --warnsoft:var(--gold-soft);--goldsoft:var(--gold-soft);--done:var(--ink-faint);
+  --s1:var(--kuma);--s1soft:var(--kuma-soft);--grid:var(--rule-soft);--axis:var(--rule);--bd:var(--rule);
+  --bg:var(--ground);--card:var(--surface);--line:var(--rule);--line-soft:var(--rule-soft);--sub:var(--ink-faint);
+  --fg:var(--ink);--paper:var(--ground);--sunken:var(--surface-2);--faint:var(--ink-faint);
+  --accent-bg:var(--accent-soft);--gold-bg:var(--gold-soft);
+}
+
+  /* 今日の引用候補（道具のページ＝緑）
+     sns/report_base.css の "後" に読まれる。配色・書体・header と背表紙タブ・
+     .wrap の余白は共通側。ここには この画面だけの部品を置く。 */
+
+  body{font-size:16px;line-height:1.8}
+  .wrap{max-width:40rem}
+
+  header{margin-bottom:1.75rem}
+
+  /* 自動更新が止まった朝に気づけるように。古い候補を今日のものと思わせない */
+  .alert{margin:0 0 1.25rem;padding:.9rem 1rem;border-radius:var(--r);
+    background:var(--gold-bg);color:var(--gold);border:1px solid currentColor;
+    font-size:.92rem;font-weight:700;line-height:1.7}
+  .alert b{font-family:var(--mono)}
+  header > h1{font-weight:600;font-size:1.75rem;line-height:1.4;margin:0 0 .6rem}
+  .sub{font-size:.88rem;color:var(--muted);margin:0}
+  .tally{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;
+    padding-top:1rem;border-top:1px solid var(--line)}
+  .chip{font-family:var(--mono);font-size:.82rem;padding:.25rem .6rem;
+    border-radius:999px;background:var(--sunken);color:var(--muted);
+    font-variant-numeric:tabular-nums}
+  /* 数字の読み方は、数字を見る場所の手前に置く（以前はページ最下部だった） */
+  .legend{margin:.9rem 0 0;font-size:.84rem;line-height:1.7;color:var(--muted)}
+  .legend b{color:var(--ink)}
+  .chip.on{background:var(--accent);color:#fff}
+
+  /* 共通の .card は余白つきの紙片。ここでは中の区画が余白を持つので外す */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:0;margin:0 0 1.25rem;overflow:hidden;
+    transition:opacity .2s}
+  .card.done{border-color:var(--accent)}
+  .card.skip{opacity:.45}
+
+  .card-h{display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;
+    border-bottom:1px solid var(--line-soft);background:var(--sunken)}
+  .idx{font-family:var(--mono);font-size:.74rem;color:var(--accent);font-weight:600}
+  .state{margin-left:auto;font-family:var(--mono);font-size:.7rem;
+    padding:.15rem .5rem;border-radius:999px}
+  .state.posted{background:var(--accent-bg);color:var(--accent-ink)}
+  .state.skipped{background:var(--sunken);color:var(--faint)}
+  .state.edited{background:var(--gold-bg);color:var(--gold)}
+
+  .src{padding:.9rem 1rem;border-bottom:1px solid var(--line-soft)}
+  .src-who{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem;
+    font-size:.82rem;color:var(--muted);margin-bottom:.4rem}
+  .src-who b{color:var(--ink);font-weight:700;font-size:.86rem}
+  .src-text{font-size:.92rem;line-height:1.75;margin:0 0 .6rem;
+    color:var(--ink);white-space:pre-wrap;word-break:break-word}
+  /* 共通の .stats は数字タイルの格子。ここでは1行の数字の並びなので打ち消す */
+  .stats{display:flex;flex-wrap:wrap;gap:.2rem .8rem;margin:0;
+    background:none;border:0;border-radius:0;overflow:visible;
+    font-family:var(--body);font-size:.82rem;color:var(--muted);
+    font-variant-numeric:tabular-nums}
+  .stats .rate{color:var(--accent-ink);font-weight:600}
+  .src-link{display:inline-block;margin-top:.5rem;font-size:.84rem;
+    color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor}
+  .src-link:hover,.src-link:focus-visible{opacity:.75}
+
+  .draft{padding:.9rem 1rem 1rem}
+  .draft-label{font-family:var(--body);font-size:.84rem;font-weight:700;
+    color:var(--muted);margin-bottom:.4rem;display:flex;align-items:center}
+  .count{margin-left:auto;font-family:var(--mono);font-weight:400;
+    font-size:.8rem;font-variant-numeric:tabular-nums}
+  .count.over{color:var(--warn);font-weight:600}
+  /* 高さは page.js が中身に合わせて伸ばす。固定すると下書きが途中で切れる */
+  textarea{width:100%;min-height:3rem;padding:.75rem;border:1px solid var(--line);
+    border-radius:var(--r);background:var(--paper);color:var(--ink);display:block;
+    font-family:var(--body);font-size:.95rem;line-height:1.8;
+    resize:none;overflow:hidden}
+  textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+
+  .actions{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap}
+  button{font-family:var(--body);font-size:.88rem;font-weight:700;
+    padding:.7rem 1rem;border-radius:var(--r);border:1px solid transparent;
+    cursor:pointer;min-height:2.9rem}
+  button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .btn-post{background:var(--accent);color:#fff;flex:1;min-width:9rem;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:var(--body);font-size:.88rem;font-weight:700;
+    padding:.7rem 1rem;border-radius:var(--r);min-height:2.9rem;
+    text-decoration:none;cursor:pointer}
+  .btn-copy{background:var(--surface);color:var(--accent-ink);
+    border:1px solid var(--accent);display:inline-flex;align-items:center;
+    justify-content:center;font-family:var(--body);font-size:.88rem;font-weight:700;
+    padding:.7rem 1rem;border-radius:var(--r);min-height:2.9rem;
+    text-decoration:none;cursor:pointer}
+  .btn-skip{background:transparent;color:var(--muted);border-color:var(--line)}
+  button:hover{opacity:.88}
+  button[disabled]{opacity:.4;cursor:not-allowed}
+
+  /* Xから戻ってきた時の確認。押しただけで投稿に数えないため */
+  .card.asking{border-color:var(--gold)}
+  .confirm{margin-top:.75rem;padding:.75rem .85rem;border-radius:var(--r);
+    background:var(--gold-bg);border:1px solid var(--gold)}
+  .confirm-q{margin:0 0 .5rem;font-size:.9rem;font-weight:700;color:var(--gold)}
+  .confirm .actions{margin-top:0}
+  /* min-width は 375px で2つ並ばない幅。並ぶと文字が折り返して読みにくかった */
+  .btn-yes{background:var(--accent);color:#fff;flex:1;min-width:10rem}
+  .btn-no{background:var(--surface);color:var(--muted);border-color:var(--line);
+    flex:1;min-width:10rem}
+
+  /* 見送りの取り消し。誤タップ1回で候補が消えたままにならないように */
+  .card.undone{background:var(--sunken);border-style:dashed}
+  .undo-bar{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.7rem 1rem}
+  .undo-msg{font-size:.92rem;font-weight:700;color:var(--muted)}
+  .undo-who{font-family:var(--mono);font-size:.8rem;font-weight:400;
+    color:var(--faint);margin-left:.5rem}
+  .btn-undo{margin-left:auto;background:var(--surface);color:var(--accent-ink);
+    border:1px solid var(--accent);padding:.5rem 1.1rem;min-height:2.6rem}
+
+  .note{margin-top:1.5rem;padding:1rem 1.15rem;background:var(--surface);
+    border:1px solid var(--line);border-radius:var(--r);font-size:.88rem;
+    line-height:1.75;color:var(--muted)}
+  .note b{color:var(--ink)}
+  .status{font-size:.84rem;color:var(--muted);margin-top:.5rem;min-height:1.2rem}
+
+  .more{display:block;width:100%;margin:.5rem 0 1.5rem;padding:.9rem;
+    background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);
+    color:var(--accent);font-weight:700;font-size:.9rem;cursor:pointer}
+  .more:hover{background:var(--accent-bg)}
+  .tier{font-family:var(--body);font-size:.78rem;font-weight:500;letter-spacing:.02em;
+    padding:.14rem .5rem;border-radius:3px;background:var(--accent-bg);
+    color:var(--accent-ink);white-space:nowrap}
+  .tier.stale{background:transparent;color:var(--muted);
+    box-shadow:inset 0 0 0 1px currentColor;opacity:.75;margin-left:.35rem}
+  /* 今朝入った候補と、昨日も出ていた候補を見分ける印 */
+  .tier.fresh{background:var(--gold-bg);color:var(--gold);font-weight:700;margin-left:.35rem}
+  .tier.seen{background:transparent;color:var(--faint);
+    box-shadow:inset 0 0 0 1px var(--line);margin-left:.35rem}
+  .why{font-size:.88rem;color:var(--muted);line-height:1.7;margin:.35rem 0 0}
+  .card-h{flex-wrap:wrap}
+
+  .done-note{padding:1rem 1.15rem;background:var(--accent-bg);border-radius:var(--r);
+    color:var(--accent-ink);font-size:.88rem;font-weight:700;text-align:center}
+
+  /* すでに投稿した引用リポストの控え */
+  .log{margin:1.4rem 0 0;border:1px solid var(--line);border-radius:var(--r);
+    background:var(--surface);overflow:hidden}
+  .log>summary{cursor:pointer;padding:.7rem .9rem;font-size:.82rem;font-weight:700;
+    color:var(--muted);list-style:none}
+  .log>summary::-webkit-details-marker{display:none}
+  .log>summary::before{content:"▸ ";color:var(--accent-ink)}
+  .log[open]>summary::before{content:"▾ "}
+  .log-note{margin:0 .9rem .5rem;font-size:.8rem;color:var(--muted);line-height:1.6}
+  .log-row{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;
+    padding:.55rem .9rem;border-top:1px solid var(--line);
+    text-decoration:none;color:inherit}
+  .log-row:hover{background:var(--accent-bg)}
+  .log-date{font-family:var(--mono);font-size:.7rem;color:var(--muted);flex:none}
+  .log-text{flex:1 1 12rem;font-size:.8rem;line-height:1.6}
+  .log-meta{font-family:var(--mono);font-size:.7rem;color:var(--muted);flex:none}
+  .log-tag{display:inline-block;margin-right:.4rem;padding:.05rem .35rem;border-radius:3px;
+    background:var(--accent-bg);color:var(--accent-ink);font-size:.66rem;flex:none}
+  /* 先生が自力で見つけたものは、控えめにして候補からのものを目立たせる */
+  .log-tag.own{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  .log-count{font-weight:400;color:var(--muted);font-size:.76rem}
+  /* 症例画像と「画像付きで投稿」（2026-09-16 試験） */
+  .case{margin:.75rem 0 0;padding:0}
+  .case img{display:block;width:100%;max-width:22rem;border-radius:var(--r);border:1px solid var(--line)}
+  .case figcaption{font-size:.78rem;color:var(--muted);margin-top:.35rem}
+  .btn-share{background:transparent;color:var(--accent);border:1px solid var(--accent);flex:1;min-width:9rem;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:var(--body);font-size:.88rem;font-weight:700;
+    padding:.7rem 1rem;border-radius:var(--r);min-height:2.9rem;cursor:pointer}
+</style>
+</head><body>
+<div class="wrap"><div id="app"></div></div>
+<script id="state" type="application/json">{"updated": "2026-09-20", "updatedAt": "17:57", "show": 5, "target": 2, "items": [{"id": "2100588583493231065", "url": "https://x.com/DrNanakoMito/status/2100588583493231065", "text": "今日は形成外科と美容外科のクリニック池袋で眼瞼下垂症手術などを見学！ 春日先生は眼瞼下垂症の権威(&amp; My母校)、信州大学形成外科出身。 私も松尾法で挙筋前転行っていましたが、デザインや固定法など、春日先生のこだわりやロジックが聞けて本当に有意義な1日でした！ 先生、有難う御座います✨ https://t.co/Cr2thye6MG", "date": "2026-09-17", "author": "DrNanakoMito", "authorName": "Nanako Mito", "followers": 52, "impressions": 3274, "likes": 7, "reposts": 0, "replies": 0, "quotes": 1, "bookmarks": 0, "rate": 0.31, "tier": "ganken", "tierName": "眼瞼下垂・二重の治療", "query": "(挙筋 OR 腱膜) (前転 OR 短縮)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/DrNanakoMito/status/2100588583493231065", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2099282223463845993", "url": "https://x.com/rinyysoo/status/2099282223463845993", "text": "⭐️眼瞼下垂（挙筋前転）DT3日目朝⭐️ 起床時のむくみはあるが、この感じだと仕事に行けそう✨ DTが軽いのは、先生の技術力の賜物のなのか、ケアの効果なのか？ #眼瞼下垂 #挙筋前転", "date": "2026-09-13", "author": "rinyysoo", "authorName": "rin🍎", "followers": 487, "impressions": 1386, "likes": 15, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 1.08, "tier": "ganken", "tierName": "眼瞼下垂・二重の治療", "query": "(挙筋 OR 腱膜) (前転 OR 短縮)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/rinyysoo/status/2099282223463845993", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2100883003111362796", "url": "https://x.com/nanasehayu/status/2100883003111362796", "text": "一人旅の疲れで爆睡し今朝のラジオ体操寝過ごしました…！家族の声かけにも気づかずさっきまでぐっすり…今は元気です✨ 153日間毎日続けてきました。154日目は今夜一緒にやりましょう✨ 🌙21:00 二代目6:25のお別れの儀＆154日目・夜のラジオ体操 🔗 https://t.co/n8DUVvCSbN https://t.co/9nccpyvFcl", "date": "2026-09-18", "author": "nanasehayu", "authorName": "七瀬はゆ", "followers": 2215, "impressions": 1177, "likes": 52, "reposts": 6, "replies": 7, "quotes": 0, "bookmarks": 0, "rate": 6.63, "tier": "myth", "tierName": "通説への反論の受け皿", "query": "目 (疲れ OR 開けづらい) (ツボ OR ストレッチ OR 体操)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/nanasehayu/status/2100883003111362796", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2101134999173181527", "url": "https://x.com/nemu_ichii/status/2101134999173181527", "text": "無加工のヲレ中顔面は長いわ眼瞼下垂は悪化しとるわで終わってる 今度こそ眼瞼下垂の手術(保険適用)する", "date": "2026-09-19", "author": "nemu_ichii", "authorName": "いちいねむ", "followers": 40426, "impressions": 1112, "likes": 0, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 0.0, "tier": "ganken", "tierName": "眼瞼下垂・二重の治療", "query": "眼瞼下垂 (手術 OR 保険 OR 検討 OR 相談 OR 悩み)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/nemu_ichii/status/2101134999173181527", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2100812560236757098", "url": "https://x.com/CruisinMap802/status/2100812560236757098", "text": "#飯室ストレッチ部 🧘 目の疲れに効く後頭部のツボ”天柱” 首の後ろの中心にある太い筋肉の 左右の外側とうなじの 生え際がクロスするへこみのあるツボ 親指でグリグリと回しながら上へと押し上げる 他の指は頭を支えるように ３秒押して緩めるを３回ほど 急にではなく徐々に押し上げていこう #MAP802 https://t.co/urtEezmzcX", "date": "2026-09-18", "author": "CruisinMap802", "authorName": "FM802 FRIDAY Cruisin' Map!!", "followers": 6843, "impressions": 907, "likes": 14, "reposts": 3, "replies": 0, "quotes": 1, "bookmarks": 1, "rate": 2.76, "tier": "myth", "tierName": "通説への反論の受け皿", "query": "目 (疲れ OR 開けづらい) (ツボ OR ストレッチ OR 体操)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/CruisinMap802/status/2100812560236757098", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2099475787539955787", "url": "https://x.com/rinyysoo/status/2099475787539955787", "text": "⭐️眼瞼下垂（挙筋前転）DT3日目⭐️ お昼頃から、むくみがさらに減ってきました。 ネイルサロンでは 「ん？目、やった？」と指摘あり。 至近距離＋ライトのある状況だったし、そりゃ気づくかれるよなぁと納得↓ #眼瞼下垂", "date": "2026-09-14", "author": "rinyysoo", "authorName": "rin🍎", "followers": 487, "impressions": 653, "likes": 9, "reposts": 0, "replies": 1, "quotes": 0, "bookmarks": 0, "rate": 1.68, "tier": "ganken", "tierName": "眼瞼下垂・二重の治療", "query": "(挙筋 OR 腱膜) (前転 OR 短縮)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/rinyysoo/status/2099475787539955787", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2100209550687408486", "url": "https://x.com/rinyysoo/status/2100209550687408486", "text": "⭐️眼瞼下垂（挙筋前転）DT5日目⭐️ 本日も目のことには何も触れられず終了。 メガネ着用でしたが、 もう外しても誰も気づかなそう。 家族には「目が大きくなった」と言われるけど、まだ自覚なし。 ……なのに、 すでに目尻切開と眉下切開を検索中。 DTが順調だと、欲が出る #眼瞼下垂 #二重全切開", "date": "2026-09-16", "author": "rinyysoo", "authorName": "rin🍎", "followers": 487, "impressions": 586, "likes": 7, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 1, "rate": 1.54, "tier": "ganken", "tierName": "眼瞼下垂・二重の治療", "query": "(挙筋 OR 腱膜) (前転 OR 短縮)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/rinyysoo/status/2100209550687408486", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2100893808376619068", "url": "https://x.com/r5lqv_v/status/2100893808376619068", "text": "眠そうな顔とか幸薄そうってよく言われるんだけど、なんの施術すれば良くなる？やっぱメイク？どんだけ濃くしても濃くならない😭😭", "date": "2026-09-18", "author": "r5lqv_v", "authorName": "ℳ❤︎", "followers": 88, "impressions": 551, "likes": 8, "reposts": 0, "replies": 2, "quotes": 0, "bookmarks": 0, "rate": 2.18, "tier": "eyelid_trouble", "tierName": "まぶた・目の上の悩み（患者の生の声）", "query": "(眠そう OR 眠たそう) (目 OR 顔 OR 言われる)", "draft": "メイクを濃くしても眠そうな印象が消えないのはお辛いですよね。まぶたを開ける筋力が原因の場合、メイクでのカバーには限界があります。クマクリでは裏眼下で皮膚の表面に傷をつけずに目元をぱっちり整えます。まずは鏡で黒目がしっかり見えているか確認してみてくださいね。", "why": "メイクで解決しない「眠そうな目」に対し、裏眼下という選択肢を提案できるため。", "compose": "https://x.com/compose/post?text=%E3%83%A1%E3%82%A4%E3%82%AF%E3%82%92%E6%BF%83%E3%81%8F%E3%81%97%E3%81%A6%E3%82%82%E7%9C%A0%E3%81%9D%E3%81%86%E3%81%AA%E5%8D%B0%E8%B1%A1%E3%81%8C%E6%B6%88%E3%81%88%E3%81%AA%E3%81%84%E3%81%AE%E3%81%AF%E3%81%8A%E8%BE%9B%E3%81%84%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E3%81%BE%E3%81%B6%E3%81%9F%E3%82%92%E9%96%8B%E3%81%91%E3%82%8B%E7%AD%8B%E5%8A%9B%E3%81%8C%E5%8E%9F%E5%9B%A0%E3%81%AE%E5%A0%B4%E5%90%88%E3%80%81%E3%83%A1%E3%82%A4%E3%82%AF%E3%81%A7%E3%81%AE%E3%82%AB%E3%83%90%E3%83%BC%E3%81%AB%E3%81%AF%E9%99%90%E7%95%8C%E3%81%8C%E3%81%82%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%A7%E3%81%AF%E8%A3%8F%E7%9C%BC%E4%B8%8B%E3%81%A7%E7%9A%AE%E8%86%9A%E3%81%AE%E8%A1%A8%E9%9D%A2%E3%81%AB%E5%82%B7%E3%82%92%E3%81%A4%E3%81%91%E3%81%9A%E3%81%AB%E7%9B%AE%E5%85%83%E3%82%92%E3%81%B1%E3%81%A3%E3%81%A1%E3%82%8A%E6%95%B4%E3%81%88%E3%81%BE%E3%81%99%E3%80%82%E3%81%BE%E3%81%9A%E3%81%AF%E9%8F%A1%E3%81%A7%E9%BB%92%E7%9B%AE%E3%81%8C%E3%81%97%E3%81%A3%E3%81%8B%E3%82%8A%E8%A6%8B%E3%81%88%E3%81%A6%E3%81%84%E3%82%8B%E3%81%8B%E7%A2%BA%E8%AA%8D%E3%81%97%E3%81%A6%E3%81%BF%E3%81%A6%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84%E3%81%AD%E3%80%82%0Ahttps%3A//x.com/r5lqv_v/status/2100893808376619068", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2100918251438137409", "url": "https://x.com/hotcococoa/status/2100918251438137409", "text": "眼瞼下垂の手術（1回目：挙筋前転法→2回目：眉下切開）、1回目余裕やったから2回目も余裕やろ✨️と思ってたら、麻酔からして2回目の方が痛いし麻酔切れた後も痛かった😭 前回は麻酔切れたのも気付かなかったしその後も痛み止め1回しか飲まなかったけど、今回は家に着く前に痛くて飲んだ🫠", "date": "2026-09-18", "author": "hotcococoa", "authorName": "ほっとココア", "followers": 169, "impressions": 465, "likes": 1, "reposts": 0, "replies": 1, "quotes": 1, "bookmarks": 0, "rate": 1.29, "tier": "ganken", "tierName": "眼瞼下垂・二重の治療", "query": "(挙筋 OR 腱膜) (前転 OR 短縮)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/hotcococoa/status/2100918251438137409", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2099626590498095342", "url": "https://x.com/rinyysoo/status/2099626590498095342", "text": "⭐️眼瞼下垂（挙筋前転）DT4日目朝⭐️ むくみはあるけど、内出血と糸を除けば、理想の二重。糸を取ると、緩むのかなぁと、少し不安が😓 #眼瞼下垂", "date": "2026-09-14", "author": "rinyysoo", "authorName": "rin🍎", "followers": 487, "impressions": 360, "likes": 5, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 1.39, "tier": "ganken", "tierName": "眼瞼下垂・二重の治療", "query": "(挙筋 OR 腱膜) (前転 OR 短縮)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/rinyysoo/status/2099626590498095342", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2099980312948441270", "url": "https://x.com/dr_shohei/status/2099980312948441270", "text": "同じ「眼瞼下垂」という名前でも、 保険診療と美容医療では、ゴールのニュアンスが違います。 保険診療では、 「見えにくい」「視野が狭い」などの機能障害を改善することが主目的。 美容医療では、 目の開きを改善するだけではありません。 黒目の見え方、 まつ毛の生え際、 二重のライン、", "date": "2026-09-15", "author": "dr_shohei", "authorName": "竹田昌平 安心ふたえ先生", "followers": 174, "impressions": 358, "likes": 2, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 0.56, "tier": "ganken", "tierName": "眼瞼下垂・二重の治療", "query": "眼瞼下垂 (手術 OR 保険 OR 検討 OR 相談 OR 悩み)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/dr_shohei/status/2099980312948441270", "image": "", "isNew": true, "firstSeen": "2026-09-20"}, {"id": "2099414952654389525", "url": "https://x.com/V12daisuki/status/2099414952654389525", "text": "一重で眉毛と瞼縁の間がやや広い男の人の挙筋前転をしたら今度は眉毛が下がってきて皮膚被ってくる 眉毛下切開するしかないんすかね", "date": "2026-09-14", "author": "V12daisuki", "authorName": "ピロリキン", "followers": 710, "impressions": 308, "likes": 4, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 1, "rate": 1.95, "tier": "ganken", "tierName": "眼瞼下垂・二重の治療", "query": "(挙筋 OR 腱膜) (前転 OR 短縮)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/V12daisuki/status/2099414952654389525", "image": "", "isNew": true, "firstSeen": "2026-09-20"}], "posted": []}</script>
+<script>(function () {
+  const LIMIT = 140;
+  const KEY = "kuma-x-state";
+  const UNDO_MS = 8000;          // 見送りを取り消せる時間
+  const app = document.getElementById("app");
+  const S = JSON.parse(document.getElementById("state").textContent);
+
+  // 選択の記録は端末のブラウザに置く（サーバーを持たないため）
+  let marks = {};
+  try { marks = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { marks = {}; }
+  const put = () => { try { localStorage.setItem(KEY, JSON.stringify(marks)); } catch (e) {} };
+
+  // 直した下書きは描画をまたいで持つ。見送りや投稿の確認で画面を作り直すたびに
+  // 他のカードの手直しが消えていた。
+  const edits = {};
+  // 見送った直後の数秒だけ、そのカードの位置に「戻す」を残しておく
+  const undoing = new Map();     // id -> タイマー
+  let msg = "";                  // 読み上げと控えの一行
+
+  let offset = 0;
+  const esc = s => String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const n = v => Number(v || 0).toLocaleString("ja-JP");
+  const st = it => marks[it.id] || "open";
+  const draftOf = it => (it.id in edits ? edits[it.id] : (it.draft || ""));
+  const compose = (it, text) =>
+    "https://x.com/compose/post?text=" + encodeURIComponent((text || "").trim() + "\n" + it.url);
+
+  // 画面に出す札。"pending" は「Xを開いたが、投稿したかはまだ聞いていない」
+  const inPlay = i => st(i) === "open" || st(i) === "pending";
+  function shownList() { return S.items.filter(i => inPlay(i) || undoing.has(i.id)); }
+
+  function localToday() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") +
+      "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  // 「2026-09-11 更新（今朝6時）」。日付だけだと日付とすら気づかれない。
+  function updatedWord() {
+    const m = /^(\d{1,2}):(\d{2})$/.exec(S.updatedAt || "");
+    if (!m) return "";
+    const h = +m[1], mi = m[2];
+    const when = h < 12 ? "今朝" : (h < 18 ? "今日" : "昨夜");
+    return `（${when}${h}時${mi === "00" ? "" : mi + "分"}）`;
+  }
+
+  // 自動更新が止まった朝に、古い候補を今日のものと思って投稿されるのが一番こわい
+  function staleBanner() {
+    if (S.updated === localToday()) return "";
+    return `<div class="alert" role="alert">今朝の更新が届いていません。<br>
+      この画面は <b>${esc(S.updated)}</b> に作られたもので、下の候補は今日のものではありません。
+      広報にご連絡ください。</div>`;
+  }
+
+  // すでに投稿した引用リポスト。X本体から突き合わせた実績なので、
+  // 端末を変えても、ブラウザの記録が消えても残る。
+  function postedLog() {
+    const rows = S.posted || [];
+    if (!rows.length) return "";
+    const fromSys = rows.filter(r => r.fromSystem).length;
+    return `
+      <details class="log">
+        <summary>すでに投稿した引用リポスト ${rows.length}本
+          <span class="log-count">（うち候補から ${fromSys}本）</span></summary>
+        <p class="log-note">X本体から取得した実績です。同じ投稿を二度引用しないための控えです。
+          「候補から」はこのページで出した候補、「ご自身」は先生が自力で見つけて投稿されたものです。
+          上の「今日の投稿」はこの画面で今日押した分の数え上げなので、本数は一致しません。</p>
+        ${rows.map(r => `
+          <a class="log-row" href="${esc(r.url)}" target="_blank" rel="noopener">
+            <span class="log-date">${esc(r.date)}</span>
+            ${r.fromSystem
+              ? `<b class="log-tag">候補から</b>`
+              : `<b class="log-tag own">ご自身</b>`}
+            <span class="log-text">${esc((r.text || "").slice(0, 60))}</span>
+            <span class="log-meta">${r.fromSystem && r.tierName
+              ? esc(r.tierName) + " ・ " : ""}表示 ${n(r.impressions)}</span>
+          </a>`).join("")}
+      </details>`;
+  }
+
+  function render() {
+    const posted = S.items.filter(i => st(i) === "posted").length;
+    const skipped = S.items.filter(i => st(i) === "skipped").length;
+    const left = S.items.filter(inPlay).length;
+    const rest = shownList();
+    const shown = rest.slice(offset, offset + S.show);
+    const more = rest.length - offset - shown.length;
+
+    app.innerHTML = `
+      ${staleBanner()}
+      <header>
+        <span class="karte tool">引用候補</span>
+        <p class="eyebrow">${esc(S.updated)} 更新${
+          S.updated === localToday() ? updatedWord() : ""} ／ @kumatori_nao</p>
+        <h1>今日の引用候補</h1>
+        <p class="sub">引用元を見て、そのまま出すか直すかを決めてください。「Xで投稿する」を押すとXが別のタブで開き、本文と引用元が入った状態になります。そこで「ポスト」を押すと投稿されます。<b>「画像付きで投稿」</b>は症例の画像を添えて送る試験中のボタンで、iPhoneの共有画面が開いたら <b>X</b> を選んでください。</p>
+        <div class="tally">
+          <span class="chip ${posted >= S.target ? "on" : ""}">今日の投稿 ${posted}件 ／ 目標 ${S.target}件</span>
+          <span class="chip">見送り ${skipped}件</span>
+          <span class="chip">残り ${left}件</span>
+        </div>
+        <p class="legend"><b>数字の見かた</b>　📊 表示＝見られた回数。<b>反応率</b>＝見た人のうち何%が動いたか。表示が多くても反応率が低い投稿は、宣伝や身内向けのことが多く、引用しても伸びにくい傾向です。</p>
+      </header>
+      ${shown.length ? shown.map(card).join("")
+        : '<div class="done-note">在庫がなくなりました。広報に候補の取り直しを依頼してください。</div>'}
+      ${more > 0 ? `<button class="more" id="more">別の候補を見る（あと ${more} 件）</button>` : ""}
+      ${offset > 0 ? `<button class="more" id="back">前の候補に戻る</button>` : ""}
+      <div class="status" id="status" role="status" aria-live="polite">${esc(msg)}</div>
+      ${postedLog()}
+      <div class="note">
+        下書きは先生の過去の引用103本に合わせています（中央値105字・絵文字なし）。${LIMIT}字を超えると赤くなります。<br><br>
+        この画面の記録（見送り・投稿）は、<b>お使いの端末のブラウザに保存されます。</b>スマホとパソコンでは別々に記録されるので、スマホで見送った候補はパソコンではまだ残っています。
+      </div>`;
+
+    shown.forEach(bind);
+    const mb = document.getElementById("more");
+    if (mb) mb.onclick = () => { offset += S.show; render(); };
+    const bb = document.getElementById("back");
+    if (bb) bb.onclick = () => { offset = Math.max(0, offset - S.show); render(); };
+  }
+
+  // 見送ったカードの席。黙って消さず、数秒だけ「戻す」を置く。
+  // スマホの誤タップ1回で候補1件が二度と出てこないのを防ぐため。
+  function undoStrip(it) {
+    return `
+      <section class="card undone">
+        <div class="undo-bar">
+          <span class="undo-msg">見送りました<span class="undo-who">@${esc(it.author)}</span></span>
+          <button class="btn-undo" id="u${esc(it.id)}">戻す</button>
+        </div>
+      </section>`;
+  }
+
+  function card(it) {
+    if (undoing.has(it.id)) return undoStrip(it);
+    const pending = st(it) === "pending";
+    return `
+      <section class="card${pending ? " asking" : ""}">
+        <div class="card-h"><span class="tier">${esc(it.tierName || "")}</span>${
+          it.isNew ? `<span class="tier fresh">新着</span>`
+                   : `<span class="tier seen">昨日までの候補</span>`}${
+          it.stale ? `<span class="tier stale">やや古い投稿</span>` : ""}</div>
+        ${it.why ? `<div class="src"><p class="why">${esc(it.why)}</p></div>` : ""}
+        <div class="src">
+          <div class="src-who">
+            <b>@${esc(it.author)}</b>
+            <span>${esc(it.authorName || "")}</span>
+            <span>フォロワー ${n(it.followers)}</span>
+            <span>${esc(it.date)}</span>
+          </div>
+          <p class="src-text">${esc(it.text)}</p>
+          <div class="stats">
+            <span>📊 表示 ${n(it.impressions)}</span><span>👍 いいね ${n(it.likes)}</span>
+            <span>🔁 リポスト ${n(it.reposts)}</span><span>💬 返信 ${n(it.replies)}</span>
+            <span>🔖 ブックマーク ${n(it.bookmarks)}</span>
+            <span class="rate">反応率 ${it.rate}%</span>
+          </div>
+          <a class="src-link" href="${esc(it.url)}" target="_blank" rel="noopener">元の投稿をXで見る（別のタブ）→</a>
+        </div>
+        <div class="draft">
+          <div class="draft-label">下書き<span class="count" id="n${esc(it.id)}"></span></div>
+          <textarea id="t${esc(it.id)}" aria-label="下書き" rows="1">${esc(draftOf(it))}</textarea>
+          ${it.image ? `<figure class="case"><img src="${esc(it.image)}" alt="添える症例" loading="lazy">
+            <figcaption>添える症例（Instagramに載せているものと同じ画像）</figcaption></figure>` : ""}
+          ${pending ? `
+          <div class="confirm">
+            <p class="confirm-q">Xの画面で「ポスト」を押しましたか？</p>
+            <div class="actions">
+              <button class="btn-yes" id="y${esc(it.id)}">投稿しました</button>
+              <button class="btn-no" id="w${esc(it.id)}">まだ／やめました</button>
+            </div>
+          </div>` : `
+          <div class="actions">
+            ${it.image ? `<button class="btn-share" id="s${esc(it.id)}">画像付きで投稿</button>` : ""}
+            <a class="btn-post" id="p${esc(it.id)}" href="${esc(it.compose)}"
+               target="_blank" rel="noopener">Xで投稿する</a>
+            <button class="btn-skip" id="k${esc(it.id)}">見送る</button>
+          </div>`}
+        </div>
+      </section>`;
+  }
+
+  // 下書きは「そのまま出すか直すか」を決める対象そのものなので、
+  // 高さを固定せず中身に合わせて伸ばす。固定だと375pxで全件が途中で切れていた。
+  function grow(ta) {
+    // 幅が決まっていないうちに測ると1文字ずつ折り返した高さが出る。
+    // 幅がついた時点で resizeAll が測り直すので、ここでは何もしない。
+    if (!ta.clientWidth) return;
+    ta.style.height = "auto";
+    // box-sizing:border-box なので、scrollHeight（枠の内側）に枠の分を足さないと
+    // 最後の2pxが隠れ、行の途中で切れたように見える
+    const frame = ta.offsetHeight - ta.clientHeight;
+    ta.style.height = (ta.scrollHeight + frame) + "px";
+  }
+
+  // 画面の幅が変わったら測り直す。回転・フォント到着・表示され直しのいずれでも
+  // 下書きが切れたままにならないように。
+  let lastW = -1;
+  function resizeAll(force) {
+    const w = app.clientWidth;
+    if (!force && w === lastW) return;   // 高さの変化では回らない（無限ループ防止）
+    lastW = w;
+    document.querySelectorAll("textarea").forEach(grow);
+  }
+
+  function bind(it) {
+    if (undoing.has(it.id)) {
+      const ub = document.getElementById("u" + it.id);
+      if (ub) ub.onclick = () => {
+        clearTimeout(undoing.get(it.id));
+        undoing.delete(it.id);
+        delete marks[it.id];
+        put();
+        msg = "見送りを取り消しました。";
+        render();
+      };
+      return;
+    }
+
+    const ta = document.getElementById("t" + it.id);
+    const cnt = document.getElementById("n" + it.id);
+    const link = document.getElementById("p" + it.id);
+    const upd = () => {
+      edits[it.id] = ta.value;
+      const len = [...ta.value].length;
+      cnt.textContent = len + " / " + LIMIT + "字";
+      cnt.classList.toggle("over", len > LIMIT);
+      if (link) link.href = compose(it, ta.value);   // 編集した内容をリンクに反映
+      grow(ta);
+    };
+    ta.addEventListener("input", upd); upd();
+
+    if (link) {
+      // 押しただけで「投稿した」と数えない。Xで閉じた日に朝の本数がずれる。
+      // 別タブで開くので、戻ってきた時にこのカードで一度だけ聞く。
+      link.onclick = () => {
+        marks[it.id] = "pending"; put();
+        setTimeout(render, 400);
+      };
+    }
+    // 画像付きで投稿：iPhoneの共有シートに画像と本文を渡し、Xアプリを選んでもらう。
+    // compose のURLには画像を乗せられないため、これが画像を付ける唯一の1タップ経路。
+    // 押した瞬間に共有を開けるよう、画像は先に取っておく（取ってから開くと iOS が
+    // ユーザー操作とみなさず拒否することがある）。
+    const sb = document.getElementById("s" + it.id);
+    if (sb && it.image) {
+      const fileP = fetch(it.image, { cache: "no-store" }).then(r => r.blob())
+        .then(b => new File([b], "kumacli_case.jpg", { type: b.type || "image/jpeg" }))
+        .catch(() => null);
+      sb.onclick = async () => {
+        const file = await fileP;
+        const text = (ta.value || "").trim() + "\n" + it.url;
+        const ok = file && navigator.share && navigator.canShare && navigator.canShare({ files: [file] });
+        if (!ok) {
+          msg = "この端末では画像つきの共有ができません。「Xで投稿する」で本文だけ送れます。";
+          render(); return;
+        }
+        try {
+          await navigator.share({ files: [file], text });
+          marks[it.id] = "pending"; put(); msg = ""; render();
+        } catch (e) {
+          if (!e || e.name !== "AbortError") { msg = "共有できませんでした：" + (e && e.message || e); render(); }
+        }
+      };
+    }
+    const yes = document.getElementById("y" + it.id);
+    if (yes) yes.onclick = () => {
+      marks[it.id] = "posted"; put();
+      msg = "投稿として数えました。";
+      render();
+    };
+    const no = document.getElementById("w" + it.id);
+    if (no) no.onclick = () => {
+      delete marks[it.id]; put();
+      msg = "候補に戻しました。";
+      render();
+    };
+
+    const sk = document.getElementById("k" + it.id);
+    if (sk) sk.onclick = () => {
+      marks[it.id] = "skipped"; put();
+      undoing.set(it.id, setTimeout(() => { undoing.delete(it.id); render(); }, UNDO_MS));
+      msg = "見送りました。数秒のあいだは「戻す」で取り消せます。";
+      render();
+    };
+  }
+
+  render();
+  // Webフォントが後から届くと行数が変わる。届いた時点で測り直す。
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => resizeAll(true));
+  }
+  addEventListener("load", () => resizeAll(true));
+  addEventListener("resize", () => resizeAll(false));
+  if (window.ResizeObserver) new ResizeObserver(() => resizeAll(false)).observe(app);
+})();
+</script>
+</body></html>
