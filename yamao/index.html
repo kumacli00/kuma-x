@@ -521,10 +521,34 @@ details>summary::-webkit-details-marker{display:none}
     display:inline-flex;align-items:center;justify-content:center;
     font-family:var(--body);font-size:.88rem;font-weight:700;
     padding:.7rem 1rem;border-radius:var(--r);min-height:2.9rem;cursor:pointer}
+
+  /* ---- 3つの枠（2026-11-02 先生の要望：引用4・勢いニュース4・型2）---- */
+  .sec-h{font-family:var(--body);font-size:1.02rem;font-weight:700;margin:1.6rem 0 .6rem;
+    padding:.55rem .8rem;border-left:4px solid var(--accent-ink);background:var(--accent-bg);
+    border-radius:0 var(--r) var(--r) 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .7rem}
+  .sec-h .sec-n{font-weight:500;font-size:.82rem;color:var(--muted)}
+  .sec-h .sec-note{font-weight:400;font-size:.8rem;color:var(--muted)}
+  .speed{font-size:.86rem;color:var(--ink);margin:.1rem 0 .5rem;line-height:1.6}
+  .speed b{color:var(--accent-ink)}
+  .tier.bridge{background:var(--gold-bg);color:var(--gold);font-weight:600;margin-left:.35rem}
+  .tier.nobridge{background:transparent;color:var(--muted);border:1px solid var(--line);margin-left:.35rem}
+  .tier.kata{background:var(--accent-bg);color:var(--accent-ink);font-weight:600;margin-left:.35rem}
+  .kata-box{margin:.2rem 0 .6rem;padding:.6rem .8rem;background:var(--surface-2,var(--accent-bg));
+    border-radius:var(--r);border:1px solid var(--line)}
+  .kata-row{font-size:.86rem;line-height:1.7;margin:.15rem 0;color:var(--ink)}
+  .kata-row b{display:block;font-size:.74rem;color:var(--muted);font-weight:600;letter-spacing:.02em}
+  .kata-src{margin:0 0 .6rem}
+  .kata-src summary{cursor:pointer;font-size:.84rem;color:var(--muted);padding:.3rem 0}
+  .kata-src .src{margin-top:.4rem}
+  .kata-src summary{list-style:none;display:block}
+  .kata-src summary::-webkit-details-marker{display:none}
+  .kata-src summary::before{content:"▸ ";color:var(--muted)}
+  .kata-src[open] summary::before{content:"▾ "}
+  .kata-name{font-family:var(--body);font-size:1.02rem;font-weight:700;margin:0 0 .4rem;color:var(--ink)}
 </style>
 </head><body>
 <div class="wrap"><div id="app"></div></div>
-<script id="state" type="application/json">{"updated": "2026-11-02", "updatedAt": "07:08", "show": 5, "target": 2, "items": [{"id": "2116942387188814035", "url": "https://x.com/BURITIWAWA/status/2116942387188814035", "text": "目の下のクマにコンシーラー塗った後にこれ載せるとほんとにクマかなりマシになる これずっと言ってる そしたら偶然友達も使っててさ、まじ良いよねと、話したわけです https://t.co/955OkTWprc", "date": "2026-11-01", "author": "BURITIWAWA", "authorName": "ひかちわわ", "followers": 24359, "impressions": 1975, "likes": 29, "reposts": 2, "replies": 0, "quotes": 0, "bookmarks": 18, "rate": 3.49, "tier": "chakuma", "tierName": "茶クマ・目の下の色素（直球）", "query": "目の下 (クマ OR くま) (治らない OR ずっと OR 長年)", "draft": "コンシーラーの上に重ねてマシになるなら、まだ隠せる範囲だよ。ただ茶クマは重ねるほど厚塗りになるし、落とす時にゴシゴシやると余計濃くなる。落とし方は優しくな。隠しきれなくなったらクマクリへ🐻", "why": "目の下のクマを隠す工夫を話している本人の声。重ね塗りと落とし方の注意を返せる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E3%82%B3%E3%83%B3%E3%82%B7%E3%83%BC%E3%83%A9%E3%83%BC%E3%81%AE%E4%B8%8A%E3%81%AB%E9%87%8D%E3%81%AD%E3%81%A6%E3%83%9E%E3%82%B7%E3%81%AB%E3%81%AA%E3%82%8B%E3%81%AA%E3%82%89%E3%80%81%E3%81%BE%E3%81%A0%E9%9A%A0%E3%81%9B%E3%82%8B%E7%AF%84%E5%9B%B2%E3%81%A0%E3%82%88%E3%80%82%E3%81%9F%E3%81%A0%E8%8C%B6%E3%82%AF%E3%83%9E%E3%81%AF%E9%87%8D%E3%81%AD%E3%82%8B%E3%81%BB%E3%81%A9%E5%8E%9A%E5%A1%97%E3%82%8A%E3%81%AB%E3%81%AA%E3%82%8B%E3%81%97%E3%80%81%E8%90%BD%E3%81%A8%E3%81%99%E6%99%82%E3%81%AB%E3%82%B4%E3%82%B7%E3%82%B4%E3%82%B7%E3%82%84%E3%82%8B%E3%81%A8%E4%BD%99%E8%A8%88%E6%BF%83%E3%81%8F%E3%81%AA%E3%82%8B%E3%80%82%E8%90%BD%E3%81%A8%E3%81%97%E6%96%B9%E3%81%AF%E5%84%AA%E3%81%97%E3%81%8F%E3%81%AA%E3%80%82%E9%9A%A0%E3%81%97%E3%81%8D%E3%82%8C%E3%81%AA%E3%81%8F%E3%81%AA%E3%81%A3%E3%81%9F%E3%82%89%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%B8%F0%9F%90%BB%0Ahttps%3A//x.com/BURITIWAWA/status/2116942387188814035", "image": "", "isNew": true, "firstSeen": "2026-11-02"}, {"id": "2116147916142420123", "url": "https://x.com/2step_9/status/2116147916142420123", "text": "私目の下のクマにずっと悩んでて隠す技術に関してはそこそこ自信あるんだけど なんだろう…そス観た後ってよく笑って血行良くなるからか目の下のクマむっちゃ薄くなるんだよな。 第2のコンシーラー？", "date": "2026-10-30", "author": "2step_9", "authorName": "なび🚊自信は持ってきました", "followers": 175, "impressions": 336, "likes": 2, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 0.6, "tier": "chakuma", "tierName": "茶クマ・目の下の色素（直球）", "query": "目の下 (クマ OR くま) (治らない OR ずっと OR 長年)", "draft": "笑って薄くなるなら血の巡りのクマだよ。寝不足や冷えで濃くなるやつ。笑っても休んでも色が残るなら茶クマ。隠す技術があっても消えないから、茶クマはクマクリへ🐻", "why": "クマに長く悩んでいる本人の投稿。薄くなるクマと残るクマの見分け方を返せる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E7%AC%91%E3%81%A3%E3%81%A6%E8%96%84%E3%81%8F%E3%81%AA%E3%82%8B%E3%81%AA%E3%82%89%E8%A1%80%E3%81%AE%E5%B7%A1%E3%82%8A%E3%81%AE%E3%82%AF%E3%83%9E%E3%81%A0%E3%82%88%E3%80%82%E5%AF%9D%E4%B8%8D%E8%B6%B3%E3%82%84%E5%86%B7%E3%81%88%E3%81%A7%E6%BF%83%E3%81%8F%E3%81%AA%E3%82%8B%E3%82%84%E3%81%A4%E3%80%82%E7%AC%91%E3%81%A3%E3%81%A6%E3%82%82%E4%BC%91%E3%82%93%E3%81%A7%E3%82%82%E8%89%B2%E3%81%8C%E6%AE%8B%E3%82%8B%E3%81%AA%E3%82%89%E8%8C%B6%E3%82%AF%E3%83%9E%E3%80%82%E9%9A%A0%E3%81%99%E6%8A%80%E8%A1%93%E3%81%8C%E3%81%82%E3%81%A3%E3%81%A6%E3%82%82%E6%B6%88%E3%81%88%E3%81%AA%E3%81%84%E3%81%8B%E3%82%89%E3%80%81%E8%8C%B6%E3%82%AF%E3%83%9E%E3%81%AF%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%B8%F0%9F%90%BB%0Ahttps%3A//x.com/2step_9/status/2116147916142420123", "image": "", "isNew": false, "firstSeen": "2026-11-01"}, {"id": "2115454406795690347", "url": "https://x.com/piccolo21108/status/2115454406795690347", "text": "シミ取りの美容施術にはザックリ言ってIPL（光治療）とシミ取りレーザーがある。 僕は５年前からIPLをやってて目立つシミはほとんど取れた。", "date": "2026-10-28", "author": "piccolo21108", "authorName": "ピッコロ第二形態@亀仙人講習", "followers": 41, "impressions": 320, "likes": 9, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 2.81, "tier": "myth", "tierName": "通説への反論の受け皿", "query": "(シミ OR くすみ) (スキンケア OR セルフケア OR 化粧品) (消え OR 効く)", "draft": "IPL続けて目立つシミが取れたの、いいじゃん。ただ目の下の茶色は顔のシミと同じ感覚だと残りがち。擦る癖が元になってることも多いし。目の下だけ茶クマが残ってたら相談はクマクリへ🤔", "why": "シミ治療を続けている本人の声。顔のシミと目の下の茶色の違いにつなげられる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=IPL%E7%B6%9A%E3%81%91%E3%81%A6%E7%9B%AE%E7%AB%8B%E3%81%A4%E3%82%B7%E3%83%9F%E3%81%8C%E5%8F%96%E3%82%8C%E3%81%9F%E3%81%AE%E3%80%81%E3%81%84%E3%81%84%E3%81%98%E3%82%83%E3%82%93%E3%80%82%E3%81%9F%E3%81%A0%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%AE%E8%8C%B6%E8%89%B2%E3%81%AF%E9%A1%94%E3%81%AE%E3%82%B7%E3%83%9F%E3%81%A8%E5%90%8C%E3%81%98%E6%84%9F%E8%A6%9A%E3%81%A0%E3%81%A8%E6%AE%8B%E3%82%8A%E3%81%8C%E3%81%A1%E3%80%82%E6%93%A6%E3%82%8B%E7%99%96%E3%81%8C%E5%85%83%E3%81%AB%E3%81%AA%E3%81%A3%E3%81%A6%E3%82%8B%E3%81%93%E3%81%A8%E3%82%82%E5%A4%9A%E3%81%84%E3%81%97%E3%80%82%E7%9B%AE%E3%81%AE%E4%B8%8B%E3%81%A0%E3%81%91%E8%8C%B6%E3%82%AF%E3%83%9E%E3%81%8C%E6%AE%8B%E3%81%A3%E3%81%A6%E3%81%9F%E3%82%89%E7%9B%B8%E8%AB%87%E3%81%AF%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%B8%F0%9F%A4%94%0Ahttps%3A//x.com/piccolo21108/status/2115454406795690347", "image": "", "isNew": true, "firstSeen": "2026-11-02"}], "posted": [{"date": "2026-10-30", "url": "https://x.com/kumacli_derma/status/2115970681712374215", "text": "ハイドラで肝斑濃くなるんじゃね？トランサミン内服3-6ヶ月、毛穴はポテンツァシルファームは賛成🫡目の下の茶色も肝斑と混ざってることあるから、見分けてから選ぶのが近道。茶クマはクマクリへ🤔 https://t.co/E53S6f4Q34", "impressions": 680, "likes": 3, "quotedUrl": "https://x.com/givemekin/status/2115066849734050060", "quotedAuthor": "givemekin", "tierName": "シミ・くすみ・肝斑", "fromSystem": true}, {"date": "2026-10-30", "url": "https://x.com/kumacli_derma/status/2115969648214831448", "text": "誰か宇都宮で飲まない？ https://t.co/Ccr7y4oxfP", "impressions": 527, "likes": 6, "quotedUrl": "https://x.com/i/status/2115941756369883627", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-30", "url": "https://x.com/kumacli_derma/status/2115969045900263726", "text": "毛利先生は湘南で1番クマ取りが上手いお医者さんで。 湘南でクマ取り1番ってことは日本1じゃん！よーし、学びにいこう！ ってことで働いてます☺️僕は手術はできませんが、美容皮膚科部門で貢献できればと思います🫶 https://t.co/wzTC7BBKN2", "impressions": 749, "likes": 7, "quotedUrl": "https://x.com/i/status/2115828298001600709", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-29", "url": "https://x.com/kumacli_derma/status/2115643891013820739", "text": "毛孔性苔癬の治療マジ難しい。気にしない年取るのが1番って説明してますスマソ🥺 https://t.co/eAiH63A4xi", "impressions": 2103, "likes": 10, "quotedUrl": "https://x.com/i/status/2115079348504207417", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-28", "url": "https://x.com/kumacli_derma/status/2115370107967082585", "text": "アイクリーム探す前に、まず擦るのやめよ。まあ癖になってる人いるんすよね🤔診察中も擦ってるから。擦らないでって診察中に何回も言う時あるもん🥺茶色っぽくなってきたら茶クマ、クマクリへ https://t.co/1OMpDkpBUo", "impressions": 632, "likes": 0, "quotedUrl": "https://x.com/lnrnrsq/status/2113876545513394328", "quotedAuthor": "lnrnrsq", "tierName": "通説への反論の受け皿", "fromSystem": true}, {"date": "2026-10-25", "url": "https://x.com/kumacli_derma/status/2114343434677076419", "text": "医局の文化によってマジで育ち方違って。 僕エキザルベなーんもわかんないっすもん🤔 https://t.co/MhYFIOGhbv", "impressions": 3885, "likes": 13, "quotedUrl": "https://x.com/i/status/2114338936667636202", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-24", "url": "https://x.com/kumacli_derma/status/2113969820291248237", "text": "よし！茶クマはないな！ https://t.co/i1rtAO3gEe", "impressions": 871, "likes": 2, "quotedUrl": "https://x.com/i/status/2113959031266247156", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-24", "url": "https://x.com/kumacli_derma/status/2113881388764291306", "text": "年収しゅごい https://t.co/wC7hYaMBuA", "impressions": 13212, "likes": 8, "quotedUrl": "https://x.com/i/status/2113874527814144227", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-24", "url": "https://x.com/kumacli_derma/status/2113808629677859071", "text": "ちゃーんと企業アカウントとしての仕事もしてますよ☺️ https://t.co/jpbtl3W9XW", "impressions": 592, "likes": 3, "quotedUrl": "https://x.com/i/status/2092864019728404481", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-23", "url": "https://x.com/kumacli_derma/status/2113778327496622568", "text": "マラセチア🫡 ニゾラール外用、イトリゾールたまに内服することをお勧めしますよ☺️ ニゾラールアクアチムmixをよく見かけるけどあれ意味あるのかな🤔 https://t.co/8YTDpTrjkY", "impressions": 2803, "likes": 10, "quotedUrl": "https://x.com/i/status/2111828707212153057", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-23", "url": "https://x.com/kumacli_derma/status/2113777859240308915", "text": "みんな専門医取れよ。取らないと説得力弱くなる https://t.co/wBJ7burFM5", "impressions": 1515, "likes": 7, "quotedUrl": "https://x.com/i/status/2113165115654828428", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-23", "url": "https://x.com/kumacli_derma/status/2113460816368500742", "text": "皮膚科と美容皮膚科両方やってるところに行くことをお勧めしまっせ。まず何のシミかの見極めからだよ。こすると濃くなるやつ、レーザーで逆に濃くなるやつもある。取り方より先に種類。目の下まで茶色いなら茶クマかも、クマクリで診られる🤔 自分いけます！☺️ https://t.co/8ERRYbXTsJ", "impressions": 1181, "likes": 7, "quotedUrl": "https://x.com/sumasuama/status/2111759371751579836", "quotedAuthor": "sumasuama", "tierName": "シミ・くすみ・肝斑", "fromSystem": true}, {"date": "2026-10-23", "url": "https://x.com/kumacli_derma/status/2113460259394363584", "text": "ニキビ跡の茶色は色素沈着、その通り。で、目の下の茶色も同じ色なのに、クマだと思ってコンシーラー重ねてる人多いよな。しかも落とす時にこすって濃くしてる。とりあえず顔は擦らないで🥺茶クマはクマクリへ🐻 https://t.co/uefo4H9ina", "impressions": 506, "likes": 3, "quotedUrl": "https://x.com/Clison92479/status/2112112596895887813", "quotedAuthor": "Clison92479", "tierName": "広い悩み（リーチ拡大）", "fromSystem": true}, {"date": "2026-10-23", "url": "https://x.com/kumacli_derma/status/2113458361702527422", "text": "すげえ https://t.co/jUwkGKneZK", "impressions": 173, "likes": 2, "quotedUrl": "https://x.com/i/status/2113450601833288083", "quotedAuthor": null, "tierName": null, "fromSystem": false}]}</script>
+<script id="state" type="application/json">{"updated": "2026-11-03", "updatedAt": "06:50", "show": 5, "news": [], "newsAll": 0, "kata": [], "kataAll": 0, "target": 2, "items": [{"id": "2117272051128189301", "url": "https://x.com/sawsnnrtin_nrzo/status/2117272051128189301", "text": "これもわかりやすい 目尻の色素沈着が下まぶたにあったのに 切開リフト後、上まぶたに移動した。 本当に辛い 私は可愛い優しいタレ目の顔が好きなのに、 https://t.co/yK82RyGo3s", "date": "2026-11-02", "author": "sawsnnrtin_nrzo", "authorName": "ひな(30)額リフト・切開リフトで人生終わった", "followers": 979, "impressions": 6561, "likes": 10, "reposts": 1, "replies": 0, "quotes": 3, "bookmarks": 4, "rate": 0.44, "tier": "chakuma", "tierName": "茶クマ・目の下の色素（直球）", "query": "(色素沈着) (目 OR 目元 OR 顔)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/sawsnnrtin_nrzo/status/2117272051128189301", "image": "", "isNew": true, "firstSeen": "2026-11-03"}, {"id": "2116942387188814035", "url": "https://x.com/BURITIWAWA/status/2116942387188814035", "text": "目の下のクマにコンシーラー塗った後にこれ載せるとほんとにクマかなりマシになる これずっと言ってる そしたら偶然友達も使っててさ、まじ良いよねと、話したわけです https://t.co/955OkTWprc", "date": "2026-11-01", "author": "BURITIWAWA", "authorName": "ひかちわわ", "followers": 24359, "impressions": 1975, "likes": 29, "reposts": 2, "replies": 0, "quotes": 0, "bookmarks": 18, "rate": 3.49, "tier": "chakuma", "tierName": "茶クマ・目の下の色素（直球）", "query": "目の下 (クマ OR くま) (治らない OR ずっと OR 長年)", "draft": "コンシーラーの上に重ねてマシになるなら、まだ隠せる範囲だよ。ただ茶クマは重ねるほど厚塗りになるし、落とす時にゴシゴシやると余計濃くなる。落とし方は優しくな。隠しきれなくなったらクマクリへ🐻", "why": "目の下のクマを隠す工夫を話している本人の声。重ね塗りと落とし方の注意を返せる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E3%82%B3%E3%83%B3%E3%82%B7%E3%83%BC%E3%83%A9%E3%83%BC%E3%81%AE%E4%B8%8A%E3%81%AB%E9%87%8D%E3%81%AD%E3%81%A6%E3%83%9E%E3%82%B7%E3%81%AB%E3%81%AA%E3%82%8B%E3%81%AA%E3%82%89%E3%80%81%E3%81%BE%E3%81%A0%E9%9A%A0%E3%81%9B%E3%82%8B%E7%AF%84%E5%9B%B2%E3%81%A0%E3%82%88%E3%80%82%E3%81%9F%E3%81%A0%E8%8C%B6%E3%82%AF%E3%83%9E%E3%81%AF%E9%87%8D%E3%81%AD%E3%82%8B%E3%81%BB%E3%81%A9%E5%8E%9A%E5%A1%97%E3%82%8A%E3%81%AB%E3%81%AA%E3%82%8B%E3%81%97%E3%80%81%E8%90%BD%E3%81%A8%E3%81%99%E6%99%82%E3%81%AB%E3%82%B4%E3%82%B7%E3%82%B4%E3%82%B7%E3%82%84%E3%82%8B%E3%81%A8%E4%BD%99%E8%A8%88%E6%BF%83%E3%81%8F%E3%81%AA%E3%82%8B%E3%80%82%E8%90%BD%E3%81%A8%E3%81%97%E6%96%B9%E3%81%AF%E5%84%AA%E3%81%97%E3%81%8F%E3%81%AA%E3%80%82%E9%9A%A0%E3%81%97%E3%81%8D%E3%82%8C%E3%81%AA%E3%81%8F%E3%81%AA%E3%81%A3%E3%81%9F%E3%82%89%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%B8%F0%9F%90%BB%0Ahttps%3A//x.com/BURITIWAWA/status/2116942387188814035", "image": "", "isNew": false, "firstSeen": "2026-11-02"}, {"id": "2117054713929883828", "url": "https://x.com/EAiart283482/status/2117054713929883828", "text": "起きたけどまだ眠くて目をこするﾑｯﾁﾑﾁなシリウスシンボリ💚💕 https://t.co/zFLU7isKnm", "date": "2026-11-02", "author": "EAiart283482", "authorName": "EXstal_AIイラスト", "followers": 9302, "impressions": 1804, "likes": 167, "reposts": 17, "replies": 0, "quotes": 0, "bookmarks": 41, "rate": 15.69, "tier": "chakuma", "tierName": "茶クマ・目の下の色素（直球）", "query": "目をこする", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/EAiart283482/status/2117054713929883828", "image": "", "isNew": true, "firstSeen": "2026-11-03"}, {"id": "2117258125598482790", "url": "https://x.com/shimawoDQX/status/2117258125598482790", "text": "#ドラクエ10こんな装備があったらいいな そばかすと泣きぼくろ！！！！！！！ ラメシールも可愛いけど、ちょっとニュアンス違うからちゃんとしたそばかす欲しい、そばかす欲しい https://t.co/0t3uhjkMoa", "date": "2026-11-02", "author": "shimawoDQX", "authorName": "シマヲ@DQX", "followers": 40, "impressions": 597, "likes": 25, "reposts": 9, "replies": 0, "quotes": 0, "bookmarks": 3, "rate": 8.21, "tier": "pigment", "tierName": "シミ・くすみ・肝斑", "query": "(そばかす OR 雀卵斑)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/shimawoDQX/status/2117258125598482790", "image": "", "isNew": true, "firstSeen": "2026-11-03"}, {"id": "2117253769914355897", "url": "https://x.com/sekirei2023/status/2117253769914355897", "text": "こんなに何回も修正して、改善しない、悪化してる人はいるんだろうか… 普通のクマの修正じゃ治らない。 修正を重ねていくたびにややこしい状態になっていく。 1番後悔してるのはニードルサクションのしこり吸引。 目の下なんて絶対吸引したらダメ", "date": "2026-11-02", "author": "sekirei2023", "authorName": "目の下ボコボコ修正", "followers": 502, "impressions": 522, "likes": 9, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 1.72, "tier": "chakuma", "tierName": "茶クマ・目の下の色素（直球）", "query": "目の下 (クマ OR くま) (治らない OR ずっと OR 長年)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/sekirei2023/status/2117253769914355897", "image": "", "isNew": true, "firstSeen": "2026-11-03"}, {"id": "2116147916142420123", "url": "https://x.com/2step_9/status/2116147916142420123", "text": "私目の下のクマにずっと悩んでて隠す技術に関してはそこそこ自信あるんだけど なんだろう…そス観た後ってよく笑って血行良くなるからか目の下のクマむっちゃ薄くなるんだよな。 第2のコンシーラー？", "date": "2026-10-30", "author": "2step_9", "authorName": "なび🚊自信は持ってきました", "followers": 175, "impressions": 336, "likes": 2, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 0.6, "tier": "chakuma", "tierName": "茶クマ・目の下の色素（直球）", "query": "目の下 (クマ OR くま) (治らない OR ずっと OR 長年)", "draft": "笑って薄くなるなら血の巡りのクマだよ。寝不足や冷えで濃くなるやつ。笑っても休んでも色が残るなら茶クマ。隠す技術があっても消えないから、茶クマはクマクリへ🐻", "why": "クマに長く悩んでいる本人の投稿。薄くなるクマと残るクマの見分け方を返せる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E7%AC%91%E3%81%A3%E3%81%A6%E8%96%84%E3%81%8F%E3%81%AA%E3%82%8B%E3%81%AA%E3%82%89%E8%A1%80%E3%81%AE%E5%B7%A1%E3%82%8A%E3%81%AE%E3%82%AF%E3%83%9E%E3%81%A0%E3%82%88%E3%80%82%E5%AF%9D%E4%B8%8D%E8%B6%B3%E3%82%84%E5%86%B7%E3%81%88%E3%81%A7%E6%BF%83%E3%81%8F%E3%81%AA%E3%82%8B%E3%82%84%E3%81%A4%E3%80%82%E7%AC%91%E3%81%A3%E3%81%A6%E3%82%82%E4%BC%91%E3%82%93%E3%81%A7%E3%82%82%E8%89%B2%E3%81%8C%E6%AE%8B%E3%82%8B%E3%81%AA%E3%82%89%E8%8C%B6%E3%82%AF%E3%83%9E%E3%80%82%E9%9A%A0%E3%81%99%E6%8A%80%E8%A1%93%E3%81%8C%E3%81%82%E3%81%A3%E3%81%A6%E3%82%82%E6%B6%88%E3%81%88%E3%81%AA%E3%81%84%E3%81%8B%E3%82%89%E3%80%81%E8%8C%B6%E3%82%AF%E3%83%9E%E3%81%AF%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%B8%F0%9F%90%BB%0Ahttps%3A//x.com/2step_9/status/2116147916142420123", "image": "", "isNew": false, "firstSeen": "2026-11-01"}, {"id": "2116350409359188053", "url": "https://x.com/xgggg_alphaz/status/2116350409359188053", "text": "そばかす！そばかす！すきすきすきすきすき https://t.co/PHhX8t1bS8", "date": "2026-10-31", "author": "xgggg_alphaz", "authorName": "hiro_alphaz🐺", "followers": 671, "impressions": 308, "likes": 15, "reposts": 1, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 5.52, "tier": "pigment", "tierName": "シミ・くすみ・肝斑", "query": "(そばかす OR 雀卵斑)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/xgggg_alphaz/status/2116350409359188053", "image": "", "isNew": true, "firstSeen": "2026-11-03"}], "posted": [{"date": "2026-11-01", "url": "https://x.com/kumacli_derma/status/2116703881308897317", "text": "今日の朝ごはん https://t.co/CYUf70baAL", "impressions": 173, "likes": 2, "quotedUrl": "https://x.com/i/status/1987340265380868529", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-11-01", "url": "https://x.com/kumacli_derma/status/2116689463703474364", "text": "仕事中ずーっとみんなと医療、美容の話できて楽しい☺️ https://t.co/ANr24t1cTB", "impressions": 260, "likes": 1, "quotedUrl": "https://x.com/i/status/2116514764277137569", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-31", "url": "https://x.com/kumacli_derma/status/2116507507543904510", "text": "🥰 https://t.co/CgzhRYLubP", "impressions": 438, "likes": 7, "quotedUrl": "https://x.com/i/status/2116290472864104914", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-31", "url": "https://x.com/kumacli_derma/status/2116503031932195147", "text": "🫶 https://t.co/9TqiyNjr96", "impressions": 728, "likes": 8, "quotedUrl": "https://x.com/i/status/2116314513792508364", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-30", "url": "https://x.com/kumacli_derma/status/2115970681712374215", "text": "ハイドラで肝斑濃くなるんじゃね？トランサミン内服3-6ヶ月、毛穴はポテンツァシルファームは賛成🫡目の下の茶色も肝斑と混ざってることあるから、見分けてから選ぶのが近道。茶クマはクマクリへ🤔 https://t.co/E53S6f4Q34", "impressions": 859, "likes": 4, "quotedUrl": "https://x.com/givemekin/status/2115066849734050060", "quotedAuthor": "givemekin", "tierName": "シミ・くすみ・肝斑", "fromSystem": true}, {"date": "2026-10-30", "url": "https://x.com/kumacli_derma/status/2115969648214831448", "text": "誰か宇都宮で飲まない？ https://t.co/Ccr7y4oxfP", "impressions": 617, "likes": 7, "quotedUrl": "https://x.com/i/status/2115941756369883627", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-30", "url": "https://x.com/kumacli_derma/status/2115969045900263726", "text": "毛利先生は湘南で1番クマ取りが上手いお医者さんで。 湘南でクマ取り1番ってことは日本1じゃん！よーし、学びにいこう！ ってことで働いてます☺️僕は手術はできませんが、美容皮膚科部門で貢献できればと思います🫶 https://t.co/wzTC7BBKN2", "impressions": 905, "likes": 7, "quotedUrl": "https://x.com/i/status/2115828298001600709", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-29", "url": "https://x.com/kumacli_derma/status/2115643891013820739", "text": "毛孔性苔癬の治療マジ難しい。気にしない年取るのが1番って説明してますスマソ🥺 https://t.co/eAiH63A4xi", "impressions": 2197, "likes": 10, "quotedUrl": "https://x.com/i/status/2115079348504207417", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-28", "url": "https://x.com/kumacli_derma/status/2115370107967082585", "text": "アイクリーム探す前に、まず擦るのやめよ。まあ癖になってる人いるんすよね🤔診察中も擦ってるから。擦らないでって診察中に何回も言う時あるもん🥺茶色っぽくなってきたら茶クマ、クマクリへ https://t.co/1OMpDkpBUo", "impressions": 632, "likes": 0, "quotedUrl": "https://x.com/lnrnrsq/status/2113876545513394328", "quotedAuthor": "lnrnrsq", "tierName": "通説への反論の受け皿", "fromSystem": true}, {"date": "2026-10-25", "url": "https://x.com/kumacli_derma/status/2114343434677076419", "text": "医局の文化によってマジで育ち方違って。 僕エキザルベなーんもわかんないっすもん🤔 https://t.co/MhYFIOGhbv", "impressions": 3885, "likes": 13, "quotedUrl": "https://x.com/i/status/2114338936667636202", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-24", "url": "https://x.com/kumacli_derma/status/2113969820291248237", "text": "よし！茶クマはないな！ https://t.co/i1rtAO3gEe", "impressions": 871, "likes": 2, "quotedUrl": "https://x.com/i/status/2113959031266247156", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-24", "url": "https://x.com/kumacli_derma/status/2113881388764291306", "text": "年収しゅごい https://t.co/wC7hYaMBuA", "impressions": 13212, "likes": 8, "quotedUrl": "https://x.com/i/status/2113874527814144227", "quotedAuthor": null, "tierName": null, "fromSystem": false}, {"date": "2026-10-24", "url": "https://x.com/kumacli_derma/status/2113808629677859071", "text": "ちゃーんと企業アカウントとしての仕事もしてますよ☺️ https://t.co/jpbtl3W9XW", "impressions": 592, "likes": 3, "quotedUrl": "https://x.com/i/status/2092864019728404481", "quotedAuthor": null, "tierName": null, "fromSystem": false}]}</script>
 <script>(function () {
   const LIMIT = 140;
   const KEY = "kuma-x-state";
@@ -606,13 +630,28 @@ details>summary::-webkit-details-marker{display:none}
       </details>`;
   }
 
+  // 引用（A）は引用元のURLを本文に付ける。型の転用（C）は単発投稿なので本文だけ
+  const composeFor = (it, text) =>
+    "https://x.com/compose/post?text=" + encodeURIComponent((text || "").trim()
+      + (it.kind === "kata" ? "" : "\n" + it.url));
+  const NEWS = S.news || [], KATA = S.kata || [];
+  const ALL = () => S.items.concat(NEWS, KATA);
+
+  function secHead(title, note, count) {
+    return `<h2 class="sec-h">${esc(title)}<span class="sec-n">${count}件</span>
+      ${note ? `<span class="sec-note">${esc(note)}</span>` : ""}</h2>`;
+  }
+
   function render() {
-    const posted = S.items.filter(i => st(i) === "posted").length;
-    const skipped = S.items.filter(i => st(i) === "skipped").length;
-    const left = S.items.filter(inPlay).length;
+    const posted = ALL().filter(i => st(i) === "posted").length;
+    const skipped = ALL().filter(i => st(i) === "skipped").length;
+    const left = ALL().filter(inPlay).length;
     const rest = shownList();
     const shown = rest.slice(offset, offset + S.show);
     const more = rest.length - offset - shown.length;
+    const newsShown = NEWS.filter(i => inPlay(i) || undoing.has(i.id));
+    const kataShown = KATA.filter(i => inPlay(i) || undoing.has(i.id));
+    const hasBC = NEWS.length || KATA.length || S.newsAll || S.kataAll;
 
     app.innerHTML = `
       ${staleBanner()}
@@ -621,18 +660,27 @@ details>summary::-webkit-details-marker{display:none}
         <p class="eyebrow">${esc(S.updated)} 更新${
           S.updated === localToday() ? updatedWord() : ""} ／ @kumacli_derma</p>
         <h1>今日の引用候補</h1>
-        <p class="sub">引用元を見て、そのまま出すか直すかを決めてください。「Xで投稿する」を押すとXが別のタブで開き、本文と引用元が入った状態になります。そこで「ポスト」を押すと投稿されます。</p>
+        <p class="sub">${hasBC
+          ? `候補は3つの枠で<b>10件</b>です。先頭は<b>いまXで流行っている型2件</b>（型の組み立てと、その型で書いた先生の単発投稿。ほかの下書きを直すときの土台にも）、次に<b>引用候補4件</b>（クマ・たるみ・フェイスリフト・美魔女か業界）、<b>勢いのある美容ニュース4件</b>（いま伸びている途中の投稿）。それぞれに「なぜこれか」を添えています。無理にクマの話へ持っていく書き方はやめました。「Xで投稿する」を押すとXが別のタブで開き、本文が入った状態になります。そこで「ポスト」を押すと投稿されます。1日3本が目安です。`
+          : `引用元を見て、そのまま出すか直すかを決めてください。「Xで投稿する」を押すとXが別のタブで開き、本文と引用元が入った状態になります。そこで「ポスト」を押すと投稿されます。`}</p>
         <div class="tally">
           <span class="chip ${posted >= S.target ? "on" : ""}">今日の投稿 ${posted}件 ／ 目標 ${S.target}件</span>
           <span class="chip">見送り ${skipped}件</span>
           <span class="chip">残り ${left}件</span>
         </div>
-        <p class="legend"><b>数字の見かた</b>　📊 表示＝見られた回数。<b>反応率</b>＝見た人のうち何%が動いたか。表示が多くても反応率が低い投稿は、宣伝や身内向けのことが多く、引用しても伸びにくい傾向です。</p>
+        <p class="legend"><b>数字の見かた</b>　📊 表示＝見られた回数。<b>反応率</b>＝見た人のうち何%が動いたか。表示が多くても反応率が低い投稿は、宣伝や身内向けのことが多く、引用しても伸びにくい傾向です。${hasBC ? "<b>勢い</b>＝投稿からの時間で割った、1時間あたりの表示回数。まだ数字が小さくても勢いがあれば、これから伸びる投稿です。" : ""}</p>
       </header>
+      ${hasBC ? secHead("いまXで流行っている型", "この型を土台に、下の下書きを書き直すこともできます", kataShown.length) : ""}
+      ${hasBC ? (kataShown.length ? kataShown.map(card).join("")
+        : '<div class="done-note">今朝は型として使える投稿がありませんでした。</div>') : ""}
+      ${hasBC ? secHead("引用候補", "クマ・たるみ・フェイスリフト・美魔女か業界の順", shown.length) : ""}
       ${shown.length ? shown.map(card).join("")
         : '<div class="done-note">在庫がなくなりました。広報に候補の取り直しを依頼してください。</div>'}
       ${more > 0 ? `<button class="more" id="more">別の候補を見る（あと ${more} 件）</button>` : ""}
       ${offset > 0 ? `<button class="more" id="back">前の候補に戻る</button>` : ""}
+      ${hasBC ? secHead("勢いのある美容ニュース", "48時間以内で、表示の伸びが速い順", newsShown.length) : ""}
+      ${hasBC ? (newsShown.length ? newsShown.map(card).join("")
+        : '<div class="done-note">今朝は勢いのある美容ニュースがありませんでした。</div>') : ""}
       <div class="status" id="status" role="status" aria-live="polite">${esc(msg)}</div>
       ${postedLog()}
       <div class="note">
@@ -641,6 +689,8 @@ details>summary::-webkit-details-marker{display:none}
       </div>`;
 
     shown.forEach(bind);
+    newsShown.forEach(bind);
+    kataShown.forEach(bind);
     const mb = document.getElementById("more");
     if (mb) mb.onclick = () => { offset += S.show; render(); };
     const bb = document.getElementById("back");
@@ -659,16 +709,30 @@ details>summary::-webkit-details-marker{display:none}
       </section>`;
   }
 
+  // 勢いの一行（B・C）。「投稿から14時間で表示20,019回（1時間に835回）」
+  function speedLine(it) {
+    if (!it.speed) return "";
+    return `<p class="speed">⚡ 投稿から${esc(it.ageH)}時間で表示 ${n(it.impressions)}回（1時間に <b>${n(it.speed)}</b> 回）</p>`;
+  }
+
+  function tags(it) {
+    let t = `<span class="tier">${esc(it.tierName || "")}</span>`;
+    if (it.kind === "news") {
+      t += it.bridge
+        ? `<span class="tier bridge">繋がる：${esc(it.bridgeWord)}</span>`
+        : `<span class="tier nobridge">繋がらないが勢いあり</span>`;
+    }
+    if (it.kind === "kata" && it.kataName) t += `<span class="tier kata">型：${esc(it.kataName)}</span>`;
+    t += it.isNew ? `<span class="tier fresh">新着</span>` : `<span class="tier seen">昨日までの候補</span>`;
+    if (it.stale) t += `<span class="tier stale">やや古い投稿</span>`;
+    return t;
+  }
+
   function card(it) {
     if (undoing.has(it.id)) return undoStrip(it);
     const pending = st(it) === "pending";
-    return `
-      <section class="card${pending ? " asking" : ""}">
-        <div class="card-h"><span class="tier">${esc(it.tierName || "")}</span>${
-          it.isNew ? `<span class="tier fresh">新着</span>`
-                   : `<span class="tier seen">昨日までの候補</span>`}${
-          it.stale ? `<span class="tier stale">やや古い投稿</span>` : ""}</div>
-        ${it.why ? `<div class="src"><p class="why">${esc(it.why)}</p></div>` : ""}
+    const kata = it.kind === "kata";
+    const srcBlock = `
         <div class="src">
           <div class="src-who">
             <b>@${esc(it.author)}</b>
@@ -684,9 +748,22 @@ details>summary::-webkit-details-marker{display:none}
             <span class="rate">反応率 ${it.rate}%</span>
           </div>
           <a class="src-link" href="${esc(it.url)}" target="_blank" rel="noopener">元の投稿をXで見る（別のタブ）→</a>
+        </div>`;
+    return `
+      <section class="card${pending ? " asking" : ""}${kata ? " kata-card" : ""}">
+        <div class="card-h">${tags(it)}</div>
+        ${speedLine(it)}
+        ${kata ? `
+        <div class="kata-box">
+          ${it.kataName ? `<p class="kata-name">${esc(it.kataName)}</p>` : ""}
+          ${it.mimic ? `<p class="kata-row"><b>型の組み立て（ここを真似る）</b>${esc(it.mimic)}</p>` : ""}
+          ${it.kataWhy ? `<p class="kata-row"><b>なぜこの型が今伸びるか</b>${esc(it.kataWhy)}</p>` : ""}
+          ${it.why ? `<p class="kata-row"><b>この型で書いた先生の投稿は</b>${esc(it.why)}</p>` : ""}
         </div>
+        <details class="kata-src"><summary>型の元になった投稿を見る（中身は真似していません）</summary>${srcBlock}</details>`
+        : `${it.why ? `<div class="src"><p class="why">${esc(it.why)}</p></div>` : ""}${srcBlock}`}
         <div class="draft">
-          <div class="draft-label">下書き<span class="count" id="n${esc(it.id)}"></span></div>
+          <div class="draft-label">${kata ? "先生の単発投稿（下書き）" : "下書き"}<span class="count" id="n${esc(it.id)}"></span></div>
           <textarea id="t${esc(it.id)}" aria-label="下書き" rows="1">${esc(draftOf(it))}</textarea>
           ${it.image ? `<figure class="case"><img src="${esc(it.image)}" alt="添える症例" loading="lazy">
             <figcaption>添える症例（Instagramに載せているものと同じ画像）</figcaption></figure>` : ""}
@@ -753,7 +830,7 @@ details>summary::-webkit-details-marker{display:none}
       const len = [...ta.value].length;
       cnt.textContent = len + " / " + LIMIT + "字";
       cnt.classList.toggle("over", len > LIMIT);
-      if (link) link.href = compose(it, ta.value);   // 編集した内容をリンクに反映
+      if (link) link.href = composeFor(it, ta.value);   // 編集した内容をリンクに反映
       grow(ta);
     };
     ta.addEventListener("input", upd); upd();
