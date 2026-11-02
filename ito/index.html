@@ -521,10 +521,34 @@ details>summary::-webkit-details-marker{display:none}
     display:inline-flex;align-items:center;justify-content:center;
     font-family:var(--body);font-size:.88rem;font-weight:700;
     padding:.7rem 1rem;border-radius:var(--r);min-height:2.9rem;cursor:pointer}
+
+  /* ---- 3つの枠（2026-11-02 先生の要望：引用4・勢いニュース4・型2）---- */
+  .sec-h{font-family:var(--body);font-size:1.02rem;font-weight:700;margin:1.6rem 0 .6rem;
+    padding:.55rem .8rem;border-left:4px solid var(--accent-ink);background:var(--accent-bg);
+    border-radius:0 var(--r) var(--r) 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .7rem}
+  .sec-h .sec-n{font-weight:500;font-size:.82rem;color:var(--muted)}
+  .sec-h .sec-note{font-weight:400;font-size:.8rem;color:var(--muted)}
+  .speed{font-size:.86rem;color:var(--ink);margin:.1rem 0 .5rem;line-height:1.6}
+  .speed b{color:var(--accent-ink)}
+  .tier.bridge{background:var(--gold-bg);color:var(--gold);font-weight:600;margin-left:.35rem}
+  .tier.nobridge{background:transparent;color:var(--muted);border:1px solid var(--line);margin-left:.35rem}
+  .tier.kata{background:var(--accent-bg);color:var(--accent-ink);font-weight:600;margin-left:.35rem}
+  .kata-box{margin:.2rem 0 .6rem;padding:.6rem .8rem;background:var(--surface-2,var(--accent-bg));
+    border-radius:var(--r);border:1px solid var(--line)}
+  .kata-row{font-size:.86rem;line-height:1.7;margin:.15rem 0;color:var(--ink)}
+  .kata-row b{display:block;font-size:.74rem;color:var(--muted);font-weight:600;letter-spacing:.02em}
+  .kata-src{margin:0 0 .6rem}
+  .kata-src summary{cursor:pointer;font-size:.84rem;color:var(--muted);padding:.3rem 0}
+  .kata-src .src{margin-top:.4rem}
+  .kata-src summary{list-style:none;display:block}
+  .kata-src summary::-webkit-details-marker{display:none}
+  .kata-src summary::before{content:"▸ ";color:var(--muted)}
+  .kata-src[open] summary::before{content:"▾ "}
+  .kata-name{font-family:var(--body);font-size:1.02rem;font-weight:700;margin:0 0 .4rem;color:var(--ink)}
 </style>
 </head><body>
 <div class="wrap"><div id="app"></div></div>
-<script id="state" type="application/json">{"updated": "2026-11-02", "updatedAt": "07:09", "show": 5, "target": 3, "items": [{"id": "2115690241634062777", "url": "https://x.com/ikkyujapan/status/2115690241634062777", "text": "とある事情で急激に肉が落ち顎か痩せてきたけど、頬が垂れ下がって見え爺くさくなり大変困ったでありんす", "date": "2026-10-29", "author": "ikkyujapan", "authorName": "妖奇七郎・一休ちゃんでありんす", "followers": 6658, "impressions": 1316, "likes": 22, "reposts": 3, "replies": 4, "quotes": 0, "bookmarks": 1, "rate": 2.89, "tier": "tarumi", "tierName": "顔のたるみ・フェイスライン（患者の生の声）", "query": "(頬 OR ほっぺ) (たるみ OR 垂れ OR 下がって OR こけ)", "draft": "急に痩せて頬が下がる、実はよくあるんですよね。支えていた脂肪が減ると、皮膚の重さだけが残るわけです。横顔で口の横に影が出ていたら下がっているサイン。位置を戻すなら、クマクリのミニ切開リフトの出番です", "why": "急に痩せて頬が垂れたという本人の悩み。下がる仕組みと見分け方を伝えやすい", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E6%80%A5%E3%81%AB%E7%97%A9%E3%81%9B%E3%81%A6%E9%A0%AC%E3%81%8C%E4%B8%8B%E3%81%8C%E3%82%8B%E3%80%81%E5%AE%9F%E3%81%AF%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E3%82%93%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E6%94%AF%E3%81%88%E3%81%A6%E3%81%84%E3%81%9F%E8%84%82%E8%82%AA%E3%81%8C%E6%B8%9B%E3%82%8B%E3%81%A8%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AE%E9%87%8D%E3%81%95%E3%81%A0%E3%81%91%E3%81%8C%E6%AE%8B%E3%82%8B%E3%82%8F%E3%81%91%E3%81%A7%E3%81%99%E3%80%82%E6%A8%AA%E9%A1%94%E3%81%A7%E5%8F%A3%E3%81%AE%E6%A8%AA%E3%81%AB%E5%BD%B1%E3%81%8C%E5%87%BA%E3%81%A6%E3%81%84%E3%81%9F%E3%82%89%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E3%82%B5%E3%82%A4%E3%83%B3%E3%80%82%E4%BD%8D%E7%BD%AE%E3%82%92%E6%88%BB%E3%81%99%E3%81%AA%E3%82%89%E3%80%81%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%AE%E3%83%9F%E3%83%8B%E5%88%87%E9%96%8B%E3%83%AA%E3%83%95%E3%83%88%E3%81%AE%E5%87%BA%E7%95%AA%E3%81%A7%E3%81%99%0Ahttps%3A//x.com/ikkyujapan/status/2115690241634062777", "image": "", "isNew": false, "firstSeen": "2026-10-31"}, {"id": "2115982673286152437", "url": "https://x.com/xxxanax_001/status/2115982673286152437", "text": "表情筋が衰える事によりたるみに繋がる、が本当ならEMS美顔器って効果あるし予防になるはずだよね、EMSで筋肥大は難しくても衰えないようにとか、リハビリ患者や寝たきりの人の筋肉を現状維持が可能というデータあるはずだから、衰えてからやるより予防的に電気刺激入れておいた方が良いはずだよね。", "date": "2026-10-30", "author": "xxxanax_001", "authorName": "ざなくす", "followers": 105, "impressions": 636, "likes": 5, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 0.79, "tier": "myth", "tierName": "通説への反論の受け皿（機器＝リフトアップではない）", "query": "(たるみ OR ほうれい線) (マッサージ OR 表情筋 OR 顔ヨガ OR 美顔器)", "draft": "EMSで筋肉を保つ発想は分かります。ただ頬のたるみの主な原因は、筋肉より皮膚や脂肪を支える組織がゆるむことなんですよね。だから鍛えても、下がった位置までは戻りにくいわけです。戻すなら引き上げの治療で、クマクリでは切開リフトで支えから整えます", "why": "たるみ＝表情筋の衰えという通説への疑問。たるみの仕組みを率直に説明できる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=EMS%E3%81%A7%E7%AD%8B%E8%82%89%E3%82%92%E4%BF%9D%E3%81%A4%E7%99%BA%E6%83%B3%E3%81%AF%E5%88%86%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E9%A0%AC%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%81%AE%E4%B8%BB%E3%81%AA%E5%8E%9F%E5%9B%A0%E3%81%AF%E3%80%81%E7%AD%8B%E8%82%89%E3%82%88%E3%82%8A%E7%9A%AE%E8%86%9A%E3%82%84%E8%84%82%E8%82%AA%E3%82%92%E6%94%AF%E3%81%88%E3%82%8B%E7%B5%84%E7%B9%94%E3%81%8C%E3%82%86%E3%82%8B%E3%82%80%E3%81%93%E3%81%A8%E3%81%AA%E3%82%93%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E3%81%A0%E3%81%8B%E3%82%89%E9%8D%9B%E3%81%88%E3%81%A6%E3%82%82%E3%80%81%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%9F%E4%BD%8D%E7%BD%AE%E3%81%BE%E3%81%A7%E3%81%AF%E6%88%BB%E3%82%8A%E3%81%AB%E3%81%8F%E3%81%84%E3%82%8F%E3%81%91%E3%81%A7%E3%81%99%E3%80%82%E6%88%BB%E3%81%99%E3%81%AA%E3%82%89%E5%BC%95%E3%81%8D%E4%B8%8A%E3%81%92%E3%81%AE%E6%B2%BB%E7%99%82%E3%81%A7%E3%80%81%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%A7%E3%81%AF%E5%88%87%E9%96%8B%E3%83%AA%E3%83%95%E3%83%88%E3%81%A7%E6%94%AF%E3%81%88%E3%81%8B%E3%82%89%E6%95%B4%E3%81%88%E3%81%BE%E3%81%99%0Ahttps%3A//x.com/xxxanax_001/status/2115982673286152437", "image": "", "isNew": false, "firstSeen": "2026-10-31"}, {"id": "2115250625034567942", "url": "https://x.com/jo5s_fz/status/2115250625034567942", "text": "ほうれい線は10キロ弱痩せたら薄くなって来たし二重幅も少し広くなったから、眉下切開とか切る系の手術は痩せてからやる！", "date": "2026-10-28", "author": "jo5s_fz", "authorName": "ほ🍚2.5💉⑦", "followers": 1028, "impressions": 631, "likes": 18, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 2.85, "tier": "after", "tierName": "痩せた後・小顔治療の後のたるみ", "query": "(痩せて OR 痩せたら OR ダイエット) (たるみ OR 老け顔 OR ほうれい線)", "draft": "痩せてから決める、いい順番だと思います。体重が落ちると頬の脂肪も減って、皮膚だけが余って下がることがあるんですよね。痩せ終わった顔で頬の位置を見て、下がっていたらクマクリの切開リフトを考えるタイミングです", "why": "痩せてから切る手術を考えている人。痩せた後に出るたるみを先に伝えられる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E7%97%A9%E3%81%9B%E3%81%A6%E3%81%8B%E3%82%89%E6%B1%BA%E3%82%81%E3%82%8B%E3%80%81%E3%81%84%E3%81%84%E9%A0%86%E7%95%AA%E3%81%A0%E3%81%A8%E6%80%9D%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E4%BD%93%E9%87%8D%E3%81%8C%E8%90%BD%E3%81%A1%E3%82%8B%E3%81%A8%E9%A0%AC%E3%81%AE%E8%84%82%E8%82%AA%E3%82%82%E6%B8%9B%E3%81%A3%E3%81%A6%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%A0%E3%81%91%E3%81%8C%E4%BD%99%E3%81%A3%E3%81%A6%E4%B8%8B%E3%81%8C%E3%82%8B%E3%81%93%E3%81%A8%E3%81%8C%E3%81%82%E3%82%8B%E3%82%93%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E7%97%A9%E3%81%9B%E7%B5%82%E3%82%8F%E3%81%A3%E3%81%9F%E9%A1%94%E3%81%A7%E9%A0%AC%E3%81%AE%E4%BD%8D%E7%BD%AE%E3%82%92%E8%A6%8B%E3%81%A6%E3%80%81%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E3%81%84%E3%81%9F%E3%82%89%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%AE%E5%88%87%E9%96%8B%E3%83%AA%E3%83%95%E3%83%88%E3%82%92%E8%80%83%E3%81%88%E3%82%8B%E3%82%BF%E3%82%A4%E3%83%9F%E3%83%B3%E3%82%B0%E3%81%A7%E3%81%99%0Ahttps%3A//x.com/jo5s_fz/status/2115250625034567942", "image": "", "isNew": false, "firstSeen": "2026-10-29"}, {"id": "2115241976002220463", "url": "https://x.com/toritora12/status/2115241976002220463", "text": "たるみ治療。念願のハイフ＆サーマジェンなどのたるみ治療を゙一ヶ月前にしたのだけど。２日後位は、頬が痩けた感じがして、一ヶ月後が効果でると。しかし私には効果がなかった🥹効果出る人と出ない人がいるとは聞いていたけど。キャンペーンでお得に出来たので満足🥹↓", "date": "2026-10-28", "author": "toritora12", "authorName": "TO", "followers": 12, "impressions": 351, "likes": 3, "reposts": 0, "replies": 1, "quotes": 0, "bookmarks": 0, "rate": 1.42, "tier": "myth", "tierName": "通説への反論の受け皿（機器＝リフトアップではない）", "query": "(ハイフ OR HIFU) (リフトアップ OR たるみ OR 効果)", "draft": "効果が分からなかった、正直よく聞く話です。機器が悪いわけではなく役割が違うんですよね。ハイフもサーマジェンも得意なのは引き締め。下がった頬を戻すなら、クマクリのミニ切開リフトの領域です。次は締めたいのか上げたいのか分けて選んでみてください", "why": "ハイフ・サーマジェンで効果がなかったという声。引き締めと引き上げの違いを説明できる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E5%8A%B9%E6%9E%9C%E3%81%8C%E5%88%86%E3%81%8B%E3%82%89%E3%81%AA%E3%81%8B%E3%81%A3%E3%81%9F%E3%80%81%E6%AD%A3%E7%9B%B4%E3%82%88%E3%81%8F%E8%81%9E%E3%81%8F%E8%A9%B1%E3%81%A7%E3%81%99%E3%80%82%E6%A9%9F%E5%99%A8%E3%81%8C%E6%82%AA%E3%81%84%E3%82%8F%E3%81%91%E3%81%A7%E3%81%AF%E3%81%AA%E3%81%8F%E5%BD%B9%E5%89%B2%E3%81%8C%E9%81%95%E3%81%86%E3%82%93%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E3%83%8F%E3%82%A4%E3%83%95%E3%82%82%E3%82%B5%E3%83%BC%E3%83%9E%E3%82%B8%E3%82%A7%E3%83%B3%E3%82%82%E5%BE%97%E6%84%8F%E3%81%AA%E3%81%AE%E3%81%AF%E5%BC%95%E3%81%8D%E7%B7%A0%E3%82%81%E3%80%82%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%9F%E9%A0%AC%E3%82%92%E6%88%BB%E3%81%99%E3%81%AA%E3%82%89%E3%80%81%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%AE%E3%83%9F%E3%83%8B%E5%88%87%E9%96%8B%E3%83%AA%E3%83%95%E3%83%88%E3%81%AE%E9%A0%98%E5%9F%9F%E3%81%A7%E3%81%99%E3%80%82%E6%AC%A1%E3%81%AF%E7%B7%A0%E3%82%81%E3%81%9F%E3%81%84%E3%81%AE%E3%81%8B%E4%B8%8A%E3%81%92%E3%81%9F%E3%81%84%E3%81%AE%E3%81%8B%E5%88%86%E3%81%91%E3%81%A6%E9%81%B8%E3%82%93%E3%81%A7%E3%81%BF%E3%81%A6%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84%0Ahttps%3A//x.com/toritora12/status/2115241976002220463", "image": "", "isNew": false, "firstSeen": "2026-10-29"}, {"id": "2116007531806130468", "url": "https://x.com/piquehaha/status/2116007531806130468", "text": "マリオネットラインていうの? ほうれい線に加え、これもかなりくっきりしてきて、デフォルメ無しでこの写真みたい💧 表情筋を鍛えないとね。 あと、いつも口角上げてこ☺︎ https://t.co/5Hev9uZMTt", "date": "2026-10-30", "author": "piquehaha", "authorName": "ピケのお母さん", "followers": 1026, "impressions": 347, "likes": 16, "reposts": 0, "replies": 2, "quotes": 0, "bookmarks": 0, "rate": 5.76, "tier": "myth", "tierName": "通説への反論の受け皿（機器＝リフトアップではない）", "query": "(たるみ OR ほうれい線) (マッサージ OR 表情筋 OR 顔ヨガ OR 美顔器)", "draft": "マリオネットライン、ズバリ頬が下がって口の横にたまった重さなんですよね。表情筋で支えようとしても、下がった位置までは戻りにくいわけです。口角の横を指で斜め上に持ち上げて線が消えるなら、クマクリのミニ切開リフトで整えられる範囲です", "why": "口元のたるみを表情筋で何とかしようとしている本人の声。原因と見分け方を返せる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E3%83%9E%E3%83%AA%E3%82%AA%E3%83%8D%E3%83%83%E3%83%88%E3%83%A9%E3%82%A4%E3%83%B3%E3%80%81%E3%82%BA%E3%83%90%E3%83%AA%E9%A0%AC%E3%81%8C%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E5%8F%A3%E3%81%AE%E6%A8%AA%E3%81%AB%E3%81%9F%E3%81%BE%E3%81%A3%E3%81%9F%E9%87%8D%E3%81%95%E3%81%AA%E3%82%93%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E8%A1%A8%E6%83%85%E7%AD%8B%E3%81%A7%E6%94%AF%E3%81%88%E3%82%88%E3%81%86%E3%81%A8%E3%81%97%E3%81%A6%E3%82%82%E3%80%81%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%9F%E4%BD%8D%E7%BD%AE%E3%81%BE%E3%81%A7%E3%81%AF%E6%88%BB%E3%82%8A%E3%81%AB%E3%81%8F%E3%81%84%E3%82%8F%E3%81%91%E3%81%A7%E3%81%99%E3%80%82%E5%8F%A3%E8%A7%92%E3%81%AE%E6%A8%AA%E3%82%92%E6%8C%87%E3%81%A7%E6%96%9C%E3%82%81%E4%B8%8A%E3%81%AB%E6%8C%81%E3%81%A1%E4%B8%8A%E3%81%92%E3%81%A6%E7%B7%9A%E3%81%8C%E6%B6%88%E3%81%88%E3%82%8B%E3%81%AA%E3%82%89%E3%80%81%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%AE%E3%83%9F%E3%83%8B%E5%88%87%E9%96%8B%E3%83%AA%E3%83%95%E3%83%88%E3%81%A7%E6%95%B4%E3%81%88%E3%82%89%E3%82%8C%E3%82%8B%E7%AF%84%E5%9B%B2%E3%81%A7%E3%81%99%0Ahttps%3A//x.com/piquehaha/status/2116007531806130468", "image": "", "isNew": true, "firstSeen": "2026-11-02"}], "posted": []}</script>
+<script id="state" type="application/json">{"updated": "2026-11-03", "updatedAt": "06:40", "show": 5, "news": [], "newsAll": 0, "kata": [], "kataAll": 0, "target": 3, "items": [{"id": "2117172084522791200", "url": "https://x.com/macbookmacll/status/2117172084522791200", "text": "顔が老ける人の共通点。 表情筋を使ってない。 だから ・ほうれい線 ・たるみ ・ぼやけ顎 が出る。 ペン(割り箸)くわえて 30秒動かすだけで フェイスライン変わる🥹 https://t.co/4hCZZVJXxh", "date": "2026-11-02", "author": "macbookmacll", "authorName": "メグちゃん", "followers": 27836, "impressions": 2687, "likes": 65, "reposts": 6, "replies": 0, "quotes": 0, "bookmarks": 37, "rate": 5.62, "tier": "myth", "tierName": "通説への反論の受け皿（機器＝リフトアップではない）", "query": "(たるみ OR ほうれい線) (マッサージ OR 表情筋 OR 顔ヨガ OR 美顔器)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/macbookmacll/status/2117172084522791200", "image": "", "isNew": true, "firstSeen": "2026-11-03"}, {"id": "2115690241634062777", "url": "https://x.com/ikkyujapan/status/2115690241634062777", "text": "とある事情で急激に肉が落ち顎か痩せてきたけど、頬が垂れ下がって見え爺くさくなり大変困ったでありんす", "date": "2026-10-29", "author": "ikkyujapan", "authorName": "妖奇七郎・一休ちゃんでありんす", "followers": 6658, "impressions": 1316, "likes": 22, "reposts": 3, "replies": 4, "quotes": 0, "bookmarks": 1, "rate": 2.89, "tier": "tarumi", "tierName": "顔のたるみ・フェイスライン（患者の生の声）", "query": "(頬 OR ほっぺ) (たるみ OR 垂れ OR 下がって OR こけ)", "draft": "急に痩せて頬が下がる、実はよくあるんですよね。支えていた脂肪が減ると、皮膚の重さだけが残るわけです。横顔で口の横に影が出ていたら下がっているサイン。位置を戻すなら、クマクリのミニ切開リフトの出番です", "why": "急に痩せて頬が垂れたという本人の悩み。下がる仕組みと見分け方を伝えやすい", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E6%80%A5%E3%81%AB%E7%97%A9%E3%81%9B%E3%81%A6%E9%A0%AC%E3%81%8C%E4%B8%8B%E3%81%8C%E3%82%8B%E3%80%81%E5%AE%9F%E3%81%AF%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E3%82%93%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E6%94%AF%E3%81%88%E3%81%A6%E3%81%84%E3%81%9F%E8%84%82%E8%82%AA%E3%81%8C%E6%B8%9B%E3%82%8B%E3%81%A8%E3%80%81%E7%9A%AE%E8%86%9A%E3%81%AE%E9%87%8D%E3%81%95%E3%81%A0%E3%81%91%E3%81%8C%E6%AE%8B%E3%82%8B%E3%82%8F%E3%81%91%E3%81%A7%E3%81%99%E3%80%82%E6%A8%AA%E9%A1%94%E3%81%A7%E5%8F%A3%E3%81%AE%E6%A8%AA%E3%81%AB%E5%BD%B1%E3%81%8C%E5%87%BA%E3%81%A6%E3%81%84%E3%81%9F%E3%82%89%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E3%82%B5%E3%82%A4%E3%83%B3%E3%80%82%E4%BD%8D%E7%BD%AE%E3%82%92%E6%88%BB%E3%81%99%E3%81%AA%E3%82%89%E3%80%81%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%AE%E3%83%9F%E3%83%8B%E5%88%87%E9%96%8B%E3%83%AA%E3%83%95%E3%83%88%E3%81%AE%E5%87%BA%E7%95%AA%E3%81%A7%E3%81%99%0Ahttps%3A//x.com/ikkyujapan/status/2115690241634062777", "image": "", "isNew": false, "firstSeen": "2026-10-31"}, {"id": "2115354666536190136", "url": "https://x.com/sh__io_108/status/2115354666536190136", "text": "あゆちさん🏷️タグお借りしまーす☺️ 寝起きをツンツンされて不機嫌男子ですw ちょっとヨダレ垂れてて可愛い…🤣 #これを見た人はほっぺたプクっとまたはほっぺたツンツン男子を貼る https://t.co/wQVeUBDYBt https://t.co/1nAQm35RGz", "date": "2026-10-28", "author": "sh__io_108", "authorName": "しお@AIイラスト🔰(避難用垢)", "followers": 78, "impressions": 1184, "likes": 20, "reposts": 0, "replies": 1, "quotes": 0, "bookmarks": 1, "rate": 2.03, "tier": "tarumi", "tierName": "顔のたるみ・フェイスライン（患者の生の声）", "query": "(頬 OR ほっぺ) (たるみ OR 垂れ OR 下がって OR こけ)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/sh__io_108/status/2115354666536190136", "image": "", "isNew": true, "firstSeen": "2026-11-03"}, {"id": "2115982673286152437", "url": "https://x.com/xxxanax_001/status/2115982673286152437", "text": "表情筋が衰える事によりたるみに繋がる、が本当ならEMS美顔器って効果あるし予防になるはずだよね、EMSで筋肥大は難しくても衰えないようにとか、リハビリ患者や寝たきりの人の筋肉を現状維持が可能というデータあるはずだから、衰えてからやるより予防的に電気刺激入れておいた方が良いはずだよね。", "date": "2026-10-30", "author": "xxxanax_001", "authorName": "ざなくす", "followers": 105, "impressions": 636, "likes": 5, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 0.79, "tier": "myth", "tierName": "通説への反論の受け皿（機器＝リフトアップではない）", "query": "(たるみ OR ほうれい線) (マッサージ OR 表情筋 OR 顔ヨガ OR 美顔器)", "draft": "EMSで筋肉を保つ発想は分かります。ただ頬のたるみの主な原因は、筋肉より皮膚や脂肪を支える組織がゆるむことなんですよね。だから鍛えても、下がった位置までは戻りにくいわけです。戻すなら引き上げの治療で、クマクリでは切開リフトで支えから整えます", "why": "たるみ＝表情筋の衰えという通説への疑問。たるみの仕組みを率直に説明できる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=EMS%E3%81%A7%E7%AD%8B%E8%82%89%E3%82%92%E4%BF%9D%E3%81%A4%E7%99%BA%E6%83%B3%E3%81%AF%E5%88%86%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E3%81%9F%E3%81%A0%E9%A0%AC%E3%81%AE%E3%81%9F%E3%82%8B%E3%81%BF%E3%81%AE%E4%B8%BB%E3%81%AA%E5%8E%9F%E5%9B%A0%E3%81%AF%E3%80%81%E7%AD%8B%E8%82%89%E3%82%88%E3%82%8A%E7%9A%AE%E8%86%9A%E3%82%84%E8%84%82%E8%82%AA%E3%82%92%E6%94%AF%E3%81%88%E3%82%8B%E7%B5%84%E7%B9%94%E3%81%8C%E3%82%86%E3%82%8B%E3%82%80%E3%81%93%E3%81%A8%E3%81%AA%E3%82%93%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E3%81%A0%E3%81%8B%E3%82%89%E9%8D%9B%E3%81%88%E3%81%A6%E3%82%82%E3%80%81%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%9F%E4%BD%8D%E7%BD%AE%E3%81%BE%E3%81%A7%E3%81%AF%E6%88%BB%E3%82%8A%E3%81%AB%E3%81%8F%E3%81%84%E3%82%8F%E3%81%91%E3%81%A7%E3%81%99%E3%80%82%E6%88%BB%E3%81%99%E3%81%AA%E3%82%89%E5%BC%95%E3%81%8D%E4%B8%8A%E3%81%92%E3%81%AE%E6%B2%BB%E7%99%82%E3%81%A7%E3%80%81%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%A7%E3%81%AF%E5%88%87%E9%96%8B%E3%83%AA%E3%83%95%E3%83%88%E3%81%A7%E6%94%AF%E3%81%88%E3%81%8B%E3%82%89%E6%95%B4%E3%81%88%E3%81%BE%E3%81%99%0Ahttps%3A//x.com/xxxanax_001/status/2115982673286152437", "image": "", "isNew": false, "firstSeen": "2026-10-31"}, {"id": "2117190622344008184", "url": "https://x.com/arechichanchan/status/2117190622344008184", "text": "顔のたるみ、モフィウスでも改善されなかったら切開の前に何やろ〜の件で、オンダリフトってどうなんだろ。あまり界隈でやってる方いないイメージ🤔てことはあまり効果感じないのか？モフィウスやソフウェーブは良いって声よく聞くけど。エンブレイスは効果なかったからクォンタムにも懐疑的なんだよな", "date": "2026-11-02", "author": "arechichanchan", "authorName": "荒地ちゃん🧺", "followers": 1228, "impressions": 408, "likes": 6, "reposts": 0, "replies": 0, "quotes": 0, "bookmarks": 0, "rate": 1.47, "tier": "myth", "tierName": "通説への反論の受け皿（機器＝リフトアップではない）", "query": "(ソフウェーブ OR オンダリフト OR サーマクール) (たるみ OR 効果 OR リフト)", "draft": "", "why": "", "compose": "https://x.com/compose/post?text=%0Ahttps%3A//x.com/arechichanchan/status/2117190622344008184", "image": "", "isNew": true, "firstSeen": "2026-11-03"}, {"id": "2116007531806130468", "url": "https://x.com/piquehaha/status/2116007531806130468", "text": "マリオネットラインていうの? ほうれい線に加え、これもかなりくっきりしてきて、デフォルメ無しでこの写真みたい💧 表情筋を鍛えないとね。 あと、いつも口角上げてこ☺︎ https://t.co/5Hev9uZMTt", "date": "2026-10-30", "author": "piquehaha", "authorName": "ピケのお母さん", "followers": 1026, "impressions": 347, "likes": 16, "reposts": 0, "replies": 2, "quotes": 0, "bookmarks": 0, "rate": 5.76, "tier": "myth", "tierName": "通説への反論の受け皿（機器＝リフトアップではない）", "query": "(たるみ OR ほうれい線) (マッサージ OR 表情筋 OR 顔ヨガ OR 美顔器)", "draft": "マリオネットライン、ズバリ頬が下がって口の横にたまった重さなんですよね。表情筋で支えようとしても、下がった位置までは戻りにくいわけです。口角の横を指で斜め上に持ち上げて線が消えるなら、クマクリのミニ切開リフトで整えられる範囲です", "why": "口元のたるみを表情筋で何とかしようとしている本人の声。原因と見分け方を返せる", "draftBy": "claude", "compose": "https://x.com/compose/post?text=%E3%83%9E%E3%83%AA%E3%82%AA%E3%83%8D%E3%83%83%E3%83%88%E3%83%A9%E3%82%A4%E3%83%B3%E3%80%81%E3%82%BA%E3%83%90%E3%83%AA%E9%A0%AC%E3%81%8C%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%A6%E5%8F%A3%E3%81%AE%E6%A8%AA%E3%81%AB%E3%81%9F%E3%81%BE%E3%81%A3%E3%81%9F%E9%87%8D%E3%81%95%E3%81%AA%E3%82%93%E3%81%A7%E3%81%99%E3%82%88%E3%81%AD%E3%80%82%E8%A1%A8%E6%83%85%E7%AD%8B%E3%81%A7%E6%94%AF%E3%81%88%E3%82%88%E3%81%86%E3%81%A8%E3%81%97%E3%81%A6%E3%82%82%E3%80%81%E4%B8%8B%E3%81%8C%E3%81%A3%E3%81%9F%E4%BD%8D%E7%BD%AE%E3%81%BE%E3%81%A7%E3%81%AF%E6%88%BB%E3%82%8A%E3%81%AB%E3%81%8F%E3%81%84%E3%82%8F%E3%81%91%E3%81%A7%E3%81%99%E3%80%82%E5%8F%A3%E8%A7%92%E3%81%AE%E6%A8%AA%E3%82%92%E6%8C%87%E3%81%A7%E6%96%9C%E3%82%81%E4%B8%8A%E3%81%AB%E6%8C%81%E3%81%A1%E4%B8%8A%E3%81%92%E3%81%A6%E7%B7%9A%E3%81%8C%E6%B6%88%E3%81%88%E3%82%8B%E3%81%AA%E3%82%89%E3%80%81%E3%82%AF%E3%83%9E%E3%82%AF%E3%83%AA%E3%81%AE%E3%83%9F%E3%83%8B%E5%88%87%E9%96%8B%E3%83%AA%E3%83%95%E3%83%88%E3%81%A7%E6%95%B4%E3%81%88%E3%82%89%E3%82%8C%E3%82%8B%E7%AF%84%E5%9B%B2%E3%81%A7%E3%81%99%0Ahttps%3A//x.com/piquehaha/status/2116007531806130468", "image": "", "isNew": false, "firstSeen": "2026-11-02"}], "posted": []}</script>
 <script>(function () {
   const LIMIT = 140;
   const KEY = "kuma-x-state";
@@ -606,13 +630,28 @@ details>summary::-webkit-details-marker{display:none}
       </details>`;
   }
 
+  // 引用（A）は引用元のURLを本文に付ける。型の転用（C）は単発投稿なので本文だけ
+  const composeFor = (it, text) =>
+    "https://x.com/compose/post?text=" + encodeURIComponent((text || "").trim()
+      + (it.kind === "kata" ? "" : "\n" + it.url));
+  const NEWS = S.news || [], KATA = S.kata || [];
+  const ALL = () => S.items.concat(NEWS, KATA);
+
+  function secHead(title, note, count) {
+    return `<h2 class="sec-h">${esc(title)}<span class="sec-n">${count}件</span>
+      ${note ? `<span class="sec-note">${esc(note)}</span>` : ""}</h2>`;
+  }
+
   function render() {
-    const posted = S.items.filter(i => st(i) === "posted").length;
-    const skipped = S.items.filter(i => st(i) === "skipped").length;
-    const left = S.items.filter(inPlay).length;
+    const posted = ALL().filter(i => st(i) === "posted").length;
+    const skipped = ALL().filter(i => st(i) === "skipped").length;
+    const left = ALL().filter(inPlay).length;
     const rest = shownList();
     const shown = rest.slice(offset, offset + S.show);
     const more = rest.length - offset - shown.length;
+    const newsShown = NEWS.filter(i => inPlay(i) || undoing.has(i.id));
+    const kataShown = KATA.filter(i => inPlay(i) || undoing.has(i.id));
+    const hasBC = NEWS.length || KATA.length || S.newsAll || S.kataAll;
 
     app.innerHTML = `
       ${staleBanner()}
@@ -621,18 +660,27 @@ details>summary::-webkit-details-marker{display:none}
         <p class="eyebrow">${esc(S.updated)} 更新${
           S.updated === localToday() ? updatedWord() : ""} ／ @kumacli_ito</p>
         <h1>今日の引用候補</h1>
-        <p class="sub">引用元を見て、そのまま出すか直すかを決めてください。「Xで投稿する」を押すとXが別のタブで開き、本文と引用元が入った状態になります。そこで「ポスト」を押すと投稿されます。</p>
+        <p class="sub">${hasBC
+          ? `候補は3つの枠で<b>10件</b>です。先頭は<b>いまXで流行っている型2件</b>（型の組み立てと、その型で書いた先生の単発投稿。ほかの下書きを直すときの土台にも）、次に<b>引用候補4件</b>（クマ・たるみ・フェイスリフト・美魔女か業界）、<b>勢いのある美容ニュース4件</b>（いま伸びている途中の投稿）。それぞれに「なぜこれか」を添えています。無理にクマの話へ持っていく書き方はやめました。「Xで投稿する」を押すとXが別のタブで開き、本文が入った状態になります。そこで「ポスト」を押すと投稿されます。1日3本が目安です。`
+          : `引用元を見て、そのまま出すか直すかを決めてください。「Xで投稿する」を押すとXが別のタブで開き、本文と引用元が入った状態になります。そこで「ポスト」を押すと投稿されます。`}</p>
         <div class="tally">
           <span class="chip ${posted >= S.target ? "on" : ""}">今日の投稿 ${posted}件 ／ 目標 ${S.target}件</span>
           <span class="chip">見送り ${skipped}件</span>
           <span class="chip">残り ${left}件</span>
         </div>
-        <p class="legend"><b>数字の見かた</b>　📊 表示＝見られた回数。<b>反応率</b>＝見た人のうち何%が動いたか。表示が多くても反応率が低い投稿は、宣伝や身内向けのことが多く、引用しても伸びにくい傾向です。</p>
+        <p class="legend"><b>数字の見かた</b>　📊 表示＝見られた回数。<b>反応率</b>＝見た人のうち何%が動いたか。表示が多くても反応率が低い投稿は、宣伝や身内向けのことが多く、引用しても伸びにくい傾向です。${hasBC ? "<b>勢い</b>＝投稿からの時間で割った、1時間あたりの表示回数。まだ数字が小さくても勢いがあれば、これから伸びる投稿です。" : ""}</p>
       </header>
+      ${hasBC ? secHead("いまXで流行っている型", "この型を土台に、下の下書きを書き直すこともできます", kataShown.length) : ""}
+      ${hasBC ? (kataShown.length ? kataShown.map(card).join("")
+        : '<div class="done-note">今朝は型として使える投稿がありませんでした。</div>') : ""}
+      ${hasBC ? secHead("引用候補", "クマ・たるみ・フェイスリフト・美魔女か業界の順", shown.length) : ""}
       ${shown.length ? shown.map(card).join("")
         : '<div class="done-note">在庫がなくなりました。広報に候補の取り直しを依頼してください。</div>'}
       ${more > 0 ? `<button class="more" id="more">別の候補を見る（あと ${more} 件）</button>` : ""}
       ${offset > 0 ? `<button class="more" id="back">前の候補に戻る</button>` : ""}
+      ${hasBC ? secHead("勢いのある美容ニュース", "48時間以内で、表示の伸びが速い順", newsShown.length) : ""}
+      ${hasBC ? (newsShown.length ? newsShown.map(card).join("")
+        : '<div class="done-note">今朝は勢いのある美容ニュースがありませんでした。</div>') : ""}
       <div class="status" id="status" role="status" aria-live="polite">${esc(msg)}</div>
       ${postedLog()}
       <div class="note">
@@ -641,6 +689,8 @@ details>summary::-webkit-details-marker{display:none}
       </div>`;
 
     shown.forEach(bind);
+    newsShown.forEach(bind);
+    kataShown.forEach(bind);
     const mb = document.getElementById("more");
     if (mb) mb.onclick = () => { offset += S.show; render(); };
     const bb = document.getElementById("back");
@@ -659,16 +709,30 @@ details>summary::-webkit-details-marker{display:none}
       </section>`;
   }
 
+  // 勢いの一行（B・C）。「投稿から14時間で表示20,019回（1時間に835回）」
+  function speedLine(it) {
+    if (!it.speed) return "";
+    return `<p class="speed">⚡ 投稿から${esc(it.ageH)}時間で表示 ${n(it.impressions)}回（1時間に <b>${n(it.speed)}</b> 回）</p>`;
+  }
+
+  function tags(it) {
+    let t = `<span class="tier">${esc(it.tierName || "")}</span>`;
+    if (it.kind === "news") {
+      t += it.bridge
+        ? `<span class="tier bridge">繋がる：${esc(it.bridgeWord)}</span>`
+        : `<span class="tier nobridge">繋がらないが勢いあり</span>`;
+    }
+    if (it.kind === "kata" && it.kataName) t += `<span class="tier kata">型：${esc(it.kataName)}</span>`;
+    t += it.isNew ? `<span class="tier fresh">新着</span>` : `<span class="tier seen">昨日までの候補</span>`;
+    if (it.stale) t += `<span class="tier stale">やや古い投稿</span>`;
+    return t;
+  }
+
   function card(it) {
     if (undoing.has(it.id)) return undoStrip(it);
     const pending = st(it) === "pending";
-    return `
-      <section class="card${pending ? " asking" : ""}">
-        <div class="card-h"><span class="tier">${esc(it.tierName || "")}</span>${
-          it.isNew ? `<span class="tier fresh">新着</span>`
-                   : `<span class="tier seen">昨日までの候補</span>`}${
-          it.stale ? `<span class="tier stale">やや古い投稿</span>` : ""}</div>
-        ${it.why ? `<div class="src"><p class="why">${esc(it.why)}</p></div>` : ""}
+    const kata = it.kind === "kata";
+    const srcBlock = `
         <div class="src">
           <div class="src-who">
             <b>@${esc(it.author)}</b>
@@ -684,9 +748,22 @@ details>summary::-webkit-details-marker{display:none}
             <span class="rate">反応率 ${it.rate}%</span>
           </div>
           <a class="src-link" href="${esc(it.url)}" target="_blank" rel="noopener">元の投稿をXで見る（別のタブ）→</a>
+        </div>`;
+    return `
+      <section class="card${pending ? " asking" : ""}${kata ? " kata-card" : ""}">
+        <div class="card-h">${tags(it)}</div>
+        ${speedLine(it)}
+        ${kata ? `
+        <div class="kata-box">
+          ${it.kataName ? `<p class="kata-name">${esc(it.kataName)}</p>` : ""}
+          ${it.mimic ? `<p class="kata-row"><b>型の組み立て（ここを真似る）</b>${esc(it.mimic)}</p>` : ""}
+          ${it.kataWhy ? `<p class="kata-row"><b>なぜこの型が今伸びるか</b>${esc(it.kataWhy)}</p>` : ""}
+          ${it.why ? `<p class="kata-row"><b>この型で書いた先生の投稿は</b>${esc(it.why)}</p>` : ""}
         </div>
+        <details class="kata-src"><summary>型の元になった投稿を見る（中身は真似していません）</summary>${srcBlock}</details>`
+        : `${it.why ? `<div class="src"><p class="why">${esc(it.why)}</p></div>` : ""}${srcBlock}`}
         <div class="draft">
-          <div class="draft-label">下書き<span class="count" id="n${esc(it.id)}"></span></div>
+          <div class="draft-label">${kata ? "先生の単発投稿（下書き）" : "下書き"}<span class="count" id="n${esc(it.id)}"></span></div>
           <textarea id="t${esc(it.id)}" aria-label="下書き" rows="1">${esc(draftOf(it))}</textarea>
           ${it.image ? `<figure class="case"><img src="${esc(it.image)}" alt="添える症例" loading="lazy">
             <figcaption>添える症例（Instagramに載せているものと同じ画像）</figcaption></figure>` : ""}
@@ -753,7 +830,7 @@ details>summary::-webkit-details-marker{display:none}
       const len = [...ta.value].length;
       cnt.textContent = len + " / " + LIMIT + "字";
       cnt.classList.toggle("over", len > LIMIT);
-      if (link) link.href = compose(it, ta.value);   // 編集した内容をリンクに反映
+      if (link) link.href = composeFor(it, ta.value);   // 編集した内容をリンクに反映
       grow(ta);
     };
     ta.addEventListener("input", upd); upd();
